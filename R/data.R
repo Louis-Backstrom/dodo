@@ -1,7 +1,7 @@
 #' @title Caribbean Monk Seal Sightings
 #'
 #' @description
-#' Caribbean Monk Seal (\emph{Monachus tropicalis}) sighting records from Solow
+#' Caribbean Monk Seal (*Monachus tropicalis*) sighting records from Solow
 #' (1993) based on data presented in LeBouef et al. (1986).
 #'
 #' @format A numeric vector with 5 values.
@@ -22,7 +22,7 @@
 #' @title Black-footed Ferret Sightings (Continuous)
 #'
 #' @description
-#' Black-footed Ferret (\emph{Mustela nigripes}) sighting records from Solow
+#' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
 #' (1993) based on data provided by the US Department of the Interior.
 #'
 #' @format A numeric vector with 28 values.
@@ -40,7 +40,7 @@
 #' @title Black-footed Ferret Sightings (Discrete)
 #'
 #' @description
-#' Black-footed Ferret (\emph{Mustela nigripes}) sighting records from Solow
+#' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
 #' (1993) based on data provided by the US Department of the Interior.
 #'
 #' @format A `data.frame` with 2 columns and 21 rows.
@@ -85,3 +85,75 @@
 #' Scientific Collections. Conservation Biology, 9(4), 923-928.
 #' \doi{0.1046/j.1523-1739.1995.09040923.x}
 "burgmanf1b"
+
+#' @title Lord Howe Gerygone Sightings
+#'
+#' @description
+#' Frequency-based collection-effort sighting record of the Lord Howe Gerygone
+#' (*Gerygone insularis*) based on data from the Atlas of Living Australia.
+#'
+#' @format a `data.frame` with 3 columns and 236 rows.
+#'
+#' @note
+#' Includes all observations of birds within 10km of Lord Howe Island with
+#' valid spatial coordinates. The index of collection effort is the total
+#' number of birds recorded in that year.
+#'
+#' @references
+#' **Key Reference**
+#' Atlas of Living Australia occurrence download, accessed on 25 August 2025.
+#' \doi{10.26197/ala.dad3870b-1b79-4600-ad12-af429feb1ad2}
+#'
+#' **Other References**
+#' McCarthy, M. A. (1998). Identifying declining and threatened species with
+#' museum data. *Biological Conservation*, 83(1), 9-17.
+#' \doi{10.1016/S0006-3207(97)00048-7}
+"gerygone"
+
+#' @title Dodo Sightings
+#'
+#' @description
+#' Dodo (*Raphus cucullatus*) sighting records from Roberts & Solow (2003).
+#'
+#' @format A numeric vector with 10 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Roberts, D. L., & Solow, A. R. (2003). Flightless birds: when did the dodo
+#' become extinct? *Nature*, 426(6964), 245. \doi{10.1038/426245a}
+"dodo"
+
+#' @title Alaskan Mammoth Fossil Record
+#'
+#' @description
+#' Woolly Mammoth (*Mammuthus primigenius*) dated fossil records from Solow et
+#' al. (2006) based on data presented in Guthrie (2004).
+#'
+#' @format A numeric vector with 25 values.
+#'
+#' @note
+#' Includes the 25 most recent fossil records, measured in years before present
+#' (note that values are all <0). Radiometric dating error estimates are not
+#' included.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Solow, A. R., Roberts, D. L., & Robbirt, K. M. (2006). On the Pleistocene
+#' extinctions of Alaskan mammoths and horses. *Proceedings of the National*
+#' *Academy of Sciences of the United States of America*, 103(19), 7351-7353.
+#' \doi{10.1073/pnas.0509480103}
+#'
+#' **Other References**
+#'
+#' Guthrie, R. D. (2004). Radiocarbon evidence of mid-Holocene mammoths
+#' stranded on an Alaskan Bering Sea island. *Nature*, 429(6993), 746-749.
+#' \doi{10.1038/nature02612}
+#'
+#' Bradshaw, C. J. A., Cooper, A., Turney, C. S. M., & Brook, B. W. (2012).
+#' Robust estimates of extinction time in the geological record. *Quaternary*
+#' *Science Reviews*, 33, 14-19. \doi{10.1016/j.quascirev.2011.11.021}
+"mammoth"
+
+

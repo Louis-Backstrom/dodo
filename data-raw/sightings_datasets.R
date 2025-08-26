@@ -19,3 +19,11 @@ burgmanf1b <- data.frame(
   records = c(1, 2, 0, 2, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 )
 usethis::use_data(burgmanf1b, overwrite = TRUE)
+
+dodo <- c(1598, 1601, 1602, 1607, 1611, 1628, 1628, 1631, 1638, 1662)
+usethis::use_data(dodo, overwrite = TRUE)
+
+mammoth <- -c(11.50, 11.54, 11.91, 12.12, 12.19, 12.34, 12.43, 12.44, 12.48,
+              12.49, 12.51, 12.58, 12.68, 12.88, 13.06, 13.23, 13.29, 13.34,
+              13.38, 13.41, 13.44, 13.66, 13.69, 14.02, 14.09) * 1000
+usethis::use_data(mammoth, overwrite = TRUE)

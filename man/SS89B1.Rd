@@ -35,7 +35,7 @@ two-element numeric vector called \code{cred.int}. The posterior distribution
 vectors are also included, if \code{keep.dists} is set to \code{TRUE}.
 }
 \description{
-Equation 26 from Strauss & Sadler (1989), assuming the prior distribution
+Equation 26 from Strauss & Sadler 1989, assuming the prior distribution
 from equation 22. Estimates a posterior distribution on time of extinction,
 with associated point estimate and one-sided credible interval.
 }

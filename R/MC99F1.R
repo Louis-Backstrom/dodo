@@ -1,8 +1,8 @@
-#' @title Springer & Lilje's (1988) "Broken Stick" Model
+#' @title McFarlane's (1999) "Median Gap" Model
 #'
 #' @description
-#' Equation 3 from Springer & Lilje 1988. Estimates a one-tailed
-#' \eqn{1 - \alpha} confidence interval on the time of extinction.
+#' Equation 3 from McFarlane 1999. Estimates a one-tailed \eqn{1 - \alpha}
+#' confidence interval on the time of extinction.
 #'
 #' @param records numeric vector object containing all sighting records of the
 #' taxon of interest.
@@ -20,36 +20,26 @@
 #' @references
 #' **Key Reference**
 #'
-#' Springer, M., & Lilje, A. (1988). Biostratigraphy and Gap Analysis - the
-#' Expected Sequence of Biostratigraphic Events. *Journal of Geology*, 96(2),
-#' 228-236. \doi{10.1086/629212}
-#'
-#'**Other References**
-#'
 #' McFarlane, D. A. (1999). A Comparison of Methods for the Probabilistic
 #' Determination of Vertebrate Extinction Chronologies. In R. D. E. MacPhee
 #' (Ed.), *Extinctions in Near Time* (pp. 95-103). Springer US.
 #' \doi{10.1007/978-1-4757-5202-1_5}
 #'
-#' Strauss, D., & Sadler, P. M. (1989). Classical Confidence Intervals and
-#' Bayesian Probability Estimates for Ends of Local Taxon Ranges.
-#' *Mathematical Geology*, 21(4), 411-421. \doi{10.1007/Bf00897326}
-#'
 #' @export
 
-SL88F1 <- function(records, alpha = 0.05) {
+MC99F1 <- function(records, alpha = 0.05) {
 
   # Sort records
   records <- sort(records)
 
-  # Determine number of records
-  n <- length(records)
+  # Calculate median gap length
+  i <- median(diff(sort(records)))
 
-  # Calculate sighting rate
-  m <- (n - 1) / (max(records) - min(records))
+  # Calculate critical value
+  crit <- log(alpha, base = 0.5)
 
   # Calculate width of confidence interval
-  x <- log(alpha) / (-m)
+  x <- i * crit
 
   # Output
   output <- list(

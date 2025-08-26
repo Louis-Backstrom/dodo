@@ -1,7 +1,7 @@
 #' @title Strauss & Sadler's (1989) "Bayesian" Model
 #'
 #' @description
-#' Equation 26 from Strauss & Sadler (1989), assuming the prior distribution
+#' Equation 26 from Strauss & Sadler 1989, assuming the prior distribution
 #' from equation 22. Estimates a posterior distribution on time of extinction,
 #' with associated point estimate and one-sided credible interval.
 #'
@@ -36,6 +36,9 @@
 
 SS89B1 <- function(records, alpha = 0.05, t.max = max(records) * 2,
                    length.out = 1e6, keep.dists = FALSE) {
+
+  # Sort records
+  records <- sort(records)
 
   # Determine number of records
   n <- length(records)

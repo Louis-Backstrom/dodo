@@ -41,6 +41,9 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
                    prior = runif(n = 1e6, min = 0, max = 1),
                    keep.dists = FALSE) {
 
+  # Sort records
+  records <- sort(records)
+
   # Determine number of records
   n <- length(records)
   if (init.time == min(records)) {

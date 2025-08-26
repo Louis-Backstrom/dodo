@@ -1,17 +1,15 @@
-#' @title Solow's (1993) "Classical" Model
+#' Solow & Robert's (2003) "Non-parametric" Model
 #'
 #' @description
-#' Equation 2 from Solow 1993 (Equation 3 from Solow 2005), and Equations 4
-#' and 5 from Solow 2005. Estimates a p-value for testing competing hypotheses
-#' of extinction/non-extinction, and a one-tailed \eqn{1 - \alpha} confidence
+#' Equation 4 from Solow & Roberts 2003 and Equations 9-11 from Solow 2005.
+#' Estimates a p-value for testing competing hypotheses of
+#' extinction/non-extinction, and a one-tailed \eqn{1 - \alpha} confidence
 #' interval and point estimate on the time of extinction.
 #'
 #' @param records numeric vector object containing all sighting records of the
 #' taxon of interest.
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case  this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #'
@@ -20,20 +18,23 @@
 #' interval is a two-element numeric vector called `conf.int`.
 #'
 #' @note
-#' All sighting records are assumed to be certain and sampling effort is assumed
-#' to be constant.
+#' All sighting records are assumed to be certain.
 #'
 #' @references
 #' **Key Reference**
 #'
-#' Solow, A. R. (1993). Inferring Extinction from Sighting Data. *Ecology*,
-#' 74(3), 962-964. \doi{10.2307/1940821}
+#' Solow, A. R., & Roberts, D. L. (2003). A nonparametric test for extinction
+#' based on a sighting record. *Ecology*, 84(5), 1329-1332.
+#' \doi{10.1890/0012-9658(2003)084[1329:ANTFEB]2.0.CO;2}
 #'
 #' **Other References**
 #'
-#' Solow, A., & Helser, T. (2000). Detecting extinction in sighting data. In S.
-#' Ferson & M. Burgman (Eds.), *Quantitative methods for conservation biology*
-#' (pp. 1-6). Springer-Verlag. \doi{10.1007/b97704}
+#' Robson, D. S., & Whitlock, J. H. (1964). Estimation of a truncation point.
+#' *Biometrika*, 51(1-2), 33-39. \doi{10.1093/biomet/51.1-2.33}
+#'
+#' Solow, A. R. (2003). Estimation of stratigraphic ranges when fossil finds
+#' are not randomly distributed. *Paleobiology*, 29(2), 181-185.
+#' \doi{10.1666/0094-8373(2003)029<0181:EOSRWF>2.0.CO;2}
 #'
 #' Solow, A. R. (2005). Inferring extinction from a sighting record.
 #' *Mathematical Biosciences*, 195(1), 47-55. \doi{10.1016/j.mbs.2005.02.001}
@@ -44,7 +45,7 @@
 #'
 #' @export
 
-SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
+SR03F1 <- function(records, alpha = 0.05,
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
 
   # Sort records
@@ -52,36 +53,28 @@ SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Determine number of records
   n <- length(records)
-  if (init.time == min(records)) {
-    n <- n - 1
-  }
-
-  # Determine length of sighting record
-  tn <- max(records) - init.time
-
-  # Determine current time
-  bigT <- test.time - init.time
 
   # Calculate p-value
-  p.value <- (tn / bigT) ^ n
+  p.value <- (records[n] - records[n - 1]) / (test.time - records[n - 1])
 
   # Calculate point estimate
-  estimate <- ((n + 1) / n) * tn
+  estimate <- records[n] + (records[n] - records[n - 1])
 
-  # Calculate relative width of confidence interval
-  x <- alpha ^ (1 / n)
+  # Calculate width of confidence interval
+  x <- ((1 - alpha) / alpha) * (records[n] - records[n - 1])
 
   # Output
   output <- list(
     records = records,
     alpha = alpha,
-    init.time = init.time,
     test.time = test.time,
     p.value = p.value,
-    estimate = init.time + estimate,
-    conf.int = c(max(records), init.time + tn / x)
+    estimate = estimate,
+    conf.int = c(records[n], records[n] + x)
   )
 
   return(output)
-
 }
+
+
+

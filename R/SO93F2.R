@@ -39,6 +39,9 @@
 SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
 
+  # Sort records
+  records <- sort(records)
+
   # Determine number of records
   n <- length(records)
   if (init.time == min(records)) {

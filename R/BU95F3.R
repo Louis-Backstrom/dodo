@@ -1,6 +1,7 @@
 #' @title Burgman et al.'s (1995) "Empty Cells" Model
 #'
-#' @description Equation 4 from Burgman et al. 1995. Estimates a p-value for
+#' @description
+#' Equation 4 from Burgman et al. 1995. Estimates a p-value for
 #' testing competing hypotheses of extinction/non-extinction.
 #'
 #' @param records `data.frame` with two columns: `time` and `records`. The
