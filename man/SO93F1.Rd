@@ -19,7 +19,7 @@ taxon of interest.}
 the \eqn{1 - \alpha} confidence interval.}
 
 \item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case  this sighting is removed from the record.}
+the first sighting, in which case this sighting is removed from the record.}
 
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}

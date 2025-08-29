@@ -1,4 +1,4 @@
-#' Bradshaw et al.'s (2012) "Inverse-Weighted McInerny et al." Model
+#' Bradshaw et al.'s (2012) "Inverse-weighted McInerny" Model
 #'
 #' @description
 #' Equation 4 from Bradshaw et al. 2012. Estimates a point estimate on the time

@@ -2,7 +2,7 @@
 % Please edit documentation in R/BR12F1.R
 \name{BR12F1}
 \alias{BR12F1}
-\title{Bradshaw et al.'s (2012) "Inverse-Weighted McInerny et al." Model}
+\title{Bradshaw et al.'s (2012) "Inverse-weighted McInerny" Model}
 \usage{
 BR12F1(records, alpha = 0.05)
 }

@@ -47,6 +47,8 @@ MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {
 
   i <- 0:N
 
+  test <- c()
+
   for (xi in i) {
     x <- 0:xi
     test[xi + 1] <- sum(choose(N, x) * (1 - alpha) ^ x * alpha ^ (N - x))

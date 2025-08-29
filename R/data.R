@@ -156,4 +156,100 @@
 #' *Science Reviews*, 33, 14-19. \doi{10.1016/j.quascirev.2011.11.021}
 "mammoth"
 
+#' @title *Anabarella* Fossil Record
+#'
+#' @description
+#' Siberian and Mongolian records of Cambrian *Anabarella* sp. from Wang et al.
+#' (2015) based on data presented in Maloof et al. (2010).
+#'
+#' @format A numeric vector with 19 values.
+#'
+#' @note
+#' Dates are measured in million years before present (note that values are all
+#' <0). Radiometric dating error estimates are not included.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Wang, S. C., Everson, P. J., Zhou, H. J., Park, D., & Chudzicki, D. J.
+#' (2016). Adaptive credible intervals on stratigraphic ranges when recovery
+#' potential is unknown. *Paleobiology*, 42(2), 240-256.
+#' \doi{10.1017/pab.2015.37}
+#'
+#' **Other Reference**
+#'
+#' Maloof, A. C., Porter, S. M., Moore, J. L., Dudás, F. Ö., Bowring, S. A.,
+#' Higgins, J. A., ... & Eddy, M. P. (2010). The earliest Cambrian record of
+#' animals and ocean geochemical change. *GSA Bulletin*, 122(11-12), 1731-1774.
+#' \doi{10.1130/B30346.1}
+"anabarella"
+
+#' @title Eskimo Curlew Sightings
+#'
+#' @description
+#' Eskimo Curlew (*Numenius borealis*) sighting records from Jarić & Roberts
+#' (2014) based on data from Roberts et al. (2010).
+#'
+#' @format a `data.frame` with 2 columns and 49 rows.
+#'
+#' @note
+#' Sighting certainty values are the mean values of the reliability intervals
+#' (i.e. 0.85, 0.7, 0.25).
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Jarić, I., & Roberts, D. L. (2014). Accounting for observation reliability
+#' when inferring extinction based on sighting records. *Biodiversity and*
+#' *Conservation*, 23(11), 2801-2815. \doi{10.1007/s10531-014-0749-8}
+#'
+#' **Other References**
+#'
+#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
+#' reports of putatively extinct species and why it matters. *Conservation*
+#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
+"eskimo_curlew"
+
+#' @title Ivory-billed Woodpecker Sightings (Certain)
+#'
+#' @description
+#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
+#' Roberts et al. (2010).
+#'
+#' @format A numeric vector with 22 values.
+#'
+#' @note
+#' Only certain sightings are included.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
+#' reports of putatively extinct species and why it matters. *Conservation*
+#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
+"woodpecker1"
+
+#' @title Ivory-billed Woodpecker Sightings (Certain and Uncertain)
+#'
+#' @description
+#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
+#' Roberts et al. (2010).
+#'
+#' @format A `data.frame` with 2 columns and XX rows.
+#'
+#' @note
+#' Sightings are indicated as either certain (`certain = TRUE`) or uncertain
+#' (`certain = FALSE`).
+#'
+#' #' @references
+#' **Key Reference**
+#'
+#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
+#' reports of putatively extinct species and why it matters. *Conservation*
+#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
+"woodpecker2"
+
+
+
+
 

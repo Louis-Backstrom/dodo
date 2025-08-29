@@ -10,7 +10,7 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case  this sighting is removed from the record.
+#' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #' @param remove.first if `init.time` is the time of the first sighting, should
