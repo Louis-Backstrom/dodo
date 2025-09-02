@@ -52,3 +52,6 @@ when inferring extinction based on sighting records. \emph{Biodiversity and}
 Solow, A. R. (1993). Inferring Extinction from Sighting Data. \emph{Ecology},
 74(3), 962-964. \doi{10.2307/1940821}
 }
+\seealso{
+\code{\link[=JR14F1]{JR14F1()}}, \code{\link[=JR14F3]{JR14F3()}}, \code{\link[=JR14F4]{JR14F4()}}
+}

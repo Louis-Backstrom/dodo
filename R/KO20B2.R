@@ -29,6 +29,8 @@
 #' Inferring extinction year using a Bayesian approach. *Methods in Ecology*
 #' *and Evolution*, 11(8), 964-973. \doi{10.1111/2041-210x.13408}
 #'
+#' @seealso [KO20B1()]
+#'
 #' @export
 
 KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),

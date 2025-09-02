@@ -23,6 +23,8 @@
 #' sighting records that change in frequency over time. *Wildlife Biology*,
 #' 16(3), 267-275. \doi{10.2981/09-044}
 #'
+#' @seealso [JE10F2()]
+#'
 #' @export
 
 JE10F1 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {

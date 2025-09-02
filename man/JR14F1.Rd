@@ -45,3 +45,6 @@ Strauss, D., & Sadler, P. M. (1989). Classical Confidence Intervals and
 Bayesian Probability Estimates for Ends of Local Taxon Ranges. Mathematical
 Geology, 21(4), 411-421. \doi{10.1007/Bf00897326}
 }
+\seealso{
+\code{\link[=JR14F2]{JR14F2()}}, \code{\link[=JR14F3]{JR14F3()}}, \code{\link[=JR14F4]{JR14F4()}}
+}

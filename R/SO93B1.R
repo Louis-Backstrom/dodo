@@ -34,6 +34,8 @@
 #' Solow, A. R. (1993). Inferring Extinction from Sighting Data. *Ecology*,
 #' 74(3), 962-964. \doi{10.2307/1940821}
 #'
+#' @seealso [SO93F1()]
+#'
 #' @export
 
 SO93B1 <- function(records, alpha = 0.05, init.time = min(records),

@@ -32,3 +32,6 @@ Jarić, I., & Ebenhard, T. (2010). A method for inferring extinction based on
 sighting records that change in frequency over time. \emph{Wildlife Biology},
 16(3), 267-275. \doi{10.2981/09-044}
 }
+\seealso{
+\code{\link[=JE10F1]{JE10F1()}}
+}

@@ -45,3 +45,6 @@ Grimson, R. C., Aldrich, T. E., & Drane, J. W. (1992). Clustering in sparse
 data and an analysis of rhabdomyosarcoma incidence.
 \emph{Statistics in Medicine}, 11(6), 761-768. \doi{10.1002/sim.4780110607}
 }
+\seealso{
+\code{\link[=BU95F1]{BU95F1()}}, \code{\link[=BU95F2]{BU95F2()}}
+}

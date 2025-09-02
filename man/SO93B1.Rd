@@ -54,3 +54,6 @@ to be constant.
 Solow, A. R. (1993). Inferring Extinction from Sighting Data. \emph{Ecology},
 74(3), 962-964. \doi{10.2307/1940821}
 }
+\seealso{
+\code{\link[=SO93F1]{SO93F1()}}
+}

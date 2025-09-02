@@ -37,6 +37,8 @@
 #' data and an analysis of rhabdomyosarcoma incidence.
 #' *Statistics in Medicine*, 11(6), 761-768. \doi{10.1002/sim.4780110607}
 #'
+#' @seealso [BU95F1()], [BU95F2()]
+#'
 #' @export
 
 BU95F3 <- function(records) {

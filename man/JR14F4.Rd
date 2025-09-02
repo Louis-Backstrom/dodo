@@ -46,3 +46,6 @@ Significance of sighting rate in inferring extinction and threat.
 \emph{Conservation Biology}, 20(2), 562-567.
 \doi{10.1111/j.1523-1739.2006.00377.x}
 }
+\seealso{
+\code{\link[=JR14F1]{JR14F1()}}, \code{\link[=JR14F2]{JR14F2()}}, \code{\link[=JR14F3]{JR14F3()}}
+}

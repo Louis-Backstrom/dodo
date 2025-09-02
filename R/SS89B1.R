@@ -32,6 +32,8 @@
 #' Bayesian Probability Estimates for Ends of Local Taxon Ranges.
 #' *Mathematical Geology*, 21(4), 411-421. \doi{10.1007/Bf00897326}
 #'
+#' @seealso [SS89F1()]
+#'
 #' @export
 
 SS89B1 <- function(records, alpha = 0.05, t.max = max(records) * 2,

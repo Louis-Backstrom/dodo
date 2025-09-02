@@ -39,6 +39,8 @@
 #' to infer species extinctions: an evaluation of different methods. *Ecology*,
 #' 90(5), 1291-1300. \doi{10.1890/08-0316.1}
 #'
+#' @seealso [SS89B1()]
+#'
 #' @export
 
 SS89F1 <- function(records, alpha = 0.05) {

@@ -35,6 +35,8 @@
 #' Bayesian Probability Estimates for Ends of Local Taxon Ranges. Mathematical
 #' Geology, 21(4), 411-421. \doi{10.1007/Bf00897326}
 #'
+#' @seealso [JR14F2()], [JR14F3()], [JR14F4()]
+#'
 #' @export
 
 JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time)) {

@@ -36,6 +36,8 @@
 #' *Conservation Biology*, 20(2), 562-567.
 #' \doi{10.1111/j.1523-1739.2006.00377.x}
 #'
+#' @seealso [JR14F1()], [JR14F2()], [JR14F3()]
+#'
 #' @export
 
 JR14F4 <- function(records, alpha = 0.05, init.time = min(records$time)) {

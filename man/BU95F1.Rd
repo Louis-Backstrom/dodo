@@ -31,3 +31,6 @@ Burgman, M. A., Grimson, R. C., & Ferson, S. (1995). Inferring Threat from
 Scientific Collections. \emph{Conservation Biology}, 9(4), 923-928.
 \doi{0.1046/j.1523-1739.1995.09040923.x}
 }
+\seealso{
+\code{\link[=BU95F2]{BU95F2()}}, \code{\link[=BU95F3]{BU95F3()}}
+}

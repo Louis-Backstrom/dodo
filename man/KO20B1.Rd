@@ -45,3 +45,6 @@ Kodikara, S., Demirhan, H., Wang, Y., Solow, A., & Stone, L. (2020).
 Inferring extinction year using a Bayesian approach. \emph{Methods in Ecology}
 \emph{and Evolution}, 11(8), 964-973. \doi{10.1111/2041-210x.13408}
 }
+\seealso{
+\code{\link[=KO20B2]{KO20B2()}}
+}

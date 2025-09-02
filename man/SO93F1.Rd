@@ -58,3 +58,6 @@ Rivadeneira, M. M., Hunt, G., & Roy, K. (2009). The use of sighting records
 to infer species extinctions: an evaluation of different methods. \emph{Ecology},
 90(5), 1291-1300. \doi{10.1890/08-0316.1}
 }
+\seealso{
+\code{\link[=SO93B1]{SO93B1()}}
+}
