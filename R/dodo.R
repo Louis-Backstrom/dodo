@@ -1,0 +1,34 @@
+#' dodo: Extinction Models in R
+#'
+#' dodo implements a selection of published extinction models.
+#'
+#' @section Model Functions:
+#' * [SL88F1()] Springer & Lilje's 1988 "Broken Stick" model.
+#' * [SS89F1()] Strauss & Sadler's 1989 "Classical" model.
+#' * [SS89B1()] Strauss & Sadler's 1989 "Bayesian" model.
+#' * [SO93F1()] Solow's 1993 "Classical" model.
+#' * [SO93B1()] Solow's 1993 "Bayesian" model.
+#' * [SO93F2()] Solow's 1993 "Declining" model.
+#' * [MA94F1()] Marshall's 1994 "Distribution-free" model.
+#' * [BU95F1()] Burgman et al.'s 1995 "Discrete-time" model.
+#' * [BU95F2()] Burgman et al.'s 1995 "Runs Test" model.
+#' * [BU95F3()] Burgman et al.'s 1995 "Empty Cells" model.
+#' * [MC98F1()] McCarthy's 1998 "Non-random" model.
+#' * [MC99F1()] McFarlane's 1999 "Partial Solow" model.
+#' * [RS03F1()] Roberts & Solow's 2003 "Optimal Linear Estimation" model.
+#' * [SR03F1()] Solow & Roberts' 2003 "Non-parametric" model.
+#' * [MC06F1()] McInerny et al.'s 2006 "Sighting Rate" model.
+#' * [JE10F1()] Jarić & Ebenhard's 2010 "Stationary" model.
+#' * [JE10F2()] Jarić & Ebenhard's 2010 "Non-stationary" model.
+#' * [BR12F1()] Bradshaw et al.'s 2012 "Inverse-weighted McInerny" model.
+#' * [CB14B1()] Caley & Barry's 2014 "Constant" model.
+#' * [CB14B2()] Caley & Barry's 2014 "Non-constant" model.
+#' * [JR14F1()] Jarić & Roberts' 2014 "Strauss & Sadler" model.
+#' * [JR14F2()] Jarić & Roberts' 2014 "Solow" model.
+#' * [JR14F4()] Jarić & Roberts' 2014 "McInerny" model.
+#' * [KO20B1()] Kodikara et al.'s 2020 "Certain-only" model.
+#' * [KO20B2()] Kodikara et al.'s 2020 "Uncertain" model.
+#' * [KO21B1()] Kodikara et al.'s 2021 "Change-point" model.
+#'
+#' @name dodo
+"_PACKAGE"

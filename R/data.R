@@ -122,7 +122,7 @@
 #'
 #' Roberts, D. L., & Solow, A. R. (2003). Flightless birds: when did the dodo
 #' become extinct? *Nature*, 426(6964), 245. \doi{10.1038/426245a}
-"dodo"
+"dodos"
 
 #' @title Alaskan Mammoth Fossil Record
 #'
@@ -241,7 +241,7 @@
 #' Sightings are indicated as either certain (`certain = TRUE`) or uncertain
 #' (`certain = FALSE`).
 #'
-#' #' @references
+#' @references
 #' **Key Reference**
 #'
 #' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
@@ -249,6 +249,21 @@
 #' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
 "woodpecker2"
 
+#' @title Tasmanian Fox Carcass Recoveries
+#'
+#' @description
+#' European Red Fox (*Vulpes vulpes*) carcass recovery dates from Caley & Barry
+#' (2014).
+#'
+#' @format A numeric vector with 4 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
+#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
+#' \doi{10.1371/journal.pone.0095857}
+"fox"
 
 
 

@@ -20,8 +20,8 @@ burgmanf1b <- data.frame(
 )
 usethis::use_data(burgmanf1b, overwrite = TRUE)
 
-dodo <- c(1598, 1601, 1602, 1607, 1611, 1628, 1628, 1631, 1638, 1662)
-usethis::use_data(dodo, overwrite = TRUE)
+dodos <- c(1598, 1601, 1602, 1607, 1611, 1628, 1628, 1631, 1638, 1662)
+usethis::use_data(dodos, overwrite = TRUE)
 
 mammoth <- -c(11.50, 11.54, 11.91, 12.12, 12.19, 12.34, 12.43, 12.44, 12.48,
               12.49, 12.51, 12.58, 12.68, 12.88, 13.06, 13.23, 13.29, 13.34,
@@ -63,3 +63,6 @@ woodpecker2 <- data.frame(
   certain = c(rep(TRUE, 22), rep(FALSE, 46))
 )
 usethis::use_data(woodpecker2, overwrite = TRUE)
+
+fox <- c(2001, 2003, 2005, 2006)
+usethis::use_data(fox, overwrite = TRUE)

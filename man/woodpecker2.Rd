@@ -17,8 +17,8 @@ Roberts et al. (2010).
 \note{
 Sightings are indicated as either certain (\code{certain = TRUE}) or uncertain
 (\code{certain = FALSE}).
-
-#' @references
+}
+\references{
 \strong{Key Reference}
 
 Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous

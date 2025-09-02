@@ -2,7 +2,7 @@
 % Please edit documentation in R/SR03F1.R
 \name{SR03F1}
 \alias{SR03F1}
-\title{Solow & Robert's (2003) "Non-parametric" Model}
+\title{Solow & Roberts' (2003) "Non-parametric" Model}
 \usage{
 SR03F1(
   records,

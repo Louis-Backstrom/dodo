@@ -1,4 +1,4 @@
-#' Solow & Robert's (2003) "Non-parametric" Model
+#' Solow & Roberts' (2003) "Non-parametric" Model
 #'
 #' @description
 #' Equation 4 from Solow & Roberts 2003 and Equations 9-11 from Solow 2005.
