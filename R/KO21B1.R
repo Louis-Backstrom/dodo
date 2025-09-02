@@ -118,7 +118,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
 
   sink()
 
-  unlink("model_m2.txt")
+  unlink("model_pois.txt")
 
   # Extract posteriors
   posterior <- as.data.frame(coda:::as.matrix.mcmc.list(codaSamplespois))
