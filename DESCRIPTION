@@ -1,7 +1,7 @@
 Package: dodo
 Type: Package
 Title: Extinction Models in R
-Version: 0.4.3
+Version: 0.4.4
 Authors@R: c(
     person(
       "Louis", "Backstrom",
@@ -17,3 +17,6 @@ RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Depends: 
     R (>= 3.5)
+Imports:
+    coda,
+    rjags
