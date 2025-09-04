@@ -3,7 +3,7 @@
 \docType{data}
 \name{eskimo_curlew}
 \alias{eskimo_curlew}
-\title{Eskimo Curlew Sightings}
+\title{Eskimo Curlew sightings}
 \format{
 a \code{data.frame} with 2 columns and 49 rows.
 }

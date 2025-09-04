@@ -3,7 +3,7 @@
 \docType{data}
 \name{burgmanf1b}
 \alias{burgmanf1b}
-\title{Example Sightings from Burgman et al.}
+\title{Example sightings from Burgman et al.}
 \format{
 a \code{data.frame} with 2 columns and 16 rows.
 }

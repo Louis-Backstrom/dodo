@@ -1,4 +1,4 @@
-#' @title Solow's (1993) "Classical" Model
+#' @title Solow's (1993) "Classical" model
 #'
 #' @description
 #' Equation 2 from Solow 1993 (Equation 3 from Solow 2005), and Equations 4

@@ -3,7 +3,7 @@
 \docType{data}
 \name{ferret1}
 \alias{ferret1}
-\title{Black-footed Ferret Sightings (Continuous)}
+\title{Black-footed Ferret sightings (continuous)}
 \format{
 A numeric vector with 28 values.
 }

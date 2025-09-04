@@ -1,4 +1,4 @@
-#' @title McCarthy's (1998) "Partial Solow" Model
+#' @title McCarthy's (1998) "Partial Solow" model
 #'
 #' @description
 #' Equation 2 from McCarthy 1998. Estimates a p-value for testing

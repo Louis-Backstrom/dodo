@@ -1,4 +1,4 @@
-#' Jarić & Ebenhard's (2010) "Non-stationary" Model
+#' Jarić & Ebenhard's (2010) "Non-stationary" model
 #'
 #' @description
 #' Equation 6 from Jarić & Ebenhard 2010. Estimates a p-value for testing

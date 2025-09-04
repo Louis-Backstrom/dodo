@@ -2,7 +2,7 @@
 % Please edit documentation in R/BU95F3.R
 \name{BU95F3}
 \alias{BU95F3}
-\title{Burgman et al.'s (1995) "Empty Cells" Model}
+\title{Burgman et al.'s (1995) "Empty Cells" model}
 \usage{
 BU95F3(records)
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{gerygone}
 \alias{gerygone}
-\title{Lord Howe Gerygone Sightings}
+\title{Lord Howe Gerygone sightings}
 \format{
 a \code{data.frame} with 3 columns and 236 rows.
 }
@@ -17,7 +17,7 @@ Frequency-based collection-effort sighting record of the Lord Howe Gerygone
 \note{
 Includes all observations of birds within 10km of Lord Howe Island with
 valid spatial coordinates. The index of collection effort is the total
-number of birds recorded in that year.
+number of bird species recorded in that year.
 }
 \references{
 \strong{Key Reference}

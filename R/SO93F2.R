@@ -1,4 +1,4 @@
-#' @title Solow's (1993) "Declining" Model
+#' @title Solow's (1993) "Declining" model
 #'
 #' @description
 #' Equations 3 and 4 from Solow 1993 (Equation 7 from Solow 2005), and

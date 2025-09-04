@@ -3,9 +3,9 @@
 \docType{data}
 \name{woodpecker2}
 \alias{woodpecker2}
-\title{Ivory-billed Woodpecker Sightings (Certain and Uncertain)}
+\title{Ivory-billed Woodpecker sightings (certain and uncertain)}
 \format{
-A \code{data.frame} with 2 columns and XX rows.
+A \code{data.frame} with 2 columns and 68 rows.
 }
 \usage{
 woodpecker2

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SS89B1.R
 \name{SS89B1}
 \alias{SS89B1}
-\title{Strauss & Sadler's (1989) "Bayesian" Model}
+\title{Strauss & Sadler's (1989) "Bayesian" model}
 \usage{
 SS89B1(
   records,

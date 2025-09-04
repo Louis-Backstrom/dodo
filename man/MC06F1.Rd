@@ -2,7 +2,7 @@
 % Please edit documentation in R/MC06F1.R
 \name{MC06F1}
 \alias{MC06F1}
-\title{McInerny et al.'s (2006) "Sighting Rate" Model}
+\title{McInerny et al.'s (2006) "Sighting Rate" model}
 \usage{
 MC06F1(
   records,

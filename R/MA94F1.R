@@ -1,4 +1,4 @@
-#' @title Marshall's (1994) "Distribution-free" Model
+#' @title Marshall's (1994) "Distribution-free" model
 #'
 #' @description
 #' Equations 1 and 2 from Marshall 1994. Estimates a one-tailed

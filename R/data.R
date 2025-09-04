@@ -1,4 +1,4 @@
-#' @title Caribbean Monk Seal Sightings
+#' @title Caribbean Monk Seal sightings
 #'
 #' @description
 #' Caribbean Monk Seal (*Monachus tropicalis*) sighting records from Solow
@@ -19,7 +19,7 @@
 #' \doi{10.1111/j.1748-7692.1986.tb00028.x}
 "monk_seal"
 
-#' @title Black-footed Ferret Sightings (Continuous)
+#' @title Black-footed Ferret sightings (continuous)
 #'
 #' @description
 #' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
@@ -37,7 +37,7 @@
 #' *Journal of Mathematical Biology*, 32(1), 79-82. \doi{10.1007/Bf00160376}
 "ferret1"
 
-#' @title Black-footed Ferret Sightings (Discrete)
+#' @title Black-footed Ferret sightings (discrete)
 #'
 #' @description
 #' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
@@ -52,7 +52,7 @@
 #' *Journal of Mathematical Biology*, 32(1), 79-82. \doi{10.1007/Bf00160376}
 "ferret2"
 
-#' @title *Metrarabdotos* n. sp. 5 Sightings
+#' @title *Metrarabdotos* n. sp. 5 sightings
 #'
 #' @description
 #' Stratigraphic intervals for *Metrarabdotos* n. sp. 5 from Marshall (1994)
@@ -71,7 +71,7 @@
 #' horizons. *Paleobiology*, 20(4), 459-469. \doi{10.1017/S0094837300012938}
 "metrarabdotos"
 
-#' @title Example Sightings from Burgman et al.
+#' @title Example sightings from Burgman et al.
 #'
 #' @description
 #' Example frequency-based sighting records from Figure 1b in Burgman et al.
@@ -86,7 +86,7 @@
 #' \doi{0.1046/j.1523-1739.1995.09040923.x}
 "burgmanf1b"
 
-#' @title Lord Howe Gerygone Sightings
+#' @title Lord Howe Gerygone sightings
 #'
 #' @description
 #' Frequency-based collection-effort sighting record of the Lord Howe Gerygone
@@ -97,7 +97,7 @@
 #' @note
 #' Includes all observations of birds within 10km of Lord Howe Island with
 #' valid spatial coordinates. The index of collection effort is the total
-#' number of birds recorded in that year.
+#' number of bird species recorded in that year.
 #'
 #' @references
 #' **Key Reference**
@@ -110,7 +110,7 @@
 #' \doi{10.1016/S0006-3207(97)00048-7}
 "gerygone"
 
-#' @title Dodo Sightings
+#' @title Dodo sightings
 #'
 #' @description
 #' Dodo (*Raphus cucullatus*) sighting records from Roberts & Solow (2003).
@@ -124,7 +124,7 @@
 #' become extinct? *Nature*, 426(6964), 245. \doi{10.1038/426245a}
 "dodos"
 
-#' @title Alaskan Mammoth Fossil Record
+#' @title Alaskan Mammoth fossil record
 #'
 #' @description
 #' Woolly Mammoth (*Mammuthus primigenius*) dated fossil records from Solow et
@@ -156,7 +156,7 @@
 #' *Science Reviews*, 33, 14-19. \doi{10.1016/j.quascirev.2011.11.021}
 "mammoth"
 
-#' @title *Anabarella* Fossil Record
+#' @title *Anabarella* fossil record
 #'
 #' @description
 #' Siberian and Mongolian records of Cambrian *Anabarella* sp. from Wang et al.
@@ -184,7 +184,7 @@
 #' \doi{10.1130/B30346.1}
 "anabarella"
 
-#' @title Eskimo Curlew Sightings
+#' @title Eskimo Curlew sightings
 #'
 #' @description
 #' Eskimo Curlew (*Numenius borealis*) sighting records from Jarić & Roberts
@@ -210,7 +210,7 @@
 #' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
 "eskimo_curlew"
 
-#' @title Ivory-billed Woodpecker Sightings (Certain)
+#' @title Ivory-billed Woodpecker sightings (certain)
 #'
 #' @description
 #' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
@@ -229,13 +229,13 @@
 #' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
 "woodpecker1"
 
-#' @title Ivory-billed Woodpecker Sightings (Certain and Uncertain)
+#' @title Ivory-billed Woodpecker sightings (certain and uncertain)
 #'
 #' @description
 #' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
 #' Roberts et al. (2010).
 #'
-#' @format A `data.frame` with 2 columns and XX rows.
+#' @format A `data.frame` with 2 columns and 68 rows.
 #'
 #' @note
 #' Sightings are indicated as either certain (`certain = TRUE`) or uncertain
@@ -249,7 +249,7 @@
 #' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
 "woodpecker2"
 
-#' @title Tasmanian Fox Carcass Recoveries
+#' @title Tasmanian Fox carcass recoveries
 #'
 #' @description
 #' European Red Fox (*Vulpes vulpes*) carcass recovery dates from Caley & Barry

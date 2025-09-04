@@ -1,4 +1,4 @@
-#' @title Jarić & Roberts' (2014) "McInerny et al. 2006" Model
+#' @title Jarić & Roberts' (2014) "McInerny et al. 2006" model
 #'
 #' @description
 #' Modification of the confidence interval presented by McInerny et al. 2006

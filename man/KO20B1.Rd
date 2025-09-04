@@ -2,7 +2,7 @@
 % Please edit documentation in R/KO20B1.R
 \name{KO20B1}
 \alias{KO20B1}
-\title{Kodikara et al.'s (2020) "Certain-only" Model}
+\title{Kodikara et al.'s (2020) "Certain-only" model}
 \usage{
 KO20B1(
   records,

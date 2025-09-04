@@ -2,7 +2,7 @@
 % Please edit documentation in R/JR14F2.R
 \name{JR14F2}
 \alias{JR14F2}
-\title{Jarić & Roberts' (2014) "Solow 1993a" Model}
+\title{Jarić & Roberts' (2014) "Solow 1993a" model}
 \usage{
 JR14F2(
   records,

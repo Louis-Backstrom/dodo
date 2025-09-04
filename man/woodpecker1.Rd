@@ -3,7 +3,7 @@
 \docType{data}
 \name{woodpecker1}
 \alias{woodpecker1}
-\title{Ivory-billed Woodpecker Sightings (Certain)}
+\title{Ivory-billed Woodpecker sightings (certain)}
 \format{
 A numeric vector with 22 values.
 }

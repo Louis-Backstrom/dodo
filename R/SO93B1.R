@@ -1,4 +1,4 @@
-#' @title Solow's (1993) "Bayesian" Model
+#' @title Solow's (1993) "Bayesian" model
 #'
 #' @description
 #' Equation 3 and others from Solow 1993. Estimates a Bayes factor and

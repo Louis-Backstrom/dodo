@@ -3,7 +3,7 @@
 \docType{data}
 \name{fox}
 \alias{fox}
-\title{Tasmanian Fox Carcass Recoveries}
+\title{Tasmanian Fox carcass recoveries}
 \format{
 A numeric vector with 4 values.
 }

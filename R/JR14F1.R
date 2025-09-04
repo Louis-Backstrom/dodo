@@ -1,4 +1,4 @@
-#' @title Jarić & Roberts' (2014) "Strauss & Sadler 1989" Model
+#' @title Jarić & Roberts' (2014) "Strauss & Sadler 1989" model
 #'
 #' @description
 #' Modification of the classical confidence interval presented by Strauss &

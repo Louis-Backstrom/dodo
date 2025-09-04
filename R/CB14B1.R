@@ -1,4 +1,4 @@
-#' @title Caley & Barry's (2014) "Constant" Model
+#' @title Caley & Barry's (2014) "Constant" model
 #'
 #' @description
 #' Constant population model from Caley & Barry 2014. Estimates a posterior

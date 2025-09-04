@@ -1,4 +1,4 @@
-#' @title Jarić & Roberts' (2014) "Solow 1993a" Model
+#' @title Jarić & Roberts' (2014) "Solow 1993a" model
 #'
 #' @description
 #' Equations 7-10 from Jarić & Roberts 2014. Estimates a p-value for testing

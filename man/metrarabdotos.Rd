@@ -3,7 +3,7 @@
 \docType{data}
 \name{metrarabdotos}
 \alias{metrarabdotos}
-\title{\emph{Metrarabdotos} n. sp. 5 Sightings}
+\title{\emph{Metrarabdotos} n. sp. 5 sightings}
 \format{
 A numeric vector with 11 values.
 }

@@ -11,32 +11,32 @@ dodo implements a selection of published extinction models.
 \section{Model Functions}{
 
 \itemize{
-\item \code{\link[=SL88F1]{SL88F1()}} Springer & Lilje's 1988 "Broken Stick" model.
-\item \code{\link[=SS89F1]{SS89F1()}} Strauss & Sadler's 1989 "Classical" model.
-\item \code{\link[=SS89B1]{SS89B1()}} Strauss & Sadler's 1989 "Bayesian" model.
-\item \code{\link[=SO93F1]{SO93F1()}} Solow's 1993 "Classical" model.
-\item \code{\link[=SO93B1]{SO93B1()}} Solow's 1993 "Bayesian" model.
-\item \code{\link[=SO93F2]{SO93F2()}} Solow's 1993 "Declining" model.
-\item \code{\link[=MA94F1]{MA94F1()}} Marshall's 1994 "Distribution-free" model.
-\item \code{\link[=BU95F1]{BU95F1()}} Burgman et al.'s 1995 "Discrete-time" model.
-\item \code{\link[=BU95F2]{BU95F2()}} Burgman et al.'s 1995 "Runs Test" model.
-\item \code{\link[=BU95F3]{BU95F3()}} Burgman et al.'s 1995 "Empty Cells" model.
-\item \code{\link[=MC98F1]{MC98F1()}} McCarthy's 1998 "Non-random" model.
-\item \code{\link[=MC99F1]{MC99F1()}} McFarlane's 1999 "Partial Solow" model.
-\item \code{\link[=RS03F1]{RS03F1()}} Roberts & Solow's 2003 "Optimal Linear Estimation" model.
-\item \code{\link[=SR03F1]{SR03F1()}} Solow & Roberts' 2003 "Non-parametric" model.
-\item \code{\link[=MC06F1]{MC06F1()}} McInerny et al.'s 2006 "Sighting Rate" model.
-\item \code{\link[=JE10F1]{JE10F1()}} Jarić & Ebenhard's 2010 "Stationary" model.
-\item \code{\link[=JE10F2]{JE10F2()}} Jarić & Ebenhard's 2010 "Non-stationary" model.
-\item \code{\link[=BR12F1]{BR12F1()}} Bradshaw et al.'s 2012 "Inverse-weighted McInerny" model.
-\item \code{\link[=CB14B1]{CB14B1()}} Caley & Barry's 2014 "Constant" model.
-\item \code{\link[=CB14B2]{CB14B2()}} Caley & Barry's 2014 "Non-constant" model.
-\item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' 2014 "Strauss & Sadler" model.
-\item \code{\link[=JR14F2]{JR14F2()}} Jarić & Roberts' 2014 "Solow" model.
-\item \code{\link[=JR14F4]{JR14F4()}} Jarić & Roberts' 2014 "McInerny" model.
-\item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s 2020 "Certain-only" model.
-\item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s 2020 "Uncertain" model.
-\item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s 2021 "Change-point" model.
+\item \code{\link[=SL88F1]{SL88F1()}} Springer & Lilje's (1988) "Broken Stick" model.
+\item \code{\link[=SS89F1]{SS89F1()}} Strauss & Sadler's (1989) "Classical" model.
+\item \code{\link[=SS89B1]{SS89B1()}} Strauss & Sadler's (1989) "Bayesian" model.
+\item \code{\link[=SO93F1]{SO93F1()}} Solow's (1993) "Classical" model.
+\item \code{\link[=SO93B1]{SO93B1()}} Solow's (1993) "Bayesian" model.
+\item \code{\link[=SO93F2]{SO93F2()}} Solow's (1993) "Declining" model.
+\item \code{\link[=MA94F1]{MA94F1()}} Marshall's (1994) "Distribution-free" model.
+\item \code{\link[=BU95F1]{BU95F1()}} Burgman et al.'s (1995) "Discrete-time" model.
+\item \code{\link[=BU95F2]{BU95F2()}} Burgman et al.'s (1995) "Runs Test" model.
+\item \code{\link[=BU95F3]{BU95F3()}} Burgman et al.'s (1995) "Empty Cells" model.
+\item \code{\link[=MC98F1]{MC98F1()}} McCarthy's (1998) "Non-random" model.
+\item \code{\link[=MC99F1]{MC99F1()}} McFarlane's (1999) "Partial Solow" model.
+\item \code{\link[=RS03F1]{RS03F1()}} Roberts & Solow's (2003) "Optimal Linear Estimation" model.
+\item \code{\link[=SR03F1]{SR03F1()}} Solow & Roberts' (2003) "Non-parametric" model.
+\item \code{\link[=MC06F1]{MC06F1()}} McInerny et al.'s (2006) "Sighting Rate" model.
+\item \code{\link[=JE10F1]{JE10F1()}} Jarić & Ebenhard's (2010) "Stationary" model.
+\item \code{\link[=JE10F2]{JE10F2()}} Jarić & Ebenhard's (2010) "Non-stationary" model.
+\item \code{\link[=BR12F1]{BR12F1()}} Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.
+\item \code{\link[=CB14B1]{CB14B1()}} Caley & Barry's (2014) "Constant" model.
+\item \code{\link[=CB14B2]{CB14B2()}} Caley & Barry's (2014) "Non-constant" model.
+\item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' (2014) "Strauss & Sadler" model.
+\item \code{\link[=JR14F2]{JR14F2()}} Jarić & Roberts' (2014) "Solow" model.
+\item \code{\link[=JR14F4]{JR14F4()}} Jarić & Roberts' (2014) "McInerny" model.
+\item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s (2020) "Certain-only" model.
+\item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s (2020) "Uncertain" model.
+\item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s (2021) "Change-point" model.
 }
 }
 

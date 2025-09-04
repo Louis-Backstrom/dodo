@@ -1,4 +1,4 @@
-#' @title Kodikara et al.'s (2021) "Change-point" Model
+#' @title Kodikara et al.'s (2021) "Change-point" model
 #'
 #' @description
 #' The model from Kodikara et al. 2021. Estimates a posterior probability that
@@ -141,7 +141,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
     test.time = test.time,
     p.extant = p.extant,
     estimate = estimate,
-    conf.int = c(cred.int.lower, cred.int.upper)
+    cred.int = c(cred.int.lower, cred.int.upper)
   )
 
   return(output)

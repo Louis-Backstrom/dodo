@@ -2,7 +2,7 @@
 % Please edit documentation in R/RS03F1.R
 \name{RS03F1}
 \alias{RS03F1}
-\title{Roberts & Solow's (2003) "Optimal Linear Estimation" Model}
+\title{Roberts & Solow's (2003) "Optimal Linear Estimation" model}
 \usage{
 RS03F1(
   records,

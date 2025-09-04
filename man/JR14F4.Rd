@@ -2,7 +2,7 @@
 % Please edit documentation in R/JR14F4.R
 \name{JR14F4}
 \alias{JR14F4}
-\title{Jarić & Roberts' (2014) "McInerny et al. 2006" Model}
+\title{Jarić & Roberts' (2014) "McInerny et al. 2006" model}
 \usage{
 JR14F4(records, alpha = 0.05, init.time = min(records$time))
 }

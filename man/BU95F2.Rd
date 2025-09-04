@@ -2,7 +2,7 @@
 % Please edit documentation in R/BU95F2.R
 \name{BU95F2}
 \alias{BU95F2}
-\title{Burgman et al.'s (1995) "Runs Test" Model}
+\title{Burgman et al.'s (1995) "Runs Test" model}
 \usage{
 BU95F2(records)
 }

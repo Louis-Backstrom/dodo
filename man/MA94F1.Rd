@@ -2,7 +2,7 @@
 % Please edit documentation in R/MA94F1.R
 \name{MA94F1}
 \alias{MA94F1}
-\title{Marshall's (1994) "Distribution-free" Model}
+\title{Marshall's (1994) "Distribution-free" model}
 \usage{
 MA94F1(records, alpha = 0.05, gamma = 0.1)
 }

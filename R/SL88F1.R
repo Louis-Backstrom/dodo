@@ -1,4 +1,4 @@
-#' @title Springer & Lilje's (1988) "Broken Stick" Model
+#' @title Springer & Lilje's (1988) "Broken Stick" model
 #'
 #' @description
 #' Equation 3 from Springer & Lilje 1988. Estimates a one-tailed

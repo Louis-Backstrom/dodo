@@ -1,4 +1,4 @@
-#' @title Kodikara et al.'s (2020) "Uncertain" Model
+#' @title Kodikara et al.'s (2020) "Uncertain" model
 #'
 #' @description
 #' Model 2 from Kodikara et al. 2020. Estimates a posterior probability that
@@ -81,7 +81,7 @@ KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
     test.time = test.time,
     p.extant = p.extant,
     estimate = estimate,
-    conf.int = c(cred.int.lower, cred.int.upper)
+    cred.int = c(cred.int.lower, cred.int.upper)
   )
 
   return(output)

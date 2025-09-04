@@ -2,7 +2,7 @@
 % Please edit documentation in R/SO93B1.R
 \name{SO93B1}
 \alias{SO93B1}
-\title{Solow's (1993) "Bayesian" Model}
+\title{Solow's (1993) "Bayesian" model}
 \usage{
 SO93B1(
   records,

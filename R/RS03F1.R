@@ -1,4 +1,4 @@
-#' Roberts & Solow's (2003) "Optimal Linear Estimation" Model
+#' Roberts & Solow's (2003) "Optimal Linear Estimation" model
 #'
 #' @description
 #' Equations from Roberts & Solow 2003 (Equations 12-18 from Solow 2005).

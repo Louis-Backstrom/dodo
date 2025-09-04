@@ -1,4 +1,4 @@
-#' Bradshaw et al.'s (2012) "Inverse-weighted McInerny" Model
+#' Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model
 #'
 #' @description
 #' Equation 4 from Bradshaw et al. 2012. Estimates a point estimate on the time
@@ -37,7 +37,7 @@
 BR12F1 <- function(records, alpha = 0.05) {
 
   # Sort records
-  records <- sort(records)
+  records <- sort(records, decreasing = T)
 
   # Determine number of records
   n <- length(records)
@@ -58,8 +58,8 @@ BR12F1 <- function(records, alpha = 0.05) {
 
   # Output
   output <- list(
-    records = records,
-    alpha = 0.05,
+    records = sort(records),
+    alpha = alpha,
     estimate = estimate
   )
 

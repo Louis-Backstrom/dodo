@@ -2,7 +2,7 @@
 % Please edit documentation in R/SS89F1.R
 \name{SS89F1}
 \alias{SS89F1}
-\title{Strauss & Sadler's (1989) "Classical" Model}
+\title{Strauss & Sadler's (1989) "Classical" model}
 \usage{
 SS89F1(records, alpha = 0.05)
 }

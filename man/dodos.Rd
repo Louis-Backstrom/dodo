@@ -3,7 +3,7 @@
 \docType{data}
 \name{dodos}
 \alias{dodos}
-\title{Dodo Sightings}
+\title{Dodo sightings}
 \format{
 A numeric vector with 10 values.
 }

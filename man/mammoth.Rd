@@ -3,7 +3,7 @@
 \docType{data}
 \name{mammoth}
 \alias{mammoth}
-\title{Alaskan Mammoth Fossil Record}
+\title{Alaskan Mammoth fossil record}
 \format{
 A numeric vector with 25 values.
 }

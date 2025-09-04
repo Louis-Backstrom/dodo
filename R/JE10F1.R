@@ -1,4 +1,4 @@
-#' Jarić & Ebenhard's (2010) "Stationary" Model
+#' Jarić & Ebenhard's (2010) "Stationary" model
 #'
 #' @description
 #' Equation 4 from Jarić & Ebenhard 2010. Estimates a p-value for testing

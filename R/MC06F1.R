@@ -1,4 +1,4 @@
-#' McInerny et al.'s (2006) "Sighting Rate" Model
+#' McInerny et al.'s (2006) "Sighting Rate" model
 #'
 #' @description
 #' Equation 2 from McInerny et al. 2006. Estimates a p-value for testing

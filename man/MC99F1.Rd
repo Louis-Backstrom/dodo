@@ -2,7 +2,7 @@
 % Please edit documentation in R/MC99F1.R
 \name{MC99F1}
 \alias{MC99F1}
-\title{McFarlane's (1999) "Median Gap" Model}
+\title{McFarlane's (1999) "Median Gap" model}
 \usage{
 MC99F1(records, alpha = 0.05)
 }

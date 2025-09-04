@@ -3,7 +3,7 @@
 \docType{data}
 \name{ferret2}
 \alias{ferret2}
-\title{Black-footed Ferret Sightings (Discrete)}
+\title{Black-footed Ferret sightings (discrete)}
 \format{
 A \code{data.frame} with 2 columns and 21 rows.
 }

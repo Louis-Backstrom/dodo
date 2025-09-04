@@ -1,4 +1,4 @@
-#' @title Caley & Barry's (2014) "Non-constant" Model
+#' @title Caley & Barry's (2014) "Non-constant" model
 #'
 #' @description
 #' Non-constant population model from Caley & Barry 2014. Estimates a posterior

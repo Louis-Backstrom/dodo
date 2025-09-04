@@ -2,7 +2,7 @@
 % Please edit documentation in R/SO93F2.R
 \name{SO93F2}
 \alias{SO93F2}
-\title{Solow's (1993) "Declining" Model}
+\title{Solow's (1993) "Declining" model}
 \usage{
 SO93F2(
   records,

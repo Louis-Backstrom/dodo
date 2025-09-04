@@ -3,7 +3,7 @@
 \docType{data}
 \name{monk_seal}
 \alias{monk_seal}
-\title{Caribbean Monk Seal Sightings}
+\title{Caribbean Monk Seal sightings}
 \format{
 A numeric vector with 5 values.
 }

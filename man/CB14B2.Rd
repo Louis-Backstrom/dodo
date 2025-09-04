@@ -2,7 +2,7 @@
 % Please edit documentation in R/CB14B2.R
 \name{CB14B2}
 \alias{CB14B2}
-\title{Caley & Barry's (2014) "Non-constant" Model}
+\title{Caley & Barry's (2014) "Non-constant" model}
 \usage{
 CB14B2(
   records,

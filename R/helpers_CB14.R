@@ -1,4 +1,4 @@
-#' @title Constant Population Function from Caley & Barry 2014
+#' @title Constant population function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S1.R).
@@ -61,7 +61,7 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
   return(result)
 }
 
-#' @title Impute Population Function from Caley & Barry 2014
+#' @title Impute population function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S1.R).
@@ -98,7 +98,7 @@ impute <- function(phi, lambda, periods) {
   return(answer)
 }
 
-#' @title sim.N Function from Caley & Barry 2014
+#' @title sim.N function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -132,7 +132,7 @@ sim.N <- function(pgr, time, N0) {
 
 }
 
-#' @title Logit Function from Caley & Barry 2014
+#' @title Logit function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -156,7 +156,7 @@ logit <- function(x) {
 
 }
 
-#' @title Inverse Logit Function from Caley & Barry 2014
+#' @title Inverse logit function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -180,7 +180,7 @@ ilogit <- function(x) {
 
 }
 
-#' @title lam.gen Function from Caley & Barry 2014
+#' @title lam.gen function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -205,7 +205,7 @@ lam.gen <- function(delta, N) {
 
 }
 
-#' @title phi.gen Function from Caley & Barry 2014
+#' @title phi.gen function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -237,7 +237,7 @@ phi.gen <- function(eps0, eps1, N) {
 
 }
 
-#' @title correct.negative Function from Caley & Barry 2014
+#' @title correct.negative function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -262,7 +262,7 @@ correct.negative <- function(x) {
 
 }
 
-#' @title impute.TE Function from Caley & Barry 2014
+#' @title impute.TE function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -300,7 +300,7 @@ impute.TE <- function(p.cease) {
 
 }
 
-#' @title calc.pars Function (Non-constant Population) from Caley & Barry 2014
+#' @title calc.pars function (non-constant population) from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -382,7 +382,7 @@ calc.pars <- function(p, y) {
 
 }
 
-#' @title calc.pars.given.TE Function (Non-constant Population) from Caley &
+#' @title calc.pars.given.TE function (non-constant population) from Caley &
 #' Barry 2014
 #'
 #' @description
@@ -429,7 +429,7 @@ calc.pars.given.TE <- function(p, TE, y) {
 
 }
 
-#' @title Log-likelihood Function for lambda from Caley & Barry 2014
+#' @title Log-likelihood function for lambda from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -454,7 +454,7 @@ lnL.lam <- function(lams, ys){
 
 }
 
-#' @title Log-likelihood Function for phi from Caley & Barry 2014
+#' @title Log-likelihood function for phi from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -490,7 +490,7 @@ N0.prior <- function(x) {
 
 }
 
-#' @title Log N0 Prior Function from Caley & Barry 2014
+#' @title Log N0 prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -514,7 +514,7 @@ lnL.N0.prior <- function(x) {
 
 }
 
-#' @title pgr Prior Function from Caley & Barry 2014
+#' @title pgr prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -538,7 +538,7 @@ pgr.prior <- function(x) {
 
 }
 
-#' @title Log pgr Prior Function from Caley & Barry 2014
+#' @title Log pgr prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -562,7 +562,7 @@ lnL.pgr.prior <- function(x) {
 
 }
 
-#' @title delta Prior Function from Caley & Barry 2014
+#' @title delta prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -586,7 +586,7 @@ delta.prior <- function(x) {
 
 }
 
-#' @title Log delta Prior Function from Caley & Barry 2014
+#' @title Log delta prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -610,7 +610,7 @@ lnL.delta.prior <- function(x) {
 
 }
 
-#' @title eps0 Prior Function from Caley & Barry 2014
+#' @title eps0 prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -634,7 +634,7 @@ eps0.prior <- function(x) {
 
 }
 
-#' @title Log eps0 Prior Function from Caley & Barry 2014
+#' @title Log eps0 prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -658,7 +658,7 @@ lnL.eps0.prior <- function(x) {
 
 }
 
-#' @title eps1 Prior Function from Caley & Barry 2014
+#' @title eps1 prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -682,7 +682,7 @@ eps1.prior <- function(x) {
 
 }
 
-#' @title Log eps1 Prior Function from Caley & Barry 2014
+#' @title Log eps1 prior function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -706,7 +706,7 @@ lnL.eps1.prior <- function(x) {
 
 }
 
-#' @title propose.N0 Function from Caley & Barry 2014
+#' @title propose.N0 function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -724,7 +724,7 @@ lnL.eps1.prior <- function(x) {
 #'
 #' @noRd
 
-#' @title propose.N0 Function from Caley & Barry 2014
+#' @title propose.N0 function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -748,7 +748,7 @@ propose.N0 <- function(x){
 
 }
 
-#' @title propose.pgr Function from Caley & Barry 2014
+#' @title propose.pgr function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -773,7 +773,7 @@ propose.pgr <- function(x, sd = 0.05) {
 
 }
 
-#' @title propose.delta Function from Caley & Barry 2014
+#' @title propose.delta function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -798,7 +798,7 @@ propose.delta <- function(x, sd = 0.5) {
 
 }
 
-#' @title q.delta Function from Caley & Barry 2014
+#' @title q.delta function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -823,7 +823,7 @@ q.delta <- function(x1, x2) {
 
 }
 
-#' @title propose.eps0 Function from Caley & Barry 2014
+#' @title propose.eps0 function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -848,7 +848,7 @@ propose.eps0 <- function(x, sd = 1.5) {
 
 }
 
-#' @title propose.eps1 Function from Caley & Barry 2014
+#' @title propose.eps1 function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -873,7 +873,7 @@ propose.eps1 <- function(x, sd = 0.15) {
 
 }
 
-#' @title q.eps1 Function from Caley & Barry 2014
+#' @title q.eps1 function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).
@@ -898,7 +898,7 @@ q.eps1 <- function(x1, x2) {
 
 }
 
-#' @title Non-constant Population Function from Caley & Barry 2014
+#' @title Non-constant population function from Caley & Barry 2014
 #'
 #' @description
 #' Helper function. From provided code (Code S2.R).

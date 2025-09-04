@@ -1,4 +1,4 @@
-#' @title Burgman et al.'s (1995) "Runs Test" Model
+#' @title Burgman et al.'s (1995) "Runs Test" model
 #'
 #' @description
 #' Equation 3 from Burgman et al. 1995. Estimates a p-value for

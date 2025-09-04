@@ -1,4 +1,4 @@
-#' @title Burgman et al.'s (1995) "Discrete-time" Model
+#' @title Burgman et al.'s (1995) "Discrete-time" model
 #'
 #' @description
 #' Equation 2 from Burgman et al. 1995. Estimates a p-value for

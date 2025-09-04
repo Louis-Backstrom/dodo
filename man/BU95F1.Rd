@@ -2,7 +2,7 @@
 % Please edit documentation in R/BU95F1.R
 \name{BU95F1}
 \alias{BU95F1}
-\title{Burgman et al.'s (1995) "Discrete-time" Model}
+\title{Burgman et al.'s (1995) "Discrete-time" model}
 \usage{
 BU95F1(records)
 }

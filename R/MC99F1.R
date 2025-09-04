@@ -1,4 +1,4 @@
-#' @title McFarlane's (1999) "Median Gap" Model
+#' @title McFarlane's (1999) "Median Gap" model
 #'
 #' @description
 #' Equation 3 from McFarlane 1999. Estimates a one-tailed \eqn{1 - \alpha}

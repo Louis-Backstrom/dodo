@@ -2,7 +2,7 @@
 % Please edit documentation in R/MC98F1.R
 \name{MC98F1}
 \alias{MC98F1}
-\title{McCarthy's (1998) "Partial Solow" Model}
+\title{McCarthy's (1998) "Partial Solow" model}
 \usage{
 MC98F1(records)
 }

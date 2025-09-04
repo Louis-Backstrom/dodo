@@ -2,7 +2,7 @@
 % Please edit documentation in R/JE10F1.R
 \name{JE10F1}
 \alias{JE10F1}
-\title{Jarić & Ebenhard's (2010) "Stationary" Model}
+\title{Jarić & Ebenhard's (2010) "Stationary" model}
 \usage{
 JE10F1(records, test.time = as.numeric(format(Sys.Date(), "\%Y")))
 }

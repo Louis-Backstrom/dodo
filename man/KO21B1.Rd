@@ -2,7 +2,7 @@
 % Please edit documentation in R/KO21B1.R
 \name{KO21B1}
 \alias{KO21B1}
-\title{Kodikara et al.'s (2021) "Change-point" Model}
+\title{Kodikara et al.'s (2021) "Change-point" model}
 \usage{
 KO21B1(
   records,

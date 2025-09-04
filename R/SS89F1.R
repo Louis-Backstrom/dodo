@@ -1,4 +1,4 @@
-#' @title Strauss & Sadler's (1989) "Classical" Model
+#' @title Strauss & Sadler's (1989) "Classical" model
 #'
 #' @description
 #' Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-tailed

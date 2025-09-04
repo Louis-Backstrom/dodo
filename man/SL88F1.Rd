@@ -2,7 +2,7 @@
 % Please edit documentation in R/SL88F1.R
 \name{SL88F1}
 \alias{SL88F1}
-\title{Springer & Lilje's (1988) "Broken Stick" Model}
+\title{Springer & Lilje's (1988) "Broken Stick" model}
 \usage{
 SL88F1(records, alpha = 0.05)
 }

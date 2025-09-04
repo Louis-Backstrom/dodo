@@ -31,7 +31,7 @@ Fx <- function(x, s, n) {
 
 }
 
-#' @title Falling Factorial
+#' @title Falling factorial
 #'
 #' @description
 #' Calculates the falling factorial function.
@@ -47,7 +47,7 @@ ffactorial <- function(x, j) {
   return(factorial(x) / factorial(x - j))
 }
 
-#' @title Model 1 Function from Kodikara et al. 2020
+#' @title Model 1 function from Kodikara et al. 2020
 #'
 #' @description
 #' Helper function. From provided code.
@@ -79,54 +79,48 @@ posterior_cer_mcmc <- function(y_c){
 
   lik <- c()
 
-  dataList = list(
+  dataList <- list(
     t_n = t_n,
     Tt = Tt,
     n = n,
     lik = lik
   )
 
-  modelStringm1 <- paste0("
-                        data {
-                        C <- 1000000000 # JAGS does not warn if too small!
+  modelStringm1 <- paste0(
+    "
+    data {
 
-                        ones <- 1
+      C <- 1000000000
+      ones <- 1
 
+    }
 
+    model {
 
-                        }
+      for (t in 1:t_n) {
+        lik[t] <- 1e-100
+      }
 
-                        model {
+      for (t in (t_n + 1):Tt) {
+        lik[t] <- (p ^ n) * (1 - p) ^ (t - 1 - n)
+      }
 
+      lik[Tt + 1] <- (p ^ n) * (1 - p) ^ (Tt - n)
 
-                        for(t in 1:(t_n)){
-                        lik[t]= 10^(-100)
-                        }
+      x <- step(Tt - tau) * tau + step(tau - Tt - 1) * (Tt + 1)
+      likelihood <- lik[x]
 
-                        for(t in (t_n+1):(Tt)){
+      spy <- likelihood / C
+      ones ~ dbern(spy)
 
-                        lik[t]=p^n*((1-p))^(t-1-n)
-                        }
+      tau_0 ~ dnegbin(theta, 1)
+      tau <- tau_0 + 1
+      theta ~ dunif(0, 1)
+      p ~ dunif(0, 1)
 
-                        lik[Tt+1]= p^n*((1-p))^(Tt-n)
-
-                        x=step(Tt-tau)*(tau)+step(tau-Tt-1)*(Tt+1)
-                        likelihood = lik[x]
-
-
-                        spy <-(likelihood) /C
-
-                        ones~ dbern( spy )
-
-                        tau_0 ~ dnegbin(theta,1)
-                        tau=tau_0+1
-                        theta~dunif(0,1)
-                        p~dunif(0,1)
-
-
-                        }
-
-                        ")
+    }
+    "
+    )
 
   writeLines(modelStringm1, con = "model_m1.txt")
 
@@ -141,7 +135,7 @@ posterior_cer_mcmc <- function(y_c){
 
 }
 
-#' @title Model 2 Function from Kodikara et al. 2020
+#' @title Model 2 function from Kodikara et al. 2020
 #'
 #' @description
 #' Helper function. From provided code.
@@ -182,7 +176,7 @@ posterior_cer_uncer_mcmc <- function(y_c,y_u){
 
   lik<-c()
 
-  dataList = list(
+  dataList <- list(
     t_n = t_n,
     Tt = Tt,
     nc = n_c,
@@ -191,54 +185,53 @@ posterior_cer_uncer_mcmc <- function(y_c,y_u){
     lik = lik
   )
 
-  modelStringm2 = paste0("
-                        data {
-                        C <- 1000000000 # JAGS does not warn if too small!
+  modelStringm2 <- paste0(
+    "
+    data {
 
-                        ones <- 1
+      C <- 1000000000
+      ones <- 1
 
+    }
 
+    model {
 
-                        }
+      for (t in 1:t_n) {
+        lik[t] <- 1e-100
+      }
 
-                        model {
+      for (t in (t_n + 1):Tt) {
+        lik[t] <-
+          (pc ^ nc) *
+          (((1 - pc) * pu) ^ n_u_tau[t - 1]) *
+          (((1 - pc) * (1 - pu)) ^ (t - 1 - nc - n_u_tau[t - 1])) *
+          (pui ^ (n_u - n_u_tau[t - 1])) *
+          ((1 - pui) ^ (Tt - (t - 1) - (n_u - n_u_tau[t - 1])))
+      }
 
+      lik[Tt + 1] <-
+        (pc ^ nc) *
+        (((1 - pc) * pu) ^ n_u) *
+        (((1 - pc) * (1 - pu)) ^ (Tt - nc - n_u))
 
-                        for(t in 1:(t_n)){
-                        lik[t]= 10^(-100)
-                        }
+      x <- step(Tt - tau) * tau + step(tau - Tt - 1) * (Tt + 1)
+      likelihood <- lik[x]
 
-                        for(t in (t_n+1):(Tt)){
+      spy <- likelihood / C
+      ones ~ dbern(spy)
 
-                        lik[t]=pc^nc*((1-pc)*pu)^n_u_tau[t-1]*((1-pc)*(1-pu))^
-                        (t-1-nc-n_u_tau[t-1])*pui^(n_u-n_u_tau[t-1])*((1-pui))^
-                        (Tt-(t-1)-(n_u-n_u_tau[t-1]))
-                        }
+      tau_0 ~ dnegbin(theta, 1)
+      tau <- tau_0 + 1
+      theta ~ dunif(0, 1)
 
-                        lik[Tt+1]= pc^nc*((1-pc)*pu)^n_u*
-                        ((1-pc)*(1-pu))^(Tt-nc-n_u)
+      pu <- puv * (1 - pui) + pui * (1 - puv) + puv * pui
+      pui ~ dunif(0, 1)
+      puv ~ dunif(0, 1)
+      pc ~ dunif(0, 1)
 
-                        x=step(Tt-tau)*(tau)+step(tau-Tt-1)*(Tt+1)
-                        likelihood = lik[x]
-
-
-                        spy <-(likelihood) /C
-
-                        ones~ dbern( spy )
-
-                        tau_0 ~ dnegbin(theta,1)
-                        tau=tau_0+1
-                        theta~dunif(0,1)
-
-                        pu= puv*(1-pui)+pui*(1-puv)+puv*pui
-                        pui~dunif(0,1)
-                        puv~dunif(0,1)
-                        pc~dunif(0,1)
-
-
-                        }
-
-                        ")
+    }
+    "
+    )
 
   writeLines(modelStringm2, con = "model_m2.txt")
 

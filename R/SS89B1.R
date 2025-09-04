@@ -1,4 +1,4 @@
-#' @title Strauss & Sadler's (1989) "Bayesian" Model
+#' @title Strauss & Sadler's (1989) "Bayesian" model
 #'
 #' @description
 #' Equation 26 from Strauss & Sadler 1989, assuming the prior distribution

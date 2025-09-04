@@ -1,4 +1,4 @@
-#' @title Burgman et al.'s (1995) "Empty Cells" Model
+#' @title Burgman et al.'s (1995) "Empty Cells" model
 #'
 #' @description
 #' Equation 4 from Burgman et al. 1995. Estimates a p-value for

@@ -2,7 +2,7 @@
 % Please edit documentation in R/KO20B2.R
 \name{KO20B2}
 \alias{KO20B2}
-\title{Kodikara et al.'s (2020) "Uncertain" Model}
+\title{Kodikara et al.'s (2020) "Uncertain" model}
 \usage{
 KO20B2(
   records,

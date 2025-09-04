@@ -3,7 +3,7 @@
 \docType{data}
 \name{anabarella}
 \alias{anabarella}
-\title{\emph{Anabarella} Fossil Record}
+\title{\emph{Anabarella} fossil record}
 \format{
 A numeric vector with 19 values.
 }
