@@ -37,6 +37,11 @@ to be constant. The upper bound of the upper confidence interval is likely to
 be NA, unless there are sufficient sightings or \eqn{alpha} and \eqn{gamma}
 are sufficiently permissive.
 }
+\examples{
+# Run the *Metrarabdotos* n. sp. 5 analysis from Marshall 1994
+MA94F1(metrarabdotos, alpha = 0.5, gamma = 0.025)
+
+}
 \references{
 \strong{Key Reference}
 

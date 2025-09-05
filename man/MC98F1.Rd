@@ -23,6 +23,11 @@ competing hypotheses of extinction/non-extinction.
 \note{
 All sighting records are assumed to be certain.
 }
+\examples{
+# Run an example analysis using the Lord Howe Gerygone data
+MC98F1(gerygone)
+
+}
 \references{
 \strong{Key Reference}
 

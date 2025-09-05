@@ -43,6 +43,10 @@
 #' to infer species extinctions: an evaluation of different methods. *Ecology*,
 #' 90(5), 1291-1300. \doi{10.1890/08-0316.1}
 #'
+#' @examples
+#' # Run the Mauritian orchid analysis from Solow & Roberts 2003
+#' SR03F1(orchid, test.time = 1996)
+#'
 #' @export
 
 SR03F1 <- function(records, alpha = 0.05,

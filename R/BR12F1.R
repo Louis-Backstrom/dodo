@@ -32,6 +32,10 @@
 #' *Conservation Biology*, 20(2), 562-567.
 #' \doi{10.1111/j.1523-1739.2006.00377.x}
 #'
+#' @examples
+#' # Run the Woolly Mammoth analysis from Bradshaw et al. 2012
+#' BR12F1(mammoth)
+#'
 #' @export
 
 BR12F1 <- function(records, alpha = 0.05) {

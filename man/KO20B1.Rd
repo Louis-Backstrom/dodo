@@ -38,6 +38,11 @@ the species is extant at the test time, and a point estimate and one-tailed
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
+KO20B1(woodpecker1, test.time = 2010)
+
+}
 \references{
 \strong{Key Reference}
 

@@ -32,6 +32,10 @@
 #'
 #' @seealso [CB14B2()]
 #'
+#' @examples
+#' # Run the fox analysis from Caley & Barry 2014
+#' CB14B1(fox, init.time = 2001, test.time = 2012)
+#'
 #' @export
 
 CB14B1 <- function(records, alpha = 0.05, init.time = min(records),

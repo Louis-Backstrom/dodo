@@ -29,6 +29,10 @@
 #' Inferring extinction year using a Bayesian approach. *Methods in Ecology*
 #' *and Evolution*, 11(8), 964-973. \doi{10.1111/2041-210x.13408}
 #'
+#' @examples
+#' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2021
+#' KO21B1(woodpecker2, test.time = 2010)
+#'
 #' @export
 
 KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),

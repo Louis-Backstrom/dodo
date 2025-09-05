@@ -44,6 +44,10 @@
 #'
 #' @seealso [SO93B1()]
 #'
+#' @examples
+#' # Run the Caribbean Monk Seal analysis from Solow 1993
+#' SO93F1(monk_seal, test.time = 1992)
+#'
 #' @export
 
 SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
@@ -54,7 +58,10 @@ SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Determine number of records
   n <- length(records)
+
+  # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {
+    records <- tail(records, -1)
     n <- n - 1
   }
 

@@ -40,6 +40,10 @@
 #' Jaric, I. (2014). The use of sighting records to infer species extinctions:
 #' comment. *Ecology*, 95(1), 238. \doi{10.1890/12-1088.1}
 #'
+#' @examples
+#' # Run an example analysis using the Caribbean Monk Seal data
+#' MC06F1(monk_seal)
+#'
 #' @export
 
 MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
@@ -51,7 +55,10 @@ MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Determine number of records
   n <- length(records)
-  if (init.time == min(records) & remove.first ==  TRUE) {
+
+  # If using first record as init.time, remove this from the record sequence
+  if (init.time == min(records) & remove.first == TRUE) {
+    records <- tail(records, -1)
     n <- n - 1
   }
 

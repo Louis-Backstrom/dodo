@@ -38,6 +38,11 @@ the species is extant at the test time, and a point estimate and one-tailed
 \note{
 Sampling effort is assumed to be constant.
 }
+\examples{
+# Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
+KO20B2(woodpecker2, test.time = 2010)
+
+}
 \references{
 \strong{Key Reference}
 

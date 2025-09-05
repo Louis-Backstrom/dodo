@@ -34,6 +34,11 @@ interval and point estimate on the time of extinction.
 \note{
 All sighting records are assumed to be certain.
 }
+\examples{
+# Run the Mauritian orchid analysis from Solow & Roberts 2003
+SR03F1(orchid, test.time = 1996)
+
+}
 \references{
 \strong{Key Reference}
 

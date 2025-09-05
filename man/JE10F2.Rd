@@ -25,6 +25,11 @@ competing hypotheses of extinction/non-extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the Black-footed Ferret analysis from Jarić & Ebenhard 2010
+JE10F2(ferret1 - 5, test.time = 223) # shift dates to align with paper
+
+}
 \references{
 \strong{Key Reference}
 

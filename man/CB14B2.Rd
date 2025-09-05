@@ -46,6 +46,11 @@ extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the fox analysis from Caley & Barry 2014
+CB14B2(fox, init.time = 2001, test.time = 2012, n.iter = 11e4, burn.in = 1e4)
+
+}
 \references{
 \strong{Key Reference}
 

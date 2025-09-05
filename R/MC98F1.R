@@ -22,6 +22,10 @@
 #' museum data. *Biological Conservation*, 83(1), 9-17.
 #' \doi{10.1016/S0006-3207(97)00048-7}
 #'
+#' @examples
+#' # Run an example analysis using the Lord Howe Gerygone data
+#' MC98F1(gerygone)
+#'
 #' @export
 
 MC98F1 <- function(records) {

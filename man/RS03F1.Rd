@@ -7,7 +7,7 @@
 RS03F1(
   records,
   alpha = 0.05,
-  k = 10,
+  k = ifelse(length(records >= 10), 10, length(records)),
   test.time = as.numeric(format(Sys.Date(), "\%Y"))
 )
 }
@@ -36,6 +36,11 @@ interval and point estimate on the time of extinction.
 }
 \note{
 All sighting records are assumed to be certain.
+}
+\examples{
+# Run the Dodo analysis from Roberts & Solow 2003
+RS03F1(dodos, k = 10, test.time = 2002)
+
 }
 \references{
 \strong{Key Reference}

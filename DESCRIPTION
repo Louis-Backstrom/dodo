@@ -1,22 +1,17 @@
-Package: dodo
 Type: Package
+Package: dodo
 Title: Extinction Models in R
-Version: 0.4.4
-Authors@R: c(
-    person(
-      "Louis", "Backstrom",
-      email = "ljb38@st-andrews.ac.uk",
-      role = c("aut", "cre")
-    )
-  )
+Version: 0.4.5
+Authors@R: 
+    person("Louis", "Backstrom", , "ljb38@st-andrews.ac.uk", role = c("aut", "cre"))
 Description: A selection of published extinction models.
 License: What license is it under?
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.3.2
-Roxygen: list(markdown = TRUE)
 Depends: 
-    R (>= 3.5)
+    R (>= 4.4)
 Imports:
     coda,
     rjags
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

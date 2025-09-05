@@ -27,6 +27,11 @@ to be constant. This is \emph{not} the Gaussian-resampled model (GRIWM) also
 presented in Bradshaw et al. 2012 (which incorporates radiometric dating
 error).
 }
+\examples{
+# Run the Woolly Mammoth analysis from Bradshaw et al. 2012
+BR12F1(mammoth)
+
+}
 \references{
 \strong{Key Reference}
 

@@ -36,9 +36,14 @@
 #' to infer species extinctions: an evaluation of different methods. *Ecology*,
 #' 90(5), 1291-1300. \doi{10.1890/08-0316.1}
 #'
+#' @examples
+#' # Run the Dodo analysis from Roberts & Solow 2003
+#' RS03F1(dodos, k = 10, test.time = 2002)
+#'
 #' @export
 
-RS03F1 <- function(records, alpha = 0.05, k = 10,
+RS03F1 <- function(records, alpha = 0.05,
+                   k = ifelse(length(records >= 10), 10, length(records)),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
 
   # Sort records

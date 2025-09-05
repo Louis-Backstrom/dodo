@@ -26,6 +26,11 @@ Equation 3 from Springer & Lilje 1988. Estimates a one-tailed
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run an example analysis using the Caribbean Monk Seal data
+SL88F1(monk_seal)
+
+}
 \references{
 \strong{Key Reference}
 

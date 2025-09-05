@@ -39,6 +39,11 @@ confidence interval and point estimate on the time of extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the Black-footed Ferret analysis from Solow 1993
+SO93F2(ferret1, init.time = 0, test.time = 229)
+
+}
 \references{
 \strong{Key Reference}
 

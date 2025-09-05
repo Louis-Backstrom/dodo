@@ -25,6 +25,10 @@
 #'
 #' @seealso [JE10F2()]
 #'
+#' @examples
+#' # Run the Black-footed Ferret analysis from Jarić & Ebenhard 2010
+#' JE10F1(ferret1 - 5, test.time = 223) # shift dates to align with paper
+#'
 #' @export
 
 JE10F1 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {

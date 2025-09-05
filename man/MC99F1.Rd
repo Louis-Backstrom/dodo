@@ -4,7 +4,11 @@
 \alias{MC99F1}
 \title{McFarlane's (1999) "Median Gap" model}
 \usage{
-MC99F1(records, alpha = 0.05)
+MC99F1(
+  records,
+  alpha = 0.05,
+  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+)
 }
 \arguments{
 \item{records}{numeric vector object containing all sighting records of the
@@ -14,17 +18,23 @@ taxon of interest.}
 the \eqn{1 - \alpha} confidence interval.}
 }
 \value{
-a \code{list} object with the original parameters and the confidence
-interval included as elements. The confidence interval is a two-element
-numeric vector called \code{conf.int}.
+a \code{list} object with the original parameters and the p-value and
+confidence interval included as elements. The confidence interval is
+a two-element numeric vector called \code{conf.int}.
 }
 \description{
-Equation 3 from McFarlane 1999. Estimates a one-tailed \eqn{1 - \alpha}
+Equation 3 from McFarlane 1999. Estimates a p-value for testing competing
+hypotheses of extinction/non-extinction,and a one-tailed \eqn{1 - \alpha}
 confidence interval on the time of extinction.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
+}
+\examples{
+# Run an example analysis using the Woolly Mammoth data
+MC99F1(mammoth, test.time = -11000)
+
 }
 \references{
 \strong{Key Reference}

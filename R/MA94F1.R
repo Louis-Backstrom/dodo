@@ -34,6 +34,10 @@
 #' partial relaxation of the assumption of randomly distributed fossil
 #' horizons. *Paleobiology*, 20(4), 459-469. \doi{10.1017/S0094837300012938}
 #'
+#' @examples
+#' # Run the *Metrarabdotos* n. sp. 5 analysis from Marshall 1994
+#' MA94F1(metrarabdotos, alpha = 0.5, gamma = 0.025)
+#'
 #' @export
 
 MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {

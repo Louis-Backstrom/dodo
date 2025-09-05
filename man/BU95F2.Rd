@@ -24,6 +24,11 @@ testing competing hypotheses of extinction/non-extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the example analysis from Burgman 1995 (Figure 1b)
+BU95F2(burgmanf1b)
+
+}
 \references{
 \strong{Key Reference}
 

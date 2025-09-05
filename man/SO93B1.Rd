@@ -48,6 +48,11 @@ associated point estimate and two-sided credible interval.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
+\examples{
+# Run the Caribbean Monk Seal analysis from Solow 1993
+SO93B1(monk_seal, test.time = 1992)
+
+}
 \references{
 \strong{Key Reference}
 

@@ -41,6 +41,10 @@
 #'
 #' @seealso [SS89B1()]
 #'
+#' @examples
+#' # Run an example analysis using the Caribbean Monk Seal data
+#' SS89F1(monk_seal)
+#'
 #' @export
 
 SS89F1 <- function(records, alpha = 0.05) {

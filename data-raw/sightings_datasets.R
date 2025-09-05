@@ -66,3 +66,6 @@ usethis::use_data(woodpecker2, overwrite = TRUE)
 
 fox <- c(2001, 2003, 2005, 2006)
 usethis::use_data(fox, overwrite = TRUE)
+
+orchid <- c(1933, 1941, 1952, 1962, 1965, 1966, 1967, 1971, 1974, 1976, 1978)
+usethis::use_data(orchid, overwrite = TRUE)

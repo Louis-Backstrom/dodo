@@ -35,6 +35,10 @@
 #' Bayesian Probability Estimates for Ends of Local Taxon Ranges.
 #' *Mathematical Geology*, 21(4), 411-421. \doi{10.1007/Bf00897326}
 #'
+#' @examples
+#' # Run an example analysis using the Caribbean Monk Seal data
+#' SL88F1(monk_seal)
+#'
 #' @export
 
 SL88F1 <- function(records, alpha = 0.05) {

@@ -27,6 +27,11 @@ to be constant.
 Uses code from the \code{sExtinct} package
 (\href{https://github.com/ExperimentalConservation/sExtinct}{GitHub})
 }
+\examples{
+# Run the example analysis from Burgman 1995 (Figure 1b)
+BU95F3(burgmanf1b)
+
+}
 \references{
 \strong{Key Reference}
 

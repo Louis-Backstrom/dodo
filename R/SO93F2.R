@@ -34,6 +34,10 @@
 #' Solow, A. R. (2005). Inferring extinction from a sighting record.
 #' *Mathematical Biosciences*, 195(1), 47-55. \doi{10.1016/j.mbs.2005.02.001}
 #'
+#' @examples
+#' # Run the Black-footed Ferret analysis from Solow 1993
+#' SO93F2(ferret1, init.time = 0, test.time = 229)
+#'
 #' @export
 
 SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
@@ -44,13 +48,11 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Determine number of records
   n <- length(records)
-  if (init.time == min(records)) {
-    n <- n - 1
-  }
 
-  # Remove first record, if using as initial time
+  # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {
-    records <- sort(records)[2:length(records)]
+    records <- tail(records, -1)
+    n <- n - 1
   }
 
   # Determine length of sighting record

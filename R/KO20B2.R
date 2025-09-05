@@ -31,6 +31,10 @@
 #'
 #' @seealso [KO20B1()]
 #'
+#' @examples
+#' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
+#' KO20B2(woodpecker2, test.time = 2010)
+#'
 #' @export
 
 KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),

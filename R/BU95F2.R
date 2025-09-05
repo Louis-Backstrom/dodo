@@ -25,6 +25,10 @@
 #'
 #' @seealso [BU95F1()], [BU95F3()]
 #'
+#' @examples
+#' # Run the example analysis from Burgman 1995 (Figure 1b)
+#' BU95F2(burgmanf1b)
+#'
 #' @export
 
 BU95F2 <- function(records) {
