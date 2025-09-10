@@ -16,6 +16,9 @@ taxon of interest.}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
+
+\item{test.time}{end of the observation period, typically the present day
+(defaults to the current year).}
 }
 \value{
 a \code{list} object with the original parameters and the p-value and

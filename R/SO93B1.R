@@ -3,7 +3,7 @@
 #' @description
 #' Equation 3 and others from Solow 1993. Estimates a Bayes factor and
 #' posterior distribution on probability that the species is extant, with
-#' associated point estimate and two-sided credible interval.
+#' associated point estimate and two-sided \eqn{1 - \alpha} credible interval.
 #'
 #' @param records numeric vector object containing all sighting records of the
 #' taxon of interest.
@@ -72,7 +72,6 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
   posterior <- (1 + ((1 - prior) / (prior * Bayes.factor))) ^ -1
 
   # Output
-
   if (keep.dists == TRUE) {
     output <- list(
       records = records,

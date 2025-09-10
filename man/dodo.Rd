@@ -34,6 +34,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' (2014) "Strauss & Sadler" model.
 \item \code{\link[=JR14F2]{JR14F2()}} Jarić & Roberts' (2014) "Solow" model.
 \item \code{\link[=JR14F4]{JR14F4()}} Jarić & Roberts' (2014) "McInerny" model.
+\item \code{\link[=WA16B1]{WA16B1()}}	Wang et al.'s (2016) "Adaptive" model.
 \item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s (2020) "Certain-only" model.
 \item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s (2020) "Uncertain" model.
 \item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s (2021) "Change-point" model.

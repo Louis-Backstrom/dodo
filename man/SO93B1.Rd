@@ -42,7 +42,7 @@ to \code{TRUE}.
 \description{
 Equation 3 and others from Solow 1993. Estimates a Bayes factor and
 posterior distribution on probability that the species is extant, with
-associated point estimate and two-sided credible interval.
+associated point estimate and two-sided \eqn{1 - \alpha} credible interval.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed

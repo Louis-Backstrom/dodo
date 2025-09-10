@@ -26,6 +26,7 @@
 #' * [JR14F1()] Jarić & Roberts' (2014) "Strauss & Sadler" model.
 #' * [JR14F2()] Jarić & Roberts' (2014) "Solow" model.
 #' * [JR14F4()] Jarić & Roberts' (2014) "McInerny" model.
+#' * [WA16B1()]	Wang et al.'s (2016) "Adaptive" model.
 #' * [KO20B1()] Kodikara et al.'s (2020) "Certain-only" model.
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.

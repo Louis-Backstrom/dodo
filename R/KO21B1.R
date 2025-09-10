@@ -65,7 +65,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
     Tt = Tt)
 
   # Define the model
-  modelpois = paste0("
+  modelpois <- paste0("
                         data {
                         C <- 10000000000000 # JAGS does not warn if too small!
 
@@ -112,9 +112,9 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 
-  # Run the chains:
+  # Run the chains
   jagsmodelpois <- rjags::jags.model(file = "model_pois.txt", data = dataList,
-                                    n.chains = 4, n.adapt = 10000)
+                                     n.chains = 4, n.adapt = 10000)
   update(jagsmodelpois, n.iter = 10000)
   codaSamplespois <- rjags::coda.samples(jagsmodelpois, variable.names = c(
     "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"),
