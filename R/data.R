@@ -160,7 +160,7 @@
 #'
 #' @description
 #' Siberian and Mongolian records of Cambrian *Anabarella* sp. from Wang et al.
-#' (2015) based on data presented in Maloof et al. (2010).
+#' (2016) based on data presented in Maloof et al. (2010).
 #'
 #' @format A numeric vector with 19 values.
 #'

@@ -12,7 +12,7 @@ anabarella
 }
 \description{
 Siberian and Mongolian records of Cambrian \emph{Anabarella} sp. from Wang et al.
-(2015) based on data presented in Maloof et al. (2010).
+(2016) based on data presented in Maloof et al. (2010).
 }
 \note{
 Dates are measured in million years before present (note that values are all

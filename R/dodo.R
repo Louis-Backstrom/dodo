@@ -23,9 +23,7 @@
 #' * [BR12F1()] Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.
 #' * [CB14B1()] Caley & Barry's (2014) "Constant" model.
 #' * [CB14B2()] Caley & Barry's (2014) "Non-constant" model.
-#' * [JR14F1()] Jarić & Roberts' (2014) "Strauss & Sadler" model.
-#' * [JR14F2()] Jarić & Roberts' (2014) "Solow" model.
-#' * [JR14F4()] Jarić & Roberts' (2014) "McInerny" model.
+#' * [JR14F1()] Jarić & Roberts' (2014) "Solow" model.
 #' * [WA16B1()]	Wang et al.'s (2016) "Adaptive" model.
 #' * [KO20B1()] Kodikara et al.'s (2020) "Certain-only" model.
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.

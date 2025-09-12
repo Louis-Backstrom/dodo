@@ -2,9 +2,14 @@
 % Please edit documentation in R/JR14F1.R
 \name{JR14F1}
 \alias{JR14F1}
-\title{Jarić & Roberts' (2014) "Strauss & Sadler 1989" model}
+\title{Jarić & Roberts' (2014) "Solow" model}
 \usage{
-JR14F1(records, alpha = 0.05, init.time = min(records$time))
+JR14F1(
+  records,
+  alpha = 0.05,
+  init.time = min(records$time),
+  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+)
 }
 \arguments{
 \item{records}{\code{data.frame} with two columns: \code{time} and \code{certainty}. The
@@ -16,21 +21,27 @@ associated \code{certainty}, expressed as a probability in the interval [0, 1]
 the \eqn{1 - \alpha} confidence interval.}
 
 \item{init.time}{start of the observation period. Defaults to the time of
-the first sighting.}
+the first sighting, in which case this sighting is removed from the record.}
+
+\item{test.time}{end of the observation period, typically the present day
+(defaults to the current year).}
 }
 \value{
-a \code{list} object with the original parameters and the confidence
-interval included as elements. The confidence interval is a two-element
-numeric vector called \code{conf.int}.
+a \code{list} object with the original parameters and the p-value, point
+estimate, and confidence interval included as elements. The confidence
+interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{
-Modification of the classical confidence interval presented by Strauss &
-Sadler 1989 from Jarić & Roberts 2014. Estimates a one-tailed
-\eqn{1 - \alpha} confidence interval on the time of
+Equations 7-10 from Jarić & Roberts 2014. Estimates a p-value for testing
+competing hypotheses of extinction/non-extinction, and a one-tailed
+\eqn{1 - \alpha} confidence interval and point estimate on the time of
 extinction. Sighting uncertainty is incorporated.
 }
 \note{
-Sampling effort is assumed to be constant.
+Sampling effort is assumed to be constant. Although the method in Jarić &
+Roberts 2014 is theoretically applicable to other base models, this package
+only includes the Solow 1993a variant, as it is the focus of the original
+paper.
 }
 \references{
 \strong{Key Reference}
@@ -41,10 +52,6 @@ when inferring extinction based on sighting records. \emph{Biodiversity and}
 
 \strong{Other References}
 
-Strauss, D., & Sadler, P. M. (1989). Classical Confidence Intervals and
-Bayesian Probability Estimates for Ends of Local Taxon Ranges. Mathematical
-Geology, 21(4), 411-421. \doi{10.1007/Bf00897326}
-}
-\seealso{
-\code{\link[=JR14F2]{JR14F2()}}, \code{\link[=JR14F3]{JR14F3()}}, \code{\link[=JR14F4]{JR14F4()}}
+Solow, A. R. (1993). Inferring Extinction from Sighting Data. \emph{Ecology},
+74(3), 962-964. \doi{10.2307/1940821}
 }

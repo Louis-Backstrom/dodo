@@ -1,9 +1,9 @@
-#' @title Jarić & Roberts' (2014) "Strauss & Sadler 1989" model
+#' @title Jarić & Roberts' (2014) "Solow" model
 #'
 #' @description
-#' Modification of the classical confidence interval presented by Strauss &
-#' Sadler 1989 from Jarić & Roberts 2014. Estimates a one-tailed
-#' \eqn{1 - \alpha} confidence interval on the time of
+#' Equations 7-10 from Jarić & Roberts 2014. Estimates a p-value for testing
+#' competing hypotheses of extinction/non-extinction, and a one-tailed
+#' \eqn{1 - \alpha} confidence interval and point estimate on the time of
 #' extinction. Sighting uncertainty is incorporated.
 #'
 #' @param records `data.frame` with two columns: `time` and `certainty`. The
@@ -13,14 +13,19 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting.
+#' the first sighting, in which case this sighting is removed from the record.
+#' @param test.time end of the observation period, typically the present day
+#' (defaults to the current year).
 #'
-#' @returns a `list` object with the original parameters and the confidence
-#' interval included as elements. The confidence interval is a two-element
-#' numeric vector called `conf.int`.
+#' @returns a `list` object with the original parameters and the p-value, point
+#' estimate, and confidence interval included as elements. The confidence
+#' interval is a two-element numeric vector called `conf.int`.
 #'
 #' @note
-#' Sampling effort is assumed to be constant.
+#' Sampling effort is assumed to be constant. Although the method in Jarić &
+#' Roberts 2014 is theoretically applicable to other base models, this package
+#' only includes the Solow 1993a variant, as it is the focus of the original
+#' paper.
 #'
 #' @references
 #' **Key Reference**
@@ -31,15 +36,13 @@
 #'
 #' **Other References**
 #'
-#' Strauss, D., & Sadler, P. M. (1989). Classical Confidence Intervals and
-#' Bayesian Probability Estimates for Ends of Local Taxon Ranges. Mathematical
-#' Geology, 21(4), 411-421. \doi{10.1007/Bf00897326}
-#'
-#' @seealso [JR14F2()], [JR14F3()], [JR14F4()]
+#' Solow, A. R. (1993). Inferring Extinction from Sighting Data. *Ecology*,
+#' 74(3), 962-964. \doi{10.2307/1940821}
 #'
 #' @export
 
-JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time)) {
+JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
+                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
 
   # Sort records
   records <- sort_by(records, ~time)
@@ -59,15 +62,24 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time)) {
   }
   tr <- sum(sum_vector)
 
-  # Calculate lambda
-  lambda <- alpha ^ (-1 / (r - 1)) - 1
+  # Calculate p-value
+  p.value <- (tr / (test.time - init.time)) ^ r
+
+  # Calculate point estimate
+  estimate <- (tr * (r + 1) / r) + init.time
+
+  # Calculate upper bound of confidence interval
+  conf.int.upper <- tr / (alpha ^ (1 / r)) + init.time
 
   # Output
   output <- list(
     records = records,
     alpha = alpha,
     init.time = init.time,
-    conf.int = c(init.time + tr, init.time + tr + lambda * tr)
+    test.time = test.time,
+    p.value = p.value,
+    estimate = estimate,
+    conf.int = c(init.time + tr, conf.int.upper)
   )
 
   return(output)
