@@ -65,7 +65,7 @@ KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
   sink()
 
   # Extract posteriors
-  posterior <- as.data.frame(coda:::as.matrix.mcmc.list(posterior))
+  posterior <- as.data.frame(as.matrix(posterior))
 
   # Calculate p(extant)
   p.extant <- mean(posterior$tau + init.time > test.time)
@@ -91,3 +91,6 @@ KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
   return(output)
 
 }
+
+# Declare certain as a known global variable (column in records data.frame):
+utils::globalVariables("certain")

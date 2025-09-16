@@ -48,7 +48,7 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
 
   # Run the ABM model
   abm_results <- abm(x = records, distance = FALSE, ext = FALSE, base = base,
-                     prmean = 0, prSD = 2, conf = 1 - alpha, PLOT = 0)
+                     prmean = 0, prSD = 2, alpha = alpha, PLOT = 0)
 
   # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {

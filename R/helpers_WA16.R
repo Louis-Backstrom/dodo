@@ -196,7 +196,7 @@ drefbeta <- function(x, L) {
 #' sample size is decreased by 1. Defaults to `init.time`
 #' @param prmean prior mean for lambda. Defaults to 0.
 #' @param prSD prior standard deviation for lambda. Defaults to 1.
-#' @param conf confidence level. Defaults to `1 - alpha`.
+#' @param alpha desired significance level.
 #' @param PLOT whether or not to show plots (defaults to 0, 1 to show plots).
 #'
 #' @returns the model outputs.
@@ -212,7 +212,10 @@ drefbeta <- function(x, L) {
 #' @noRd
 
 abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
-                prSD = 1, conf = 1 - alpha, PLOT = 0) {
+                prSD = 1, alpha, PLOT = 0) {
+
+  # Get confidence level
+  conf <- 1 - alpha
 
   # Pre-process data
 

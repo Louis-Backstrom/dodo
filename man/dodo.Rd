@@ -2,7 +2,6 @@
 % Please edit documentation in R/dodo.R
 \docType{package}
 \name{dodo}
-\alias{dodo-package}
 \alias{dodo}
 \title{dodo: Extinction Models in R}
 \description{
@@ -33,6 +32,11 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=CB14B2]{CB14B2()}} Caley & Barry's (2014) "Non-constant" model.
 \item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' (2014) "Solow" model.
 \item \code{\link[=WA16B1]{WA16B1()}}	Wang et al.'s (2016) "Adaptive" model.
+\item \code{\link[=BR19F1]{BR19F1()}} Brook et al.'s (2019) "Solow" model.
+\item \code{\link[=BR19F2]{BR19F2()}} Brook et al.'s (2019) "Solow & Roberts" model.
+\item \code{\link[=BR19F3]{BR19F3()}} Brook et al.'s (2019) "Roberts & Solow" model.
+\item \code{\link[=BR19F4]{BR19F4()}} Brook et al.'s (2019) "McInerny" model.
+\item \code{\link[=BR19F5]{BR19F5()}} Brook et al.'s (2019) "Last Appearance Date" model.
 \item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s (2020) "Certain-only" model.
 \item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s (2020) "Uncertain" model.
 \item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s (2021) "Change-point" model.

@@ -125,7 +125,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
   unlink("model_pois.txt")
 
   # Extract posteriors
-  posterior <- as.data.frame(coda:::as.matrix.mcmc.list(codaSamplespois))
+  posterior <- as.data.frame(as.matrix(codaSamplespois))
 
   # Calculate p(extant)
   p.extant <- mean(posterior$tau + init.time > test.time)
@@ -151,3 +151,6 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
   return(output)
 
 }
+
+# Declare certain as a known global variable (column in records data.frame):
+utils::globalVariables("certain")

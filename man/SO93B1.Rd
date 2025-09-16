@@ -9,7 +9,7 @@ SO93B1(
   alpha = 0.05,
   init.time = min(records),
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  prior = runif(n = 1e+06, min = 0, max = 1),
+  prior = runif(n = 1000000, min = 0, max = 1),
   keep.dists = FALSE
 )
 }

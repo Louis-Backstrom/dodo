@@ -47,3 +47,6 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# Trash folder (WIP files not to be included in package build etc.)
+trash/

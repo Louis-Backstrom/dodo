@@ -819,7 +819,7 @@ propose.delta <- function(x, sd = 0.5) {
 
 q.delta <- function(x1, x2) {
 
-  return(dlnorm(x1, log(x2), sd = 0.5, log = TRUE))
+  return(dlnorm(x1, log(x2), sdlog = 0.5, log = TRUE))
 
 }
 
@@ -869,7 +869,7 @@ propose.eps0 <- function(x, sd = 1.5) {
 
 propose.eps1 <- function(x, sd = 0.15) {
 
-  return(rlnorm(1, log(x), sd = sd))
+  return(rlnorm(1, log(x), sdlog = sd))
 
 }
 
@@ -894,7 +894,7 @@ propose.eps1 <- function(x, sd = 0.15) {
 
 q.eps1 <- function(x1, x2) {
 
-  return(dlnorm(x1, log(x2), sd = 0.15, log = TRUE))
+  return(dlnorm(x1, log(x2), sdlog = 0.15, log = TRUE))
 
 }
 

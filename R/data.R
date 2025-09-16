@@ -249,6 +249,33 @@
 #' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
 "woodpecker2"
 
+#' @title Ivory-billed Woodpecker sightings (variable certainty)
+#'
+#' @description
+#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
+#' Roberts et al. (2010).
+#'
+#' @format A `data.frame` with 2 columns and 68 rows.
+#'
+#' @note
+#' Sighting certainty values are the "extreme" values from Brook et al. 2019
+#' (i.e. 0.99, 0.5, 0.01).
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
+#' reports of putatively extinct species and why it matters. *Conservation*
+#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
+#'
+#' **Other References**
+#'
+#' Brook, B. W., Buettel, J. C., & Jaric, I. (2019). A fast re-sampling method
+#' for using reliability ratings of sightings with extinction-date estimators.
+#' *Ecology*, 100(9), e02787. \doi{10.1002/ecy.2787}
+#'
+"woodpecker3"
+
 #' @title Tasmanian Fox carcass recoveries
 #'
 #' @description

@@ -8,7 +8,7 @@ SS89B1(
   records,
   alpha = 0.05,
   t.max = max(records) * 2,
-  length.out = 1e+06,
+  length.out = 1000000,
   keep.dists = FALSE
 )
 }

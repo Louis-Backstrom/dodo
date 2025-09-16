@@ -25,6 +25,11 @@
 #' * [CB14B2()] Caley & Barry's (2014) "Non-constant" model.
 #' * [JR14F1()] Jarić & Roberts' (2014) "Solow" model.
 #' * [WA16B1()]	Wang et al.'s (2016) "Adaptive" model.
+#' * [BR19F1()] Brook et al.'s (2019) "Solow" model.
+#' * [BR19F2()] Brook et al.'s (2019) "Solow & Roberts" model.
+#' * [BR19F3()] Brook et al.'s (2019) "Roberts & Solow" model.
+#' * [BR19F4()] Brook et al.'s (2019) "McInerny" model.
+#' * [BR19F5()] Brook et al.'s (2019) "Last Appearance Date" model.
 #' * [KO20B1()] Kodikara et al.'s (2020) "Certain-only" model.
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.
