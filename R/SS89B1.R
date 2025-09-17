@@ -10,16 +10,14 @@
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
 #' @param t.max maximum time to estimate posterior density out to (defaults to
-#' double the most recent record time).
-#' @param length.out number of posterior samples to generate (defaults to 1
+#' the square of most recent record time; this may not be appropriate for all
+#' datasets).
+#' @param length.out number of posterior samples to generate (defaults to 10
 #' million).
-#' @param keep.dists whether to include the posterior distribution vectors in
-#' the final function output or not (defaults to `FALSE`).
 #'
 #' @returns a `list` object with the original parameters and the point estimate
 #' and credible interval included as elements. The credible interval is a
-#' two-element numeric vector called `cred.int`. The posterior distribution
-#' vectors are also included, if `keep.dists` is set to `TRUE`.
+#' two-element numeric vector called `cred.int`.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -40,8 +38,8 @@
 #'
 #' @export
 
-SS89B1 <- function(records, alpha = 0.05, t.max = max(records) * 2,
-                   length.out = 1e6, keep.dists = FALSE) {
+SS89B1 <- function(records, alpha = 0.05, t.max = max(records) ^ 2,
+                   length.out = 1e7) {
 
   # Sort records
   records <- sort(records)
@@ -64,28 +62,14 @@ SS89B1 <- function(records, alpha = 0.05, t.max = max(records) * 2,
   posterior <- sample(theta, prob = pdf, replace = T)
 
   # Output
-
-  if (keep.dists == TRUE) {
-    output <- list(
-      records = records,
-      alpha = alpha,
-      t.max = t.max,
-      length.out = length.out,
-      pdf = pdf,
-      posterior = posterior,
-      estimate = mean(posterior),
-      cred.int = c(max(records), as.numeric(quantile(posterior, 1 - alpha)))
-    )
-  } else {
-    output <- list(
-      records = records,
-      alpha = alpha,
-      t.max = t.max,
-      length.out = length.out,
-      estimate = mean(posterior),
-      cred.int = c(max(records), as.numeric(quantile(posterior, 1 - alpha)))
-    )
-  }
+  output <- list(
+    records = records,
+    alpha = alpha,
+    t.max = t.max,
+    length.out = length.out,
+    estimate = mean(posterior),
+    cred.int = c(max(records), as.numeric(quantile(posterior, 1 - alpha)))
+  )
 
   return(output)
 

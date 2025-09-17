@@ -4,13 +4,7 @@
 \alias{SS89B1}
 \title{Strauss & Sadler's (1989) "Bayesian" model}
 \usage{
-SS89B1(
-  records,
-  alpha = 0.05,
-  t.max = max(records) * 2,
-  length.out = 1000000,
-  keep.dists = FALSE
-)
+SS89B1(records, alpha = 0.05, t.max = max(records)^2, length.out = 1e+07)
 }
 \arguments{
 \item{records}{numeric vector object containing all sighting records of the
@@ -20,19 +14,16 @@ taxon of interest.}
 the \eqn{1 - \alpha} credible interval.}
 
 \item{t.max}{maximum time to estimate posterior density out to (defaults to
-double the most recent record time).}
+the square of most recent record time; this may not be appropriate for all
+datasets).}
 
-\item{length.out}{number of posterior samples to generate (defaults to 1
+\item{length.out}{number of posterior samples to generate (defaults to 10
 million).}
-
-\item{keep.dists}{whether to include the posterior distribution vectors in
-the final function output or not (defaults to \code{FALSE}).}
 }
 \value{
 a \code{list} object with the original parameters and the point estimate
 and credible interval included as elements. The credible interval is a
-two-element numeric vector called \code{cred.int}. The posterior distribution
-vectors are also included, if \code{keep.dists} is set to \code{TRUE}.
+two-element numeric vector called \code{cred.int}.
 }
 \description{
 Equation 26 from Strauss & Sadler 1989, assuming the prior distribution

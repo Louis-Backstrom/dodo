@@ -9,8 +9,7 @@ SO93B1(
   alpha = 0.05,
   init.time = min(records),
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  prior = runif(n = 1000000, min = 0, max = 1),
-  keep.dists = FALSE
+  pi = 0.5
 )
 }
 \arguments{
@@ -26,18 +25,12 @@ the first sighting, in which case this sighting is removed from the record.}
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}
 
-\item{prior}{prior distribution of extinction probability.
-Defaults to a \eqn{U(0, 1)} distribution.}
-
-\item{keep.dists}{whether to include the posterior distribution vectors in
-the final function output or not (defaults to \code{FALSE}).}
+\item{pi}{prior probability that \eqn{H_0} is true (defaults to
+\eqn{\pi = 0.5}).}
 }
 \value{
-a \code{list} object with the original parameters and the Bayes factor,
-point estimate, and credible interval included as elements. The credible
-interval is a two-element numeric vector called \code{cred.int}. The prior and
-posterior distribution vectors are also included, if \code{keep.dists} is set
-to \code{TRUE}.
+a \code{list} object with the original parameters and the Bayes factor
+and p(extant) included as elements.
 }
 \description{
 Equation 3 and others from Solow 1993. Estimates a Bayes factor and

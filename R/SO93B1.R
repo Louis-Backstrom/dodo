@@ -13,16 +13,11 @@
 #' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
-#' @param prior prior distribution of extinction probability.
-#' Defaults to a \eqn{U(0, 1)} distribution.
-#' @param keep.dists whether to include the posterior distribution vectors in
-#' the final function output or not (defaults to `FALSE`).
+#' @param pi prior probability that \eqn{H_0} is true (defaults to
+#' \eqn{\pi = 0.5}).
 #'
-#' @returns a `list` object with the original parameters and the Bayes factor,
-#' point estimate, and credible interval included as elements. The credible
-#' interval is a two-element numeric vector called `cred.int`. The prior and
-#' posterior distribution vectors are also included, if `keep.dists` is set
-#' to `TRUE`.
+#' @returns a `list` object with the original parameters and the Bayes factor
+#' and p(extant) included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -44,8 +39,7 @@
 
 SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
-                   prior = runif(n = 1e6, min = 0, max = 1),
-                   keep.dists = FALSE) {
+                   pi = 0.5) {
 
   # Sort records
   records <- sort(records)
@@ -68,33 +62,19 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
   # Calculate Bayes factor
   Bayes.factor <- (n - 1) / ((bigT / tn) ^ (n - 1) - 1)
 
-  # Sample from posterior
-  posterior <- (1 + ((1 - prior) / (prior * Bayes.factor))) ^ -1
+  # Calculate posterior
+  posterior <- (1 + ((1 - pi) / (pi * Bayes.factor))) ^ -1
 
   # Output
-  if (keep.dists == TRUE) {
-    output <- list(
-      records = records,
-      alpha = alpha,
-      init.time = init.time,
-      test.time = test.time,
-      prior = prior,
-      posterior = posterior,
-      Bayes.factor = Bayes.factor,
-      estimate = mean(posterior),
-      cred.int = as.vector(quantile(posterior, c(0.025, 0.975)))
-    )
-  } else {
-    output <- list(
-      records = records,
-      alpha = alpha,
-      init.time = init.time,
-      test.time = test.time,
-      Bayes.factor = Bayes.factor,
-      estimate = mean(posterior),
-      cred.int = as.vector(quantile(posterior, c(0.025, 0.975)))
-    )
-  }
+  output <- list(
+    records = records,
+    alpha = alpha,
+    init.time = init.time,
+    test.time = test.time,
+    pi = pi,
+    Bayes.factor = Bayes.factor,
+    p.extant = posterior
+  )
 
   return(output)
 
