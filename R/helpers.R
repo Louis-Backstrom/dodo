@@ -1,3 +1,35 @@
+#' @title myfun from sExtinct package
+#'
+#' @description
+#' Helper function. Modified myfun function from sExtinct package. For RS03F1().
+#'
+#' @param i a number.
+#' @param j a number.
+#' @param v a number.
+#'
+#' @returns a number.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Clements, C. F., Collen, B., Blackburn, T. M., & Petchey, O. L. (2014).
+#' Effects of recent environmental change on accuracy of inferences of
+#' extinction status. *Conservation Biology*, 28(4), 971-981.
+#' \doi{10.1111/cobi.12329}
+#'
+#' **Other References**
+#'
+#' Roberts, D. L., & Solow, A. R. (2003). Flightless birds: when did the dodo
+#' become extinct? *Nature*, 426(6964), 245. \doi{10.1038/426245a}
+#'
+#' @noRd
+
+myfun <- function(i, j, v) {
+
+  return((gamma(2 * v + i) * gamma(v + j)) / (gamma(v + i) * gamma(j)))
+
+}
+
 #' @title F(x) from Solow 2005
 #'
 #' @description
@@ -120,7 +152,7 @@ posterior_cer_mcmc <- function(y_c){
 
     }
     "
-    )
+  )
 
   writeLines(modelStringm1, con = "model_m1.txt")
 
@@ -231,7 +263,7 @@ posterior_cer_uncer_mcmc <- function(y_c,y_u){
 
     }
     "
-    )
+  )
 
   writeLines(modelStringm2, con = "model_m2.txt")
 

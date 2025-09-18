@@ -36,6 +36,11 @@
 #' to infer species extinctions: an evaluation of different methods. *Ecology*,
 #' 90(5), 1291-1300. \doi{10.1890/08-0316.1}
 #'
+#' Clements, C. F., Collen, B., Blackburn, T. M., & Petchey, O. L. (2014).
+#' Effects of recent environmental change on accuracy of inferences of
+#' extinction status. *Conservation Biology*, 28(4), 971-981.
+#' \doi{10.1111/cobi.12329}
+#'
 #' @examples
 #' # Run the Dodo analysis from Roberts & Solow 2003
 #' RS03F1(dodos, k = 10, test.time = 2002)
@@ -43,7 +48,7 @@
 #' @export
 
 RS03F1 <- function(records, alpha = 0.05,
-                   k = ifelse(length(records >= 10), 10, length(records)),
+                   k = ifelse(length(records) >= 10, 10, length(records)),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
 
   # Sort records
@@ -53,39 +58,26 @@ RS03F1 <- function(records, alpha = 0.05,
   n <- length(records)
 
   # Set up function components
-  e <- rep(1, k)
-  nuhat <- (1 / (k - 1)) * sum(log(
-    (records[n] - records[n - k + 1]) /
-      (records[n] - records[(1:(k - 2)) + 1])))
-  Lambda <- matrix(ncol = k, nrow = k)
-  for (j in 1:k) {
-    for (i in 1:k) {
-      if (j <= i) {
-        Lambda[i, j] <- (gamma(2 * nuhat + i) * gamma(nuhat + j)) /
-          (gamma(nuhat + i) * gamma(j))
-      } else {
-        Lambda[i, j] <- Lambda[j, i]
-      }
-    }
+  sights <-  sort(records, decreasing = TRUE)[1:k]
+  v <- (1 / (k - 1)) *
+    sum(log((sights[1] - sights[k]) / (sights[1] - sights[2:(k - 1)])))
+  e <- matrix(rep(1, k), ncol = 1)
+  SL <- (-log(1 - alpha / 2) / length(sights)) ^ -v
+  SU <- (-log(alpha / 2) / length(sights)) ^ -v
+  lambda <- outer(1:k, 1:k, myfun, v = v)
+  lambda <- ifelse(lower.tri(lambda), lambda, t(lambda))
+  a <- as.vector(solve(t(e) %*% solve(lambda) %*% e)) * solve(lambda) %*% e
+
+  # Calculate model estimates
+  conf.int.lower <- max(sights) + ((max(sights) - min(sights)) / (SL - 1))
+  conf.int.upper <- max(sights) + ((max(sights) - min(sights)) / (SU - 1))
+  estimate <- sum(t(a) %*% sights)
+  p.value <- exp(-k * ((test.time - sights[1]) / (test.time - sights[k])) ^
+                   (1 / v))
+
+  if (conf.int.lower > conf.int.upper) {
+    warning("Confidence Interval estimation produced an invalid interval!")
   }
-  w <- as.vector(solve(t(e) %*% solve(Lambda) %*% matrix(e))) *
-    solve(Lambda) %*% matrix(e)
-  c <- (-k / log(alpha)) ^ (-nuhat)
-
-  # Calculate p-value
-  p.value <- exp(-k * ((test.time - records[n]) /
-                   (test.time - records[n - k + 1])) ^ (1 / nuhat))
-
-  # Calculate point estimate
-  estimate <- sum(w * records[n - 1:k + 1])
-
-  # Calculate lower bound of confidence interval
-  SL <- (-log(1 - alpha / 2) / k) ^ (-nuhat)
-  conf.int.lower <- records[n] + (records[n] - records[n - k + 1]) / (SL - 1)
-
-  # Calculate upper bound of confidence interval
-  SU <- (-log(alpha / 2) / k) ^ (-nuhat)
-  conf.int.upper <- records[n] + (records[n] - records[n - k + 1]) / (SU - 1)
 
   # Output
   output <- list(

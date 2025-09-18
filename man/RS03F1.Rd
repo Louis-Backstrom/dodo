@@ -7,7 +7,7 @@
 RS03F1(
   records,
   alpha = 0.05,
-  k = ifelse(length(records >= 10), 10, length(records)),
+  k = ifelse(length(records) >= 10, 10, length(records)),
   test.time = as.numeric(format(Sys.Date(), "\%Y"))
 )
 }
@@ -56,4 +56,9 @@ Solow, A. R. (2005). Inferring extinction from a sighting record.
 Rivadeneira, M. M., Hunt, G., & Roy, K. (2009). The use of sighting records
 to infer species extinctions: an evaluation of different methods. \emph{Ecology},
 90(5), 1291-1300. \doi{10.1890/08-0316.1}
+
+Clements, C. F., Collen, B., Blackburn, T. M., & Petchey, O. L. (2014).
+Effects of recent environmental change on accuracy of inferences of
+extinction status. \emph{Conservation Biology}, 28(4), 971-981.
+\doi{10.1111/cobi.12329}
 }
