@@ -308,3 +308,26 @@
 #' \doi{10.1890/0012-9658(2003)084[1329:ANTFEB]2.0.CO;2}
 "orchid"
 
+#' @title Purple-winged Ground Dove sightings
+#'
+#' @description
+#' Purple-winged Ground Dove (*Paraclaravis geoffroyi*) sighting records from
+#' Lees et al. (2021).
+#'
+#' @format A `data.frame` with 2 columns and 61 rows.
+#'
+#' @note
+#' Adapted from Supplementary Table 1 in Lees et al. (2021). Almost all specimen
+#' records are considered certain, while sight and literature-based records are
+#' all considered uncertain. The controversial specimen from 1991 is classified
+#' as uncertain. Records have been deduplicated to ensure they are all
+#' independent from one another. Records without a date are not included.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Lees, A. C., Devenish, C., Areta, J. I., de Araújo, C. B., Keller, C.,
+#' Phalan, B., & Silveira, L. F. (2021). Assessing the Extinction Probability
+#' of the Purple-winged Ground Dove, an Enigmatic Bamboo Specialist.
+#' *Frontiers in Ecology and Evolution*, 9. \doi{10.3389/fevo.2021.624959}
+"ground_dove"
