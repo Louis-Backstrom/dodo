@@ -32,7 +32,6 @@
 #' @export
 
 JE10F2 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -57,5 +56,4 @@ JE10F2 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {
   )
 
   return(output)
-
 }

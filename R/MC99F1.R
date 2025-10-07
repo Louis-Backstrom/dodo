@@ -36,7 +36,6 @@
 
 MC99F1 <- function(records, alpha = 0.05,
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -64,5 +63,4 @@ MC99F1 <- function(records, alpha = 0.05,
   )
 
   return(output)
-
 }

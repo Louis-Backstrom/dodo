@@ -43,7 +43,6 @@
 
 JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -63,13 +62,13 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
   tr <- sum(sum_vector)
 
   # Calculate p-value
-  p.value <- (tr / (test.time - init.time)) ^ r
+  p.value <- (tr / (test.time - init.time))^r
 
   # Calculate point estimate
   estimate <- (tr * (r + 1) / r) + init.time
 
   # Calculate upper bound of confidence interval
-  conf.int.upper <- tr / (alpha ^ (1 / r)) + init.time
+  conf.int.upper <- tr / (alpha^(1 / r)) + init.time
 
   # Output
   output <- list(
@@ -83,5 +82,4 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
   )
 
   return(output)
-
 }

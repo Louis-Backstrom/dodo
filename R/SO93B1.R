@@ -40,7 +40,6 @@
 SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    pi = 0.5) {
-
   # Sort records
   records <- sort(records)
 
@@ -60,10 +59,10 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
   bigT <- test.time - init.time
 
   # Calculate Bayes factor
-  Bayes.factor <- (n - 1) / ((bigT / tn) ^ (n - 1) - 1)
+  Bayes.factor <- (n - 1) / ((bigT / tn)^(n - 1) - 1)
 
   # Calculate posterior
-  posterior <- (1 + ((1 - pi) / (pi * Bayes.factor))) ^ -1
+  posterior <- (1 + ((1 - pi) / (pi * Bayes.factor)))^-1
 
   # Output
   output <- list(
@@ -77,5 +76,4 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }

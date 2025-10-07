@@ -29,7 +29,6 @@
 #' @export
 
 MC98F1 <- function(records) {
-
   # Determine number of records
   N <- sum(records$records)
 
@@ -43,7 +42,7 @@ MC98F1 <- function(records) {
   eT <- sum(records$effort)
 
   # Calculate p-value
-  p.value <- (et / eT) ^ N
+  p.value <- (et / eT)^N
 
   # Output
   output <- list(
@@ -52,5 +51,4 @@ MC98F1 <- function(records) {
   )
 
   return(output)
-
 }

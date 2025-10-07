@@ -52,7 +52,6 @@
 
 SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -72,13 +71,13 @@ SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
   bigT <- test.time - init.time
 
   # Calculate p-value
-  p.value <- (tn / bigT) ^ n
+  p.value <- (tn / bigT)^n
 
   # Calculate point estimate
   estimate <- ((n + 1) / n) * tn
 
   # Calculate relative width of confidence interval
-  x <- alpha ^ (1 / n)
+  x <- alpha^(1 / n)
 
   # Output
   output <- list(
@@ -92,5 +91,4 @@ SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }

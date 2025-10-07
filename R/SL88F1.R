@@ -24,7 +24,7 @@
 #' Expected Sequence of Biostratigraphic Events. *Journal of Geology*, 96(2),
 #' 228-236. \doi{10.1086/629212}
 #'
-#'**Other References**
+#' **Other References**
 #'
 #' McFarlane, D. A. (1999). A Comparison of Methods for the Probabilistic
 #' Determination of Vertebrate Extinction Chronologies. In R. D. E. MacPhee
@@ -42,7 +42,6 @@
 #' @export
 
 SL88F1 <- function(records, alpha = 0.05) {
-
   # Sort records
   records <- sort(records)
 
@@ -63,5 +62,4 @@ SL88F1 <- function(records, alpha = 0.05) {
   )
 
   return(output)
-
 }

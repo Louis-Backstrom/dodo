@@ -37,7 +37,6 @@
 
 KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -62,7 +61,8 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
     t_n = t_n,
     N = N,
     cat = cat,
-    Tt = Tt)
+    Tt = Tt
+  )
 
   # Define the model
   modelpois <- paste0("
@@ -113,12 +113,17 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
   sink(file = tempfile())
 
   # Run the chains
-  jagsmodelpois <- rjags::jags.model(file = "model_pois.txt", data = dataList,
-                                     n.chains = 4, n.adapt = 10000)
+  jagsmodelpois <- rjags::jags.model(
+    file = "model_pois.txt", data = dataList,
+    n.chains = 4, n.adapt = 10000
+  )
   update(jagsmodelpois, n.iter = 10000)
-  codaSamplespois <- rjags::coda.samples(jagsmodelpois, variable.names = c(
-    "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"),
-    n.iter = 130000, thin = 13)
+  codaSamplespois <- rjags::coda.samples(jagsmodelpois,
+    variable.names = c(
+      "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"
+    ),
+    n.iter = 130000, thin = 13
+  )
 
   sink()
 
@@ -149,7 +154,6 @@ KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
   )
 
   return(output)
-
 }
 
 # Declare certain as a known global variable (column in records data.frame):

@@ -28,7 +28,7 @@ integrand.neglambdas <- function(L, th, x, prmean, prSD) {
 
   likelihood <- rep(NA, k)
   for (i in 1:k) {
-    likelihood[i] <- sum(log((1 - L[i]) / th * 1 / (1 - x / th) ^ L[i]))
+    likelihood[i] <- sum(log((1 - L[i]) / th * 1 / (1 - x / th)^L[i]))
   }
 
   posterior <- prior + likelihood
@@ -66,8 +66,8 @@ integrand.poslambdas <- function(L, th, x, prmean, prSD) {
   prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   likelihood <- rep(NA, k)
-  for(i in 1:k) {
-    likelihood[i] <- sum(log((1 + L[i]) / th * (x / th) ^ L[i]))
+  for (i in 1:k) {
+    likelihood[i] <- sum(log((1 + L[i]) / th * (x / th)^L[i]))
   }
 
   posterior <- prior + likelihood
@@ -105,8 +105,8 @@ integrand.thetasnegL <- function(th, L, x, prmean, prSD) {
   prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   likelihood <- rep(NA, k)
-  for(i in 1:k) {
-    likelihood[i] <- sum(log((1 - L) / th[i] * 1 / (1 - x / th[i]) ^ L))
+  for (i in 1:k) {
+    likelihood[i] <- sum(log((1 - L) / th[i] * 1 / (1 - x / th[i])^L))
   }
 
   posterior <- prior + likelihood
@@ -144,8 +144,8 @@ integrand.thetasposL <- function(th, L, x, prmean, prSD) {
   prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   likelihood <- rep(NA, k)
-  for(i in 1:k) {
-    likelihood[i] <- sum(log((1 + L) / th[i] * (x / th[i]) ^ L))
+  for (i in 1:k) {
+    likelihood[i] <- sum(log((1 + L) / th[i] * (x / th[i])^L))
   }
 
   posterior <- prior + likelihood
@@ -213,7 +213,6 @@ drefbeta <- function(x, L) {
 
 abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
                 prSD = 1, alpha, PLOT = 0) {
-
   # Get confidence level
   conf <- 1 - alpha
 
@@ -222,9 +221,9 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # If a base is specified, check that it is valid
   if (!is.null(base)) {
     if ((distance & ext) & (base > min(x)) |
-        (distance & !ext) & (base < max(x)) |
-        (!distance & ext) & (base < max(x)) |
-        (!distance & !ext) & (base > min(x))) {
+      (distance & !ext) & (base < max(x)) |
+      (!distance & ext) & (base < max(x)) |
+      (!distance & !ext) & (base > min(x))) {
       stop("Invalid value for base")
     }
   }
@@ -245,7 +244,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
     if (!is.null(base)) {
       x <- base - x
     }
-    if(is.null(base)) {
+    if (is.null(base)) {
       base <- max(x)
       x <- base - x
       x <- sort(x, decreasing = FALSE)[-1]
@@ -264,7 +263,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   upperlimth <- 500
   numstepsth <- 1000
   lowerlimL <- -10
-  upperlimL <-  10
+  upperlimL <- 10
   numstepsL <- 40
   Lvals <- seq(lowerlimL, upperlimL, length.out = numstepsL)
   Ldens <- rep(NA, numstepsL)
@@ -276,12 +275,15 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Increment lambda values, integrating over theta values for each
   for (i in 1:numstepsL) {
     Ldens[i] <- ifelse(Lvals[i] <= 0,
-                       integrate(integrand.thetasnegL, xmax, upperlimth,
-                                 L = Lvals[i], x = x, prmean = prmean,
-                                 prSD = prSD)$value,
-                       integrate(integrand.thetasposL, xmax, upperlimth,
-                                 L = Lvals[i], x = x, prmean = prmean,
-                                 prSD = prSD)$value )
+      integrate(integrand.thetasnegL, xmax, upperlimth,
+        L = Lvals[i], x = x, prmean = prmean,
+        prSD = prSD
+      )$value,
+      integrate(integrand.thetasposL, xmax, upperlimth,
+        L = Lvals[i], x = x, prmean = prmean,
+        prSD = prSD
+      )$value
+    )
   }
 
   # Normalize lambda pdf to unit area
@@ -290,16 +292,20 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Calculate posterior quantities
   Lmean <- sum(Lvals * Ldens)
   Lhat <- Lmean
-  Lvar <- sum(Ldens * (Lvals - Lmean) ^ 2)
+  Lvar <- sum(Ldens * (Lvals - Lmean)^2)
 
   # Estimate Theta
 
   # Increment theta values, integrating over lambda values for each
   for (i in 1:numstepsth) {
-    thdens[i] <- (integrate(integrand.neglambdas, -Inf, 0, th = thetavals[i],
-                            x = x, prmean = prmean, prSD = prSD)$value +
-                    integrate(integrand.poslambdas, 0, Inf, th = thetavals[i],
-                              x = x, prmean = prmean, prSD = prSD)$value)
+    thdens[i] <- (integrate(integrand.neglambdas, -Inf, 0,
+      th = thetavals[i],
+      x = x, prmean = prmean, prSD = prSD
+    )$value +
+      integrate(integrand.poslambdas, 0, Inf,
+        th = thetavals[i],
+        x = x, prmean = prmean, prSD = prSD
+      )$value)
   }
 
   # Normalize theta pdf to unit area
@@ -308,7 +314,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Calculate posterior quantities
   cutoff <- which.max(cumsum(thdens) >= conf)
   CIupper <- thetavals[cutoff]
-  cutoff <- which.max( cumsum(thdens) >= .5)
+  cutoff <- which.max(cumsum(thdens) >= .5)
   thmed <- thetavals[cutoff]
   thhat <- thmed
 
@@ -337,5 +343,4 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   colnames(temp) <- c("th-hat", "xmax", "CIupper", "L-hat", "var(L)")
 
   return(temp)
-
 }

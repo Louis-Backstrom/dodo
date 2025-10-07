@@ -38,9 +38,8 @@
 #'
 #' @export
 
-SS89B1 <- function(records, alpha = 0.05, t.max = max(records) ^ 2,
+SS89B1 <- function(records, alpha = 0.05, t.max = max(records)^2,
                    length.out = 1e7) {
-
   # Sort records
   records <- sort(records)
 
@@ -48,15 +47,15 @@ SS89B1 <- function(records, alpha = 0.05, t.max = max(records) ^ 2,
   n <- length(records)
 
   # Calculate u_n
-  un <- (max(records) - min(records)) ^ (-n + 2) -
-    (1 - min(records)) ^ (-n + 2) - (max(records)) ^ (-n + 2) + 1
+  un <- (max(records) - min(records))^(-n + 2) -
+    (1 - min(records))^(-n + 2) - (max(records))^(-n + 2) + 1
 
   # Set up vector of theta_2 values
   theta <- seq(max(records), t.max, length.out = length.out)
 
   # Calculate posterior density distribution
-  pdf <- (n - 2) * ((theta - min(records)) ^ (-n + 1) -
-                      theta ^ (-n + 1)) / un
+  pdf <- (n - 2) * ((theta - min(records))^(-n + 1) -
+    theta^(-n + 1)) / un
 
   # Sample from posterior
   posterior <- sample(theta, prob = pdf, replace = T)
@@ -72,5 +71,4 @@ SS89B1 <- function(records, alpha = 0.05, t.max = max(records) ^ 2,
   )
 
   return(output)
-
 }

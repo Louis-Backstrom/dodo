@@ -35,7 +35,6 @@
 #' @export
 
 WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
-
   # Sort records
   records <- sort(records)
 
@@ -47,8 +46,10 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
   }
 
   # Run the ABM model
-  abm_results <- abm(x = records, distance = FALSE, ext = FALSE, base = base,
-                     prmean = 0, prSD = 2, alpha = alpha, PLOT = 0)
+  abm_results <- abm(
+    x = records, distance = FALSE, ext = FALSE, base = base,
+    prmean = 0, prSD = 2, alpha = alpha, PLOT = 0
+  )
 
   # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {
@@ -65,5 +66,4 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
   )
 
   return(output)
-
 }

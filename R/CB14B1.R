@@ -40,7 +40,6 @@
 
 CB14B1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -56,8 +55,10 @@ CB14B1 <- function(records, alpha = 0.05, init.time = min(records),
   phi.wp <- c(1.1, 1.1)
 
   # Run sampler
-  res.pp.wp <- fit.func1(y = sightings, phi1 = phi.wp[1], phi2 = phi.wp[2],
-                         lambda1 = lam.wp[1], lambda2 = lam.wp[2], iter = 1e5)
+  res.pp.wp <- fit.func1(
+    y = sightings, phi1 = phi.wp[1], phi2 = phi.wp[2],
+    lambda1 = lam.wp[1], lambda2 = lam.wp[2], iter = 1e5
+  )
 
   # Extract extinction time posterior
   posterior <- res.pp.wp[, 3] + init.time - 1
@@ -74,5 +75,4 @@ CB14B1 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }

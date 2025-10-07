@@ -53,7 +53,6 @@
 BR19F4 <- function(records, alpha = 0.05,
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    cores = NULL) {
-
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -84,5 +83,4 @@ BR19F4 <- function(records, alpha = 0.05,
   )
 
   return(output)
-
 }

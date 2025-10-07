@@ -32,7 +32,6 @@
 #' @export
 
 BU95F1 <- function(records) {
-
   # Determine number of records
   N <- sum(records$records)
 
@@ -43,7 +42,7 @@ BU95F1 <- function(records) {
   CT <- nrow(records)
 
   # Calculate p-value
-  p.value <- (Ce / CT) ^ N
+  p.value <- (Ce / CT)^N
 
   # Output
   output <- list(
@@ -52,5 +51,4 @@ BU95F1 <- function(records) {
   )
 
   return(output)
-
 }

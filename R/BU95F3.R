@@ -46,7 +46,6 @@
 #' @export
 
 BU95F3 <- function(records) {
-
   # Adapted from sExtinct (by Christopher Clements) package code!
 
   # Determine number of records
@@ -57,45 +56,44 @@ BU95F3 <- function(records) {
 
   # Determine the length of the longest run of empty cells
   r <- max(rle(records$records == 0)$lengths[which(
-    rle(records$records == 0)$values == TRUE)])
+    rle(records$records == 0)$values == TRUE
+  )])
 
   # Calculate sum in for loop (from sExtinct code)
   full_sum <- 0
 
   for (j in 1:N) {
-
     TT <- seq(1, j)
     KK <- seq(1, j + 1)
 
     for (k in 1:(j + 1)) {
-
       if (k <= (CT / r)) {
-
         ff <- 1
 
-        for(indexn in 1:length(TT)) {
+        for (indexn in 1:length(TT)) {
           n <- indexn - 1
-          ff <-  ff * (CT - (r * k) - n)
+          ff <- ff * (CT - (r * k) - n)
         }
 
         dummy <- 0
 
-        for(indexi in 1:length(KK)) {
+        for (indexi in 1:length(KK)) {
           i <- indexi - 1
-          dummy <- dummy + (((-1) ^ i) * choose(j, i) * ((j - i) ^ N))
+          dummy <- dummy + (((-1)^i) * choose(j, i) * ((j - i)^N))
         }
 
-        Sn <-  (1 / factorial(j)) * dummy
-        calc <- ((-1) ^ (k+1)) * choose(j + 1, k) * ff * Sn
-
-      } else {calc <- 0}
+        Sn <- (1 / factorial(j)) * dummy
+        calc <- ((-1)^(k + 1)) * choose(j + 1, k) * ff * Sn
+      } else {
+        calc <- 0
+      }
 
       full_sum <- full_sum + calc
     }
   }
 
   # Calculate p-value
-  p.value <- CT ^ -N * full_sum
+  p.value <- CT^-N * full_sum
 
   # Output
   output <- list(
@@ -104,5 +102,4 @@ BU95F3 <- function(records) {
   )
 
   return(output)
-
 }

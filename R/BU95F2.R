@@ -32,7 +32,6 @@
 #' @export
 
 BU95F2 <- function(records) {
-
   # Determine the total number of sighting intervals
   CT <- nrow(records)
 
@@ -44,14 +43,15 @@ BU95F2 <- function(records) {
 
   # Determine the length of the longest run of empty cells
   r <- max(rle(records$records == 0)$lengths[which(
-    rle(records$records == 0)$values == TRUE)])
+    rle(records$records == 0)$values == TRUE
+  )])
 
   # Determine values of k to sum over
-  k <- 1:floor(n0/r)
+  k <- 1:floor(n0 / r)
 
   # Calculate p-value
-  part0 <- choose(CT, n0) ^ (-1)
-  part1 <- (-1) ^ (k + 1)
+  part0 <- choose(CT, n0)^(-1)
+  part1 <- (-1)^(k + 1)
   part2 <- choose(n1 + 1, k)
   part3 <- choose(CT - r * k, n1)
   p.value <- part0 * sum(part1 * part2 * part3)
@@ -64,5 +64,4 @@ BU95F2 <- function(records) {
   )
 
   return(output)
-
 }

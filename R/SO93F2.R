@@ -42,7 +42,6 @@
 
 SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -70,18 +69,18 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Calculate numerator for point estimate
   i <- 0:floor(s / tn)
-  part1 <- (-1) ^ i
+  part1 <- (-1)^i
   part2 <- choose(n, i)
-  part3 <- (s - (i * tn)) ^ (n - 1)
+  part3 <- (s - (i * tn))^(n - 1)
   numerator <- sum(part1 * part2 * part3)
   rm(i, part1, part2, part3)
 
   # Calculate denominator for point estimate
   part0 <- n * (n - 1)
   i <- 0:(floor(s / tn) - 1)
-  part1 <- (-1) ^ i
+  part1 <- (-1)^i
   part2 <- choose(n - 1, i)
-  part3 <- (s - ((i + 1) * tn)) ^ (n - 2)
+  part3 <- (s - ((i + 1) * tn))^(n - 2)
   denominator <- part0 * sum(part1 * part2 * part3)
   rm(i, part0, part1, part2, part3)
 
@@ -102,10 +101,10 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
     test.time = test.time,
     p.value = p.value,
     estimate = tn + numerator / denominator,
-    conf.int = c(tn, conf.int))
+    conf.int = c(tn, conf.int)
+  )
 
   return(output)
-
 }
 
 #' @title F(x) from Solow 2005
@@ -130,13 +129,12 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 Fx <- function(x, s, n) {
   is <- 1:floor(s / x)
 
-  part1 <- (-1) ^ (is - 1)
+  part1 <- (-1)^(is - 1)
   part2 <- choose(n, is)
-  part3 <- (1 - (is * x / s)) ^ (n - 1)
+  part3 <- (1 - (is * x / s))^(n - 1)
 
   result <- 1 - sum(part1 * part2 * part3)
   rm(is, part1, part2, part3)
 
   return(result)
-
 }

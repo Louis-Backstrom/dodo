@@ -44,7 +44,6 @@
 CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    burn.in = 1000, n.iter = 11000) {
-
   # Sort records
   records <- sort(records)
 
@@ -56,19 +55,23 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
   # }
 
   # Run sampler then discard burn in period
-  res <- fit.func2(iter = n.iter, y = sightings, pgr.init = 0.0,
-                   delta.init = 0.69, eps0.init = 0, eps1.init = 1, N0.init = 1)
+  res <- fit.func2(
+    iter = n.iter, y = sightings, pgr.init = 0.0,
+    delta.init = 0.69, eps0.init = 0, eps1.init = 1, N0.init = 1
+  )
   res <- res[-(1:burn.in), ]
 
   # Calculate p.extant
-  p.extant <- mean(is.na(res[,6]))
+  p.extant <- mean(is.na(res[, 6]))
 
   # Calculate estimate
-  estimate <- median(replace(res[,6], is.na(res[,6]), Inf)) + init.time - 1
+  estimate <- median(replace(res[, 6], is.na(res[, 6]), Inf)) + init.time - 1
 
   # Calculate credible interval bounds
-  cred.int <- as.numeric(quantile(replace(res[,6], is.na(res[,6]), Inf),
-                                  c(0, 1 - alpha))) + init.time - 1
+  cred.int <- as.numeric(quantile(
+    replace(res[, 6], is.na(res[, 6]), Inf),
+    c(0, 1 - alpha)
+  )) + init.time - 1
 
   # Output
   output <- list(
@@ -82,5 +85,4 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }

@@ -39,7 +39,6 @@
 
 KO20B1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort(records)
 
@@ -83,7 +82,6 @@ KO20B1 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }
 
 #' @title Model 1 function from Kodikara et al. 2020
@@ -104,16 +102,16 @@ KO20B1 <- function(records, alpha = 0.05, init.time = min(records),
 #'
 #' @noRd
 
-posterior_cer_mcmc <- function(y_c){
+posterior_cer_mcmc <- function(y_c) {
   set.seed(1234)
 
   Tt <- length(y_c)
   n <- sum(y_c)
   t_n <- 0
   i <- 1
-  while(sum(y_c[i:Tt]) > 0){
+  while (sum(y_c[i:Tt]) > 0) {
     t_n <- i
-    i <- i+1
+    i <- i + 1
   }
 
   lik <- c()
@@ -163,13 +161,15 @@ posterior_cer_mcmc <- function(y_c){
 
   writeLines(modelStringm1, con = "model_m1.txt")
 
-  jagsModelm1 <- rjags::jags.model(file = "model_m1.txt", data = dataList,
-                                   n.chains = 4, n.adapt = 60000)
+  jagsModelm1 <- rjags::jags.model(
+    file = "model_m1.txt", data = dataList,
+    n.chains = 4, n.adapt = 60000
+  )
   update(jagsModelm1, n.iter = 60000)
   codaSamplesm1 <- rjags::coda.samples(jagsModelm1, variable.names = c(
-    "tau", "p", "theta"), n.iter = 130000, thin = 13)
+    "tau", "p", "theta"
+  ), n.iter = 130000, thin = 13)
   unlink("model_m1.txt")
 
   return(coda::mcmc(codaSamplesm1))
-
 }

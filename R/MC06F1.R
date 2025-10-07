@@ -49,7 +49,6 @@
 MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    remove.first = TRUE) {
-
   # Sort records
   records <- sort(records)
 
@@ -63,7 +62,7 @@ MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
   }
 
   # Calculate p-value
-  p.value <- (1 - (n / (max(records) - init.time))) ^
+  p.value <- (1 - (n / (max(records) - init.time)))^
     (test.time - (max(records)))
 
   # Calculate width of confidence interval
@@ -80,5 +79,4 @@ MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
   )
 
   return(output)
-
 }

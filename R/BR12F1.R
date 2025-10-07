@@ -39,7 +39,6 @@
 #' @export
 
 BR12F1 <- function(records, alpha = 0.05) {
-
   # Sort records
   records <- sort(records, decreasing = T)
 
@@ -49,8 +48,10 @@ BR12F1 <- function(records, alpha = 0.05) {
   # Calculate thetas
   theta_k <- c()
   for (i in 2:n) {
-    theta_k[i - 1] <- MC06F1(records[1:i], alpha = alpha,
-                             remove.first = FALSE)$conf.int[2]
+    theta_k[i - 1] <- MC06F1(records[1:i],
+      alpha = alpha,
+      remove.first = FALSE
+    )$conf.int[2]
   }
 
   # Calculate weights
@@ -68,5 +69,4 @@ BR12F1 <- function(records, alpha = 0.05) {
   )
 
   return(output)
-
 }

@@ -48,7 +48,6 @@
 #' @export
 
 SS89F1 <- function(records, alpha = 0.05) {
-
   # Sort records
   records <- sort(records)
 
@@ -59,7 +58,7 @@ SS89F1 <- function(records, alpha = 0.05) {
   estimate <- (n * max(records) - min(records)) / (n - 1)
 
   # Calculate width of confidence interval
-  x <- (alpha ^ (-1 / (n - 1)) - 1) * (max(records) - min(records))
+  x <- (alpha^(-1 / (n - 1)) - 1) * (max(records) - min(records))
 
   # Output
   output <- list(
@@ -70,5 +69,4 @@ SS89F1 <- function(records, alpha = 0.05) {
   )
 
   return(output)
-
 }

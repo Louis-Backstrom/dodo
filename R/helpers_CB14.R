@@ -39,12 +39,12 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
   periods <- obs - final
   result <- matrix(0, nrow = iter, ncol = 3)
 
-  for(i in 1:iter) {
+  for (i in 1:iter) {
     newz <- impute(curr.phi, curr.lambda, periods)
     index <- (1:length(newz))[newz == 1]
     extra.y <- NA
 
-    if (index > periods)  {
+    if (index > periods) {
       extra.z <- rgeom(1, curr.phi) + 1
       curr.z <- obs + extra.z
       extra.y <- rbinom(extra.z - 1, 1, curr.lambda)
@@ -53,9 +53,11 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
     }
 
     curr.phi <- rbeta(1, phi1 + 1, phi2 + curr.z - 1)
-    curr.lambda <- rbeta(1, lambda1 + sum(c(y, extra.y), na.rm = TRUE),
-                         lambda2 + curr.z - sum(c(y, extra.y), na.rm = TRUE))
-    result[i,] <- c(curr.phi, curr.lambda, curr.z)
+    curr.lambda <- rbeta(
+      1, lambda1 + sum(c(y, extra.y), na.rm = TRUE),
+      lambda2 + curr.z - sum(c(y, extra.y), na.rm = TRUE)
+    )
+    result[i, ] <- c(curr.phi, curr.lambda, curr.z)
   }
 
   return(result)
@@ -85,8 +87,8 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
 impute <- function(phi, lambda, periods) {
   result <- 1:(periods + 1)
 
-  for(i in 1:periods) {
-    result[i] <- phi * ((1 - phi) * (1 - lambda)) ^ (i - 1)
+  for (i in 1:periods) {
+    result[i] <- phi * ((1 - phi) * (1 - lambda))^(i - 1)
   }
 
   result[periods + 1] <- exp(periods * log((1 - phi) * (1 - lambda)))
@@ -123,13 +125,12 @@ sim.N <- function(pgr, time, N0) {
   ans[1] <- N0
 
   if (time > 1) {
-    for (t in 2:time){
+    for (t in 2:time) {
       ans[t] <- ans[t - 1] * exp(pgr)
     }
   }
 
   return(ans)
-
 }
 
 #' @title Logit function from Caley & Barry 2014
@@ -151,9 +152,7 @@ sim.N <- function(pgr, time, N0) {
 #' @noRd
 
 logit <- function(x) {
-
   return(log(x / (1 - x)))
-
 }
 
 #' @title Inverse logit function from Caley & Barry 2014
@@ -175,9 +174,7 @@ logit <- function(x) {
 #' @noRd
 
 ilogit <- function(x) {
-
   return(1 / (1 + exp(-x)))
-
 }
 
 #' @title lam.gen function from Caley & Barry 2014
@@ -200,9 +197,7 @@ ilogit <- function(x) {
 #' @noRd
 
 lam.gen <- function(delta, N) {
-
   return(1 - exp(-delta * N))
-
 }
 
 #' @title phi.gen function from Caley & Barry 2014
@@ -234,7 +229,6 @@ phi.gen <- function(eps0, eps1, N) {
   }
 
   return(ans)
-
 }
 
 #' @title correct.negative function from Caley & Barry 2014
@@ -259,7 +253,6 @@ correct.negative <- function(x) {
   x[sign(x) < 0] <- 0
 
   return(x)
-
 }
 
 #' @title impute.TE function from Caley & Barry 2014
@@ -297,7 +290,6 @@ impute.TE <- function(p.cease) {
   } else {
     return(NA)
   }
-
 }
 
 #' @title calc.pars function (non-constant population) from Caley & Barry 2014
@@ -321,7 +313,7 @@ impute.TE <- function(p.cease) {
 #' @noRd
 
 calc.pars <- function(p, y) {
-  pgr <-  p[1]
+  pgr <- p[1]
   delta <- p[2]
   eps0 <- p[3]
   eps1 <- p[4]
@@ -378,8 +370,9 @@ calc.pars <- function(p, y) {
       TE = TE,
       y.obs = y.obs,
       phis = phis,
-      lambdas = lambdas))
-
+      lambdas = lambdas
+    )
+  )
 }
 
 #' @title calc.pars.given.TE function (non-constant population) from Caley &
@@ -405,13 +398,13 @@ calc.pars <- function(p, y) {
 #' @noRd
 
 calc.pars.given.TE <- function(p, TE, y) {
-  pgr <-  p[1]
+  pgr <- p[1]
   delta <- p[2]
   eps0 <- p[3]
   eps1 <- p[4]
   N0 <- p[5]
 
-  if(!is.na(TE)) {
+  if (!is.na(TE)) {
     N.traj <- sim.N(N0 = N0, pgr = pgr, time = TE)
   } else {
     N.traj <- sim.N(N0 = N0, pgr = pgr, time = length(y))
@@ -425,8 +418,9 @@ calc.pars.given.TE <- function(p, TE, y) {
       N = N.traj,
       TE = TE,
       phis = phis,
-      lambdas = lambdas))
-
+      lambdas = lambdas
+    )
+  )
 }
 
 #' @title Log-likelihood function for lambda from Caley & Barry 2014
@@ -448,10 +442,8 @@ calc.pars.given.TE <- function(p, TE, y) {
 #'
 #' @noRd
 
-lnL.lam <- function(lams, ys){
-
+lnL.lam <- function(lams, ys) {
   return(sum(log(lams[ys != 0])) + sum(log(1 - lams[ys != 1])))
-
 }
 
 #' @title Log-likelihood function for phi from Caley & Barry 2014
@@ -474,20 +466,17 @@ lnL.lam <- function(lams, ys){
 #' @noRd
 
 lnL.phi <- function(phis, TE) {
-  if(!is.na(TE)) {
+  if (!is.na(TE)) {
     ans <- sum(log(1 - phis[-length(phis)])) + log(tail(phis, 1))
   } else {
     ans <- sum(log(1 - phis))
   }
 
   return(ans)
-
 }
 
 N0.prior <- function(x) {
-
   return(dunif(x, 5, 50, log = FALSE))
-
 }
 
 #' @title Log N0 prior function from Caley & Barry 2014
@@ -509,9 +498,7 @@ N0.prior <- function(x) {
 #' @noRd
 
 lnL.N0.prior <- function(x) {
-
   return(dunif(x, 5, 50, log = TRUE))
-
 }
 
 #' @title pgr prior function from Caley & Barry 2014
@@ -533,9 +520,7 @@ lnL.N0.prior <- function(x) {
 #' @noRd
 
 pgr.prior <- function(x) {
-
   return(dunif(x, min = -2.3, max = 0.69, log = F))
-
 }
 
 #' @title Log pgr prior function from Caley & Barry 2014
@@ -557,9 +542,7 @@ pgr.prior <- function(x) {
 #' @noRd
 
 lnL.pgr.prior <- function(x) {
-
   return(dunif(x, min = -2.3, max = 0.69, log = TRUE))
-
 }
 
 #' @title delta prior function from Caley & Barry 2014
@@ -581,9 +564,7 @@ lnL.pgr.prior <- function(x) {
 #' @noRd
 
 delta.prior <- function(x) {
-
   return(dunif(x, 0.01, 4.6, log = FALSE))
-
 }
 
 #' @title Log delta prior function from Caley & Barry 2014
@@ -605,9 +586,7 @@ delta.prior <- function(x) {
 #' @noRd
 
 lnL.delta.prior <- function(x) {
-
   return(dunif(x, 0.01, 4.6, log = TRUE))
-
 }
 
 #' @title eps0 prior function from Caley & Barry 2014
@@ -629,9 +608,7 @@ lnL.delta.prior <- function(x) {
 #' @noRd
 
 eps0.prior <- function(x) {
-
   return(dunif(x, -20, 20, log = FALSE))
-
 }
 
 #' @title Log eps0 prior function from Caley & Barry 2014
@@ -653,9 +630,7 @@ eps0.prior <- function(x) {
 #' @noRd
 
 lnL.eps0.prior <- function(x) {
-
   return(dunif(x, -20, 20, log = TRUE))
-
 }
 
 #' @title eps1 prior function from Caley & Barry 2014
@@ -677,9 +652,7 @@ lnL.eps0.prior <- function(x) {
 #' @noRd
 
 eps1.prior <- function(x) {
-
   return(dunif(x, 0, 20, log = FALSE))
-
 }
 
 #' @title Log eps1 prior function from Caley & Barry 2014
@@ -701,9 +674,7 @@ eps1.prior <- function(x) {
 #' @noRd
 
 lnL.eps1.prior <- function(x) {
-
   return(dunif(x, 0, 20, log = TRUE))
-
 }
 
 #' @title propose.N0 function from Caley & Barry 2014
@@ -742,10 +713,8 @@ lnL.eps1.prior <- function(x) {
 #'
 #' @noRd
 
-propose.N0 <- function(x){
-
+propose.N0 <- function(x) {
   return(x)
-
 }
 
 #' @title propose.pgr function from Caley & Barry 2014
@@ -768,9 +737,7 @@ propose.N0 <- function(x){
 #' @noRd
 
 propose.pgr <- function(x, sd = 0.05) {
-
   return(rnorm(1, x, sd = sd))
-
 }
 
 #' @title propose.delta function from Caley & Barry 2014
@@ -793,9 +760,7 @@ propose.pgr <- function(x, sd = 0.05) {
 #' @noRd
 
 propose.delta <- function(x, sd = 0.5) {
-
   return(rlnorm(1, log(x), sd))
-
 }
 
 #' @title q.delta function from Caley & Barry 2014
@@ -818,9 +783,7 @@ propose.delta <- function(x, sd = 0.5) {
 #' @noRd
 
 q.delta <- function(x1, x2) {
-
   return(dlnorm(x1, log(x2), sdlog = 0.5, log = TRUE))
-
 }
 
 #' @title propose.eps0 function from Caley & Barry 2014
@@ -843,9 +806,7 @@ q.delta <- function(x1, x2) {
 #' @noRd
 
 propose.eps0 <- function(x, sd = 1.5) {
-
   return(rnorm(1, x, sd = sd))
-
 }
 
 #' @title propose.eps1 function from Caley & Barry 2014
@@ -868,9 +829,7 @@ propose.eps0 <- function(x, sd = 1.5) {
 #' @noRd
 
 propose.eps1 <- function(x, sd = 0.15) {
-
   return(rlnorm(1, log(x), sdlog = sd))
-
 }
 
 #' @title q.eps1 function from Caley & Barry 2014
@@ -893,9 +852,7 @@ propose.eps1 <- function(x, sd = 0.15) {
 #' @noRd
 
 q.eps1 <- function(x1, x2) {
-
   return(dlnorm(x1, log(x2), sdlog = 0.15, log = TRUE))
-
 }
 
 #' @title Non-constant population function from Caley & Barry 2014
@@ -930,7 +887,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
 
   curr.p <- c(pgr.init, delta.init, eps0.init, eps1.init, N0.init)
 
-  result <- matrix(0 , nrow = iter, ncol = 10)
+  result <- matrix(0, nrow = iter, ncol = 10)
   for (i in 1:iter) {
     # cat("Doing interation", i, "of", iter, "\n")
     curr.vals <- calc.pars(p = curr.p, y = y)
@@ -948,9 +905,9 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
       lnL.delta.prior(prop.p[2])
 
     LR <- exp(prop.lnLik.delta - curr.lnLik.delta +
-                q.delta(curr.p[2], prop.p[2]) - q.delta(prop.p[2], curr.p[2]))
+      q.delta(curr.p[2], prop.p[2]) - q.delta(prop.p[2], curr.p[2]))
 
-    if(runif(1) < LR & !is.na(LR)) {
+    if (runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 8] <- 1
@@ -968,9 +925,9 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
     prop.lnLik.eps <- lnL.phi(phis = prop.vals$phis, TE = TE.imp) +
       lnL.eps0.prior(prop.p[3]) + lnL.eps1.prior(prop.p[4])
     LR <- exp(prop.lnLik.eps - curr.lnLik.eps + q.eps1(curr.p[4], prop.p[4]) -
-                q.eps1(prop.p[4], curr.p[4]))
+      q.eps1(prop.p[4], curr.p[4]))
 
-    if(runif(1) < LR & !is.na(LR)) {
+    if (runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 9] <- 1
@@ -988,7 +945,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
       lnL.phi(phis = prop.vals$phis, TE = TE.imp) + lnL.pgr.prior(prop.p[1])
     LR <- exp(prop.lnLik.pgr - curr.lnLik.pgr)
 
-    if(runif(1) < LR & !is.na(LR)) {
+    if (runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 7] <- 1
@@ -1008,7 +965,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
 
     LR <- exp(prop.lnLik.N0 - curr.lnLik.N0)
 
-    if(runif(1) < LR & !is.na(LR)) {
+    if (runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 10] <- 1
@@ -1016,9 +973,8 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
       result[i, 10] <- 0
     }
 
-    result[i, 1:6] <- c(curr.p,TE.imp)
+    result[i, 1:6] <- c(curr.p, TE.imp)
   }
 
   return(result)
-
 }

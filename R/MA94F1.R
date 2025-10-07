@@ -41,7 +41,6 @@
 #' @export
 
 MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {
-
   # Sort records
   records <- sort(records)
 
@@ -55,7 +54,7 @@ MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {
 
   for (xi in i) {
     x <- 0:xi
-    test[xi + 1] <- sum(choose(N, x) * (1 - alpha) ^ x * alpha ^ (N - x))
+    test[xi + 1] <- sum(choose(N, x) * (1 - alpha)^x * alpha^(N - x))
   }
 
   x_lower <- i[max(which(TRUE == (gamma > test)))]
@@ -71,9 +70,9 @@ MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {
     conf.int = c(
       max(records),
       max(records) + sort(diff(records))[x_lower],
-      max(records) + unique(sort(diff(records))[x_upper])) # unique() to fix NAs
+      max(records) + unique(sort(diff(records))[x_upper])
+    ) # unique() to fix NAs
   )
 
   return(output)
-
 }

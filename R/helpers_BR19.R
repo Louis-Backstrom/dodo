@@ -94,7 +94,7 @@ ole <- function(ts) {
   sights <- rev(sort(ts))
   k <- length(sights)
   v <- (1 / (k - 1)) * sum(log((sights[1] - sights[k]) /
-                                 (sights[1] - sights[2:(k - 1)])))
+    (sights[1] - sights[2:(k - 1)])))
   lambda <- outer(1:k, 1:k, gam.fit, v = v)
   lambda <- ifelse(lower.tri(lambda), lambda, t(lambda))
   e <- matrix(rep(1, k), ncol = 1)
@@ -130,7 +130,6 @@ ole <- function(ts) {
 
 bbj.2018 <- function(dd, iter = 10000, ey = 2018, m = "LAD", plot = FALSE,
                      alpha, cores = NULL) {
-
   if (is.null(cores)) {
     cores <- parallel::detectCores() - 1
   }
@@ -145,30 +144,40 @@ bbj.2018 <- function(dd, iter = 10000, ey = 2018, m = "LAD", plot = FALSE,
 
   r.rec <- function(d) {
     sr <- d$year[which(d$prob > runif(length(d$year)))]
-    ext <- if(length(sr) > 2) {
+    ext <- if (length(sr) > 2) {
       ede(sr[order(sr)])
     }
     return(ifelse(length(ext) == 0, NA, ext))
   }
 
-  if(.Platform$OS.type == "windows") {
-    cl <- parallel::makeCluster(cores); dd
-    ext.yr <- parallel::parSapply(cl = cl, 1:iter,
-                        function(x) {r.rec(dd)})
+  if (.Platform$OS.type == "windows") {
+    cl <- parallel::makeCluster(cores)
+    dd
+    ext.yr <- parallel::parSapply(
+      cl = cl, 1:iter,
+      function(x) {
+        r.rec(dd)
+      }
+    )
     parallel::stopCluster(cl)
-  }
-  else {
-    ext.yr <- parallel::mclapply(1:iter, mc.cores = cores,
-                       function(x) {r.rec(dd)})
+  } else {
+    ext.yr <- parallel::mclapply(1:iter,
+      mc.cores = cores,
+      function(x) {
+        r.rec(dd)
+      }
+    )
     ext.yr <- do.call(rbind, ext.yr)
   }
 
   ext.yr <- na.omit(ext.yr)
   min.y <- round(min(ext.yr))
-  if(sd(ext.yr) == 0) {
-    return(list(MTE = round(ext.yr[1]),
-                UCI = round(ext.yr[1]),
-                PP = ifelse(round(ext.yr[1]) >= ey, 1, 0)))
+  if (sd(ext.yr) == 0) {
+    return(list(
+      MTE = round(ext.yr[1]),
+      UCI = round(ext.yr[1]),
+      PP = ifelse(round(ext.yr[1]) >= ey, 1, 0)
+    ))
   }
 
   freq.ext <- hist(ext.yr, breaks = round(max(ext.yr)) - min.y, plot = FALSE)
@@ -178,31 +187,35 @@ bbj.2018 <- function(dd, iter = 10000, ey = 2018, m = "LAD", plot = FALSE,
   pp.vec <- rep(NA, length(x))
   index <- 1
 
-  for(i in min.y:ey) {
+  for (i in min.y:ey) {
     pp.vec[index] <- 1 - (sum(freq.ext$counts[which(freq.ext$mids < i)]) / length(ext.yr))
     index <- index + 1
   }
 
-  if(round(mean(ext.yr)) >= ey) {
+  if (round(mean(ext.yr)) >= ey) {
     bbj$MTE <- which(pp.vec > 0.5)
     print("Median TE reported because mean TE is later than end year")
   } else {
     bbj$MTE <- round(mean(ext.yr))
   }
   bbj$LCI <- ifelse(x[min(which(pp.vec > alpha / 2))] == ey,
-                    NA, x[min(which(pp.vec > alpha / 2))])
+    NA, x[min(which(pp.vec > alpha / 2))]
+  )
   bbj$UCI <- ifelse(x[max(which(pp.vec > alpha / 2))] == ey,
-                    NA, x[max(which(pp.vec > alpha / 2))])
+    NA, x[max(which(pp.vec > alpha / 2))]
+  )
   bbj$end_year <- pp.vec[length(x)]
   names(bbj$end_year) <- paste("PP", ey)
 
-  if(plot == TRUE) {
+  if (plot == TRUE) {
     par(mfrow = c(1, 2))
     hist(ext.yr, main = "Freq. of predicted TE", xlab = "Year")
     abline(v = ey, col = "blue", lty = 2)
-    plot(pp.vec ~ x, main = "Cumulative PP", xlab = "Year",
-         ylab = "Prob. persistence", xlim = c(min(x), ey - 1))
-    lines(x,pp.vec)
+    plot(pp.vec ~ x,
+      main = "Cumulative PP", xlab = "Year",
+      ylab = "Prob. persistence", xlim = c(min(x), ey - 1)
+    )
+    lines(x, pp.vec)
     abline(v = bbj$MTE, col = "blue", lty = 2)
     abline(v = bbj$UCI, col = "red", lty = 3)
     par(mfrow = c(1, 1))

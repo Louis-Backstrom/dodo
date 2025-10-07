@@ -39,7 +39,6 @@
 
 KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -60,7 +59,8 @@ KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
 
   # Run MCMC function from Kodikara et al. 2020
   posterior <- coda::mcmc.list(coda::mcmc.list(
-    posterior_cer_uncer_mcmc(sightings_c, sightings_u)))
+    posterior_cer_uncer_mcmc(sightings_c, sightings_u)
+  ))
 
   sink()
 
@@ -89,7 +89,6 @@ KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
   )
 
   return(output)
-
 }
 
 # Declare certain as a known global variable (column in records data.frame):
@@ -114,7 +113,7 @@ utils::globalVariables("certain")
 #'
 #' @noRd
 
-posterior_cer_uncer_mcmc <- function(y_c,y_u){
+posterior_cer_uncer_mcmc <- function(y_c, y_u) {
   set.seed(1234)
 
   n_c <- sum(y_c)
@@ -123,18 +122,18 @@ posterior_cer_uncer_mcmc <- function(y_c,y_u){
 
   t_n <- 0
   i <- 1
-  while(sum(y_c[i:Tt]) > 0){
+  while (sum(y_c[i:Tt]) > 0) {
     t_n <- i
-    i <- i+1
+    i <- i + 1
   }
 
   n_u_tau <- c()
 
-  for(i in 1:Tt){
+  for (i in 1:Tt) {
     n_u_tau[i] <- sum(y_u[1:i])
   }
 
-  lik<-c()
+  lik <- c()
 
   dataList <- list(
     t_n = t_n,
@@ -195,12 +194,14 @@ posterior_cer_uncer_mcmc <- function(y_c,y_u){
 
   writeLines(modelStringm2, con = "model_m2.txt")
 
-  jagsModelm2 <- rjags::jags.model(file = "model_m2.txt", data = dataList,
-                                   n.chains = 4, n.adapt = 60000)
+  jagsModelm2 <- rjags::jags.model(
+    file = "model_m2.txt", data = dataList,
+    n.chains = 4, n.adapt = 60000
+  )
   update(jagsModelm2, n.iter = 60000)
   codaSamplesm2 <- rjags::coda.samples(jagsModelm2, variable.names = c(
-    "tau", "pc", "pui", "puv", "theta"), n.iter = 130000, thin = 13)
+    "tau", "pc", "pui", "puv", "theta"
+  ), n.iter = 130000, thin = 13)
   unlink("model_m2.txt")
   return(coda::mcmc(codaSamplesm2))
-
 }
