@@ -81,10 +81,11 @@
 #'
 #' @references
 #' **Key Reference**
+#'
 #' Burgman, M. A., Grimson, R. C., & Ferson, S. (1995). Inferring Threat from
 #' Scientific Collections. Conservation Biology, 9(4), 923-928.
 #' \doi{0.1046/j.1523-1739.1995.09040923.x}
-"burgmanf1b"
+"burgman_figure1b"
 
 #' @title Lord Howe Gerygone sightings
 #'
@@ -101,10 +102,12 @@
 #'
 #' @references
 #' **Key Reference**
+#'
 #' Atlas of Living Australia occurrence download, accessed on 25 August 2025.
 #' \doi{10.26197/ala.dad3870b-1b79-4600-ad12-af429feb1ad2}
 #'
 #' **Other References**
+#'
 #' McCarthy, M. A. (1998). Identifying declining and threatened species with
 #' museum data. *Biological Conservation*, 83(1), 9-17.
 #' \doi{10.1016/S0006-3207(97)00048-7}
@@ -331,3 +334,19 @@
 #' of the Purple-winged Ground Dove, an Enigmatic Bamboo Specialist.
 #' *Frontiers in Ecology and Evolution*, 9. \doi{10.3389/fevo.2021.624959}
 "ground_dove"
+
+#' @title Example sightings from Thompson et al.
+#'
+#' @description
+#' Example multi-class sighting records from Table 1 in Thompson et al. (2013).
+#'
+#' @format a `data.frame` with 4 columns and 7 rows.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Thompson, C. J., Lee, T. E., Stone, L., McCarthy, M. A., & Burgman, M. A.
+#' (2013). Inferring extinction risks from sighting records.
+#' *Journal of Theoretical Biology*, 338, 16-22.
+#' \doi{10.1016/j.jtbi.2013.08.023}
+"thompson_table1"

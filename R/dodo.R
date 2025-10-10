@@ -21,6 +21,9 @@
 #' * [JE10F1()] Jarić & Ebenhard's (2010) "Stationary" model.
 #' * [JE10F2()] Jarić & Ebenhard's (2010) "Non-stationary" model.
 #' * [BR12F1()] Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.
+#' * [TH13B1()] Thompson et al.'s (2013) "Deterministic" model.
+#' * [TH13B2()] Thompson et al.'s (2013) "Quenched" model.
+#' * [TH13B3()] Thompson et al.'s (2013) "Annealed" model.
 #' * [CB14B1()] Caley & Barry's (2014) "Constant" model.
 #' * [CB14B2()] Caley & Barry's (2014) "Non-constant" model.
 #' * [JR14F1()] Jarić & Roberts' (2014) "Solow" model.

@@ -16,11 +16,11 @@ usethis::use_data(ferret2, overwrite = TRUE)
 metrarabdotos <- c(0, 0, 0, 0, 0, 0, 0.05, 0.10, 0.20, 0.30, 1.40)
 usethis::use_data(metrarabdotos, overwrite = TRUE)
 
-burgmanf1b <- data.frame(
+burgman_figure1b <- data.frame(
   time = 1:16,
   records = c(1, 2, 0, 2, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 )
-usethis::use_data(burgmanf1b, overwrite = TRUE)
+usethis::use_data(burgman_figure1b, overwrite = TRUE)
 
 dodos <- c(1598, 1601, 1602, 1607, 1611, 1628, 1628, 1631, 1638, 1662)
 usethis::use_data(dodos, overwrite = TRUE)
@@ -116,3 +116,11 @@ ground_dove <- data.frame(
   certain = c(rep(TRUE, 22), rep(FALSE, 39))
 )
 usethis::use_data(ground_dove, overwrite = TRUE)
+
+thompson_table1 <- data.frame(
+  time = 1:7,
+  class_1 = c(1, 0, 1, 0, 0, 0, 0),
+  class_2 = c(1, 0, 0, 1, 0, 1, 0),
+  class_3 = c(0, 1, 1, 0, 0, 0, 1)
+)
+usethis::use_data(thompson_table1, overwrite = TRUE)

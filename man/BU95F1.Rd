@@ -26,7 +26,7 @@ to be constant.
 }
 \examples{
 # Run the example analysis from Burgman 1995 (Figure 1b)
-BU95F1(burgmanf1b)
+BU95F1(burgman_figure1b)
 
 }
 \references{

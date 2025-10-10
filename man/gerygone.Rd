@@ -21,10 +21,12 @@ number of bird species recorded in that year.
 }
 \references{
 \strong{Key Reference}
+
 Atlas of Living Australia occurrence download, accessed on 25 August 2025.
 \doi{10.26197/ala.dad3870b-1b79-4600-ad12-af429feb1ad2}
 
 \strong{Other References}
+
 McCarthy, M. A. (1998). Identifying declining and threatened species with
 museum data. \emph{Biological Conservation}, 83(1), 9-17.
 \doi{10.1016/S0006-3207(97)00048-7}
