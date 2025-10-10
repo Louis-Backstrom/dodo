@@ -4,7 +4,7 @@
 \alias{TH13B3}
 \title{Thompson et al.'s (2013) "Annealed" model}
 \usage{
-TH13B3(records, priors, certain = 1, PXT = NULL, PE = NULL)
+TH13B3(records, priors, certain = 1, PXT = NULL, PE = NULL, n.iter = 1e+05)
 }
 \arguments{
 \item{records}{\code{data.frame} with two or more columns: \code{time} and one or more
@@ -25,6 +25,9 @@ and upper bounds of a uniform prior for the rate \eqn{p_i^\alpha} or
 
 \item{PE}{estimate of \eqn{P_E}. Defaults to \code{NULL}, in which case
 \eqn{P_E = 1 / T}.}
+
+\item{n.iter}{number of iterations to calculate averages over. Defaults to
+100,000, which is usually sufficient to ensure accurate estimates.}
 }
 \value{
 a \code{list} object with the original parameters and p(extant) included

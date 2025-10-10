@@ -19,6 +19,8 @@
 #' \eqn{P(X_T) = TN / T}.
 #' @param PE estimate of \eqn{P_E}. Defaults to `NULL`, in which case
 #' \eqn{P_E = 1 / T}.
+#' @param n.iter number of iterations to calculate averages over. Defaults to
+#' 100,000, which is usually sufficient to ensure accurate estimates.
 #'
 #' @returns a `list` object with the original parameters and p(extant) included
 #' as elements.
@@ -49,7 +51,8 @@
 #'
 #' @export
 
-TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL) {
+TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
+                   n.iter = 1e5) {
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -79,7 +82,7 @@ TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL) {
   numerator_values <- c()
   denominator_values <- c()
 
-  for (run in 1:1e5) {
+  for (run in 1:n.iter) {
     # Create p matrix and vector
     p_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
 
