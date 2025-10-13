@@ -27,6 +27,8 @@
 #' * [CB14B1()] Caley & Barry's (2014) "Constant" model.
 #' * [CB14B2()] Caley & Barry's (2014) "Non-constant" model.
 #' * [JR14F1()] Jarić & Roberts' (2014) "Solow" model.
+#' * [SO16B1()] Solow's (2016) "Retrospective" model.
+#' * [SO16B2()] Solow's (2016) "Sequential" model.
 #' * [WA16B1()]	Wang et al.'s (2016) "Adaptive" model.
 #' * [BR19F1()] Brook et al.'s (2019) "Solow" model.
 #' * [BR19F2()] Brook et al.'s (2019) "Solow & Roberts" model.
