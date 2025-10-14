@@ -6,6 +6,8 @@
 #'
 #' @param records numeric vector object containing all sighting records of the
 #' taxon of interest.
+#' @param init.time start of the observation period. Defaults to the time of
+#' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #'
@@ -31,12 +33,25 @@
 #'
 #' @export
 
-JE10F2 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {
+JE10F2 <- function(records, init.time = min(records),
+                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
   # Sort records
   records <- sort(records)
 
   # Determine number of records
   n <- length(records)
+
+  # If using first record as init.time, remove this from the record sequence
+  if (init.time == min(records)) {
+    records <- tail(records, -1)
+    n <- n - 1
+  }
+
+  # Determine length of sighting record
+  tn <- max(records) - init.time
+
+  # Determine current time
+  bigT <- test.time - init.time
 
   # Calculate c
   x <- 2:(n - 1)
@@ -44,12 +59,13 @@ JE10F2 <- function(records, test.time = as.numeric(format(Sys.Date(), "%Y"))) {
     (n - 2)
 
   # Calculate p-value
-  p.value <- (((max(records) - 1) / (n - 1)) + c) /
-    (((max(records) - 1) / (n - 1)) + c + (test.time - max(records)))
+  p.value <- (((tn - 1) / (n - 1)) + c) /
+    (((tn - 1) / (n - 1)) + c + (bigT - tn))
 
   # Output
   output <- list(
     records = records,
+    init.time = init.time,
     test.time = test.time,
     c = c,
     p.value = p.value

@@ -4,11 +4,18 @@
 \alias{JE10F1}
 \title{Jarić & Ebenhard's (2010) "Stationary" model}
 \usage{
-JE10F1(records, test.time = as.numeric(format(Sys.Date(), "\%Y")))
+JE10F1(
+  records,
+  init.time = min(records),
+  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+)
 }
 \arguments{
 \item{records}{numeric vector object containing all sighting records of the
 taxon of interest.}
+
+\item{init.time}{start of the observation period. Defaults to the time of
+the first sighting, in which case this sighting is removed from the record.}
 
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}
