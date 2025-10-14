@@ -49,6 +49,11 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
   # Add relative time column
   records$rtime <- records$time - init.time
 
+  # If using first record as init.time, remove this from the record sequence
+  if (init.time == min(records$time)) {
+    records <- records[-1, ]
+  }
+
   # Calculate r
   r <- sum(records$certainty)
 
