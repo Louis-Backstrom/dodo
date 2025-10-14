@@ -24,7 +24,7 @@ the \eqn{1 - \alpha} confidence interval.}
 (defaults to the current year).}
 
 \item{cores}{number of cores to use (defaults to \code{NULL}, in which case
-parallel::detectCores() is run).}
+\code{parallel::detectCores()} is run).}
 }
 \value{
 a \code{list} object with the original parameters and the probability,

@@ -15,7 +15,7 @@
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #' @param cores number of cores to use (defaults to `NULL`, in which case
-#' parallel::detectCores() is run).
+#' `parallel::detectCores()` is run).
 #'
 #' @returns a `list` object with the original parameters and the probability,
 #' point estimate, and confidence interval included as elements. The confidence
