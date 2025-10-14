@@ -100,8 +100,8 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
     init.time = init.time,
     test.time = test.time,
     p.value = p.value,
-    estimate = tn + numerator / denominator,
-    conf.int = c(tn, conf.int)
+    estimate = init.time + tn + numerator / denominator,
+    conf.int = c(init.time + tn, init.time + conf.int)
   )
 
   return(output)
