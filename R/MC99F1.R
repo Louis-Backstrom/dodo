@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Equation 3 from McFarlane 1999. Estimates a p-value for testing competing
-#' hypotheses of extinction/non-extinction,and a one-tailed \eqn{1 - \alpha}
+#' hypotheses of extinction/non-extinction, and a one-tailed \eqn{1 - \alpha}
 #' confidence interval on the time of extinction.
 #'
 #' @param records numeric vector object containing all sighting records of the

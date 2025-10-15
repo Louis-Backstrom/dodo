@@ -46,7 +46,8 @@
 #'     p = list(p1 = c(0.2, 0.4), p2 = c(0.4, 0.6), p3 = c(0.3, 0.6)),
 #'     q = list(q1 = c(1.0, 1.0), q2 = c(0.2, 0.7), q3 = c(0.1, 0.5))
 #'   ),
-#'   certain = c(1)
+#'   certain = c(1),
+#'   n.iter = 1e4
 #' )
 #'
 #' @export
@@ -112,17 +113,22 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
 
     q_vector <- apply(q_matrix, 1, prod)
 
+    # Turn into mpfr objects
+    p_vector <- Rmpfr::mpfr(p_vector, precBits = 64)
+    q_vector <- Rmpfr::mpfr(q_vector, precBits = 64)
+
     # Calculate components of Equation 9
     numerator <- prod(p_vector) * PXT
 
-    sums <- c()
+    sums <- list()
     for (j in (TN + 1):bigT) {
-      sums[j] <- prod(p_vector[1:(j - 1)]) * prod(q_vector[j:bigT]) * PE
+      sums[[j]] <- prod(p_vector[1:(j - 1)]) * prod(q_vector[j:bigT]) * PE
     }
-    denominator <- numerator + sum(sums, na.rm = T)
+    sums <- Filter(Negate(is.null), sums)
+    denominator <- numerator + sum(do.call(c, sums))
 
     # Calculate P_Q(X_T|s) from Equation 9
-    values[run] <- numerator / denominator
+    values[run] <- as.numeric(numerator / denominator)
   }
 
   # Calculate quenched average

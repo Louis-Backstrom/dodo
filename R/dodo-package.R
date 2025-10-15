@@ -6,6 +6,7 @@
 #' @importFrom graphics hist
 #' @importFrom graphics lines
 #' @importFrom graphics par
+#' @importFrom Rmpfr mpfr
 #' @importFrom stats dbeta
 #' @importFrom stats dlnorm
 #' @importFrom stats dnorm
