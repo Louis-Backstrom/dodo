@@ -44,7 +44,7 @@ Significance of sighting rate in inferring extinction and threat.
 \emph{Conservation Biology}, 20(2), 562-567.
 \doi{10.1111/j.1523-1739.2006.00377.x}
 
-*\emph{Other References}
+\strong{Other References}
 
 Rivadeneira, M. M., Hunt, G., & Roy, K. (2009). The use of sighting records
 to infer species extinctions: an evaluation of different methods. \emph{Ecology},
