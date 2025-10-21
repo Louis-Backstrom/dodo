@@ -5,14 +5,16 @@
 \alias{ground_dove}
 \title{Purple-winged Ground Dove sightings}
 \format{
-A \code{data.frame} with 2 columns and 61 rows.
+A \code{list} with 3 elements.
 }
 \usage{
 ground_dove
 }
 \description{
-Purple-winged Ground Dove (\emph{Paraclaravis geoffroyi}) sighting records from
-Lees et al. (2021).
+Purple-winged Ground Dove (\emph{Paraclaravis geoffroyi}) sighting record from
+Lees et al. (2021), processed into various \code{dodo} formats. The temporal
+range (\code{init.time} to \code{test.time}) of these data is 1811 to 2019. Formats:
+\code{ccon}, \code{cbin}, \code{ubin}.
 }
 \note{
 Adapted from Supplementary Table 1 in Lees et al. (2021). Almost all specimen

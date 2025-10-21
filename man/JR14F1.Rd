@@ -12,10 +12,8 @@ JR14F1(
 )
 }
 \arguments{
-\item{records}{\code{data.frame} with two columns: \code{time} and \code{certainty}. The
-\code{time} column contains the date of all sightings, which each have an
-associated \code{certainty}, expressed as a probability in the interval [0, 1]
-(values close to 1 imply a high likelihood that the observation is correct).}
+\item{records}{sighting records in \code{ucon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -42,6 +40,11 @@ Sampling effort is assumed to be constant. Although the method in Jarić &
 Roberts 2014 is theoretically applicable to other base models, this package
 only includes the Solow 1993a variant, as it is the focus of the original
 paper.
+}
+\examples{
+# Run an example analysis using the Slender-billed Curlew data
+JR14F1(curlew$ucon, init.time = 1817, test.time = 2022)
+
 }
 \references{
 \strong{Key Reference}

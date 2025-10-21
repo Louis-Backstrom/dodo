@@ -4,10 +4,8 @@
 #' Equation 4 from Burgman et al. 1995. Estimates a p-value for
 #' testing competing hypotheses of extinction/non-extinction.
 #'
-#' @param records `data.frame` with two columns: `time` and `records`. The
-#' `time` column must extend from the start of the observation period (which
-#' may be prior to the first sighting) to the end (typically the present day),
-#' with evenly-spaced temporal intervals (typically years).
+#' @param records sighting records in `cdis` format (see
+#' \code{\link{convert_dodo}} for details).
 #'
 #' @returns a `list` object with the original parameters and the p-value
 #' included as elements.
@@ -42,6 +40,8 @@
 #' @examples
 #' # Run the example analysis from Burgman 1995 (Figure 1b)
 #' BU95F3(burgman_figure1b)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' BU95F3(curlew$cdis)
 #'
 #' @export
 
@@ -49,14 +49,14 @@ BU95F3 <- function(records) {
   # Adapted from sExtinct (by Christopher Clements) package code!
 
   # Determine number of records
-  N <- sum(records$records)
+  N <- sum(records)
 
   # Determine the total number of sighting intervals
-  CT <- nrow(records)
+  CT <- length(records)
 
   # Determine the length of the longest run of empty cells
-  r <- max(rle(records$records == 0)$lengths[which(
-    rle(records$records == 0)$values == TRUE
+  r <- max(rle(records == 0)$lengths[which(
+    rle(records == 0)$values == TRUE
   )])
 
   # Calculate sum in for loop (from sExtinct code)
@@ -68,18 +68,19 @@ BU95F3 <- function(records) {
 
     for (k in 1:(j + 1)) {
       if (k <= (CT / r)) {
-        ff <- 1
+        ff <- Rmpfr::mpfr(1, precBits = 1024)
 
         for (indexn in 1:length(TT)) {
           n <- indexn - 1
           ff <- ff * (CT - (r * k) - n)
         }
 
-        dummy <- 0
+        dummy <- Rmpfr::mpfr(0, precBits = 1024)
 
         for (indexi in 1:length(KK)) {
           i <- indexi - 1
-          dummy <- dummy + (((-1)^i) * choose(j, i) * ((j - i)^N))
+          dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
+                              ((j - Rmpfr::mpfr(i, precBits = 1024))^N))
         }
 
         Sn <- (1 / factorial(j)) * dummy
@@ -93,7 +94,7 @@ BU95F3 <- function(records) {
   }
 
   # Calculate p-value
-  p.value <- CT^-N * full_sum
+  p.value <- as.numeric(Rmpfr::mpfr(CT, precBits = 1024)^-N * full_sum)
 
   # Output
   output <- list(

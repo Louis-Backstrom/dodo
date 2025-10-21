@@ -4,29 +4,16 @@
 \alias{MC06F1}
 \title{McInerny et al.'s (2006) "Sighting Rate" model}
 \usage{
-MC06F1(
-  records,
-  alpha = 0.05,
-  init.time = min(records),
-  test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  remove.first = TRUE
-)
+MC06F1(records, alpha = 0.05, init.time)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{cbin} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
 
-\item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case this sighting is removed from the record.}
-
-\item{test.time}{end of the observation period, typically the present day
-(defaults to the current year).}
-
-\item{remove.first}{if \code{init.time} is the time of the first sighting, should
-that sighting be removed from the record? Defaults to \code{TRUE}.}
+\item{init.time}{start time for the discrete-time sighting record.}
 }
 \value{
 a \code{list} object with the original parameters and the p-value and
@@ -42,8 +29,11 @@ All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
 \examples{
-# Run an example analysis using the Caribbean Monk Seal data
-MC06F1(monk_seal)
+# Run an example analysis using the Black-footed Ferret data
+MC06F1(as.integer(ferret$cdis != 0), init.time = 1972)
+# Run an example analysis using the Slender-billed Curlew data
+MC06F1(curlew$cbin, init.time = 1817)
+
 
 }
 \references{

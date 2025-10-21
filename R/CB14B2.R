@@ -6,14 +6,13 @@
 #' estimate and one-tailed \eqn{1 - \alpha} credibile interval on the time of
 #' extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `cbin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param init.time start of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to the end of the observation period.
 #' @param burn.in number of initial iterations to discard as burn-in (defaults
 #' to 1000).
 #' @param n.iter number of iterations to run (defaults to 11000).
@@ -38,25 +37,17 @@
 #' @examples
 #' # Run the fox analysis from Caley & Barry 2014
 #' CB14B2(fox, init.time = 2001, test.time = 2012, n.iter = 11e4, burn.in = 1e4)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' CB14B2(curlew$cbin, init.time = 1817, n.iter = 11e3, burn.in = 1e3)
 #'
 #' @export
 
 CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    burn.in = 1000, n.iter = 11000) {
-  # Sort records
-  records <- sort(records)
-
-  # Create 0/1 sighting vector
-  sightings <- vector(length = test.time - init.time + 1)
-  sightings[records - init.time + 1] <- 1
-  # if (init.time == min(records)) { # Not used, per paper
-  #   sightings <- sightings[-1]
-  # }
-
   # Run sampler then discard burn in period
   res <- fit.func2(
-    iter = n.iter, y = sightings, pgr.init = 0.0,
+    iter = n.iter, y = records, pgr.init = 0.0,
     delta.init = 0.69, eps0.init = 0, eps1.init = 1, N0.init = 1
   )
   res <- res[-(1:burn.in), ]
@@ -80,6 +71,8 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
     init.time = init.time,
     test.time = test.time,
     p.extant = p.extant,
+    burn.in = burn.in,
+    n.iter = n.iter,
     estimate = estimate,
     cred.int = cred.int
   )

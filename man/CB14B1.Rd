@@ -7,22 +7,24 @@
 CB14B1(
   records,
   alpha = 0.05,
-  init.time = min(records),
-  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+  init.time,
+  test.time = init.time + length(records) - 1,
+  n.iter = 1e+05
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{cbin} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
 
-\item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case this sighting is removed from the record.}
+\item{init.time}{start of the observation period.}
 
-\item{test.time}{end of the observation period, typically the present day
-(defaults to the current year).}
+\item{test.time}{time point to retrospectively calculate extinction
+probability at. Defaults to the end of the observation period.}
+
+\item{n.iter}{number of iterations to run (defaults to 11000).}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),
@@ -42,6 +44,8 @@ to be constant.
 \examples{
 # Run the fox analysis from Caley & Barry 2014
 CB14B1(fox, init.time = 2001, test.time = 2012)
+# Run an example analysis using the Slender-billed Curlew data
+CB14B1(curlew$cbin, init.time = 1817)
 
 }
 \references{

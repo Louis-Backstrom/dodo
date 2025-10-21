@@ -5,13 +5,15 @@
 \alias{dodos}
 \title{Dodo sightings}
 \format{
-A numeric vector with 10 values.
+A \code{numeric} vector with 10 values.
 }
 \usage{
 dodos
 }
 \description{
-Dodo (\emph{Raphus cucullatus}) sighting records from Roberts & Solow (2003).
+Dodo (\emph{Raphus cucullatus}) sighting record from Roberts & Solow (2003). The
+temporal range (\code{init.time} to \code{test.time}) of these data is 1598 to 2002.
+Format: \code{ccon.}
 }
 \references{
 \strong{Key Reference}

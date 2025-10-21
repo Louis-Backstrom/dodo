@@ -5,14 +5,15 @@
 \alias{burgman_figure1b}
 \title{Example sightings from Burgman et al.}
 \format{
-a \code{data.frame} with 2 columns and 16 rows.
+a \code{numeric} vector with 16 values.
 }
 \usage{
 burgman_figure1b
 }
 \description{
-Example frequency-based sighting records from Figure 1b in Burgman et al.
-(1995).
+Example frequency-based sighting record from Figure 1b in Burgman et al.
+(1995). The temporal range (\code{init.time} to \code{test.time}) of these data is 0 to
+16. Format: \code{cdis}.
 }
 \references{
 \strong{Key Reference}

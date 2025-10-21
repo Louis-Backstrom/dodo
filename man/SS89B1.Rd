@@ -4,21 +4,20 @@
 \alias{SS89B1}
 \title{Strauss & Sadler's (1989) "Bayesian" model}
 \usage{
-SS89B1(records, alpha = 0.05, t.max = max(records)^2, length.out = 1e+07)
+SS89B1(records, alpha = 0.05, length.out = 1e+07, scale = 0.01)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
 
-\item{t.max}{maximum time to estimate posterior density out to (defaults to
-the square of most recent record time; this may not be appropriate for all
-datasets).}
+\item{length.out}{number of posterior samples to generate (defaults to 100
+thousand).}
 
-\item{length.out}{number of posterior samples to generate (defaults to 10
-million).}
+\item{scale}{factor to scale sighting records by. Defaults to 0.01; adjust
+if warned.}
 }
 \value{
 a \code{list} object with the original parameters and the point estimate
@@ -36,7 +35,9 @@ to be constant.
 }
 \examples{
 # Run an example analysis using the Caribbean Monk Seal data
-SS89B1(monk_seal)
+SS89B1(monk_seal, length.out = 1e5)
+# Run an example analysis using the Slender-billed Curlew data
+SS89B1(curlew$ccon, length.out = 1e5)
 
 }
 \references{

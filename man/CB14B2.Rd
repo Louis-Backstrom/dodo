@@ -14,17 +14,16 @@ CB14B2(
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{cbin} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
 
-\item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case this sighting is removed from the record.}
+\item{init.time}{start of the observation period.}
 
-\item{test.time}{end of the observation period, typically the present day
-(defaults to the current year).}
+\item{test.time}{time point to retrospectively calculate extinction
+probability at. Defaults to the end of the observation period.}
 
 \item{burn.in}{number of initial iterations to discard as burn-in (defaults
 to 1000).}
@@ -49,6 +48,8 @@ to be constant.
 \examples{
 # Run the fox analysis from Caley & Barry 2014
 CB14B2(fox, init.time = 2001, test.time = 2012, n.iter = 11e4, burn.in = 1e4)
+# Run an example analysis using the Slender-billed Curlew data
+CB14B2(curlew$cbin, init.time = 1817, n.iter = 11e3, burn.in = 1e3)
 
 }
 \references{

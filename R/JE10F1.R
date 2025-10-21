@@ -4,8 +4,8 @@
 #' Equation 4 from Jarić & Ebenhard 2010. Estimates a p-value for testing
 #' competing hypotheses of extinction/non-extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param init.time start of the observation period. Defaults to the time of
 #' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
@@ -29,7 +29,9 @@
 #'
 #' @examples
 #' # Run the Black-footed Ferret analysis from Jarić & Ebenhard 2010
-#' JE10F1(ferret1 - 5, test.time = 223) # shift dates to align with paper
+#' JE10F1(ferret$ccon - 5, test.time = 223) # shift dates to align with paper
+#' # Run an example analysis using the Slender-billed Curlew data
+#' JE10F1(curlew$ccon, init.time = 1817, test.time = 2022)
 #'
 #' @export
 

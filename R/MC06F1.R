@@ -5,16 +5,11 @@
 #' competing hypotheses of extinction/non-extinction, and a one-tailed
 #' \eqn{1 - \alpha} confidence interval on the time of extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `cbin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
-#' @param remove.first if `init.time` is the time of the first sighting, should
-#' that sighting be removed from the record? Defaults to `TRUE`.
+#' @param init.time start time for the discrete-time sighting record.
 #'
 #' @returns a `list` object with the original parameters and the p-value and
 #' confidence interval included as elements.
@@ -41,41 +36,38 @@
 #' comment. *Ecology*, 95(1), 238. \doi{10.1890/12-1088.1}
 #'
 #' @examples
-#' # Run an example analysis using the Caribbean Monk Seal data
-#' MC06F1(monk_seal)
+#' # Run an example analysis using the Black-footed Ferret data
+#' MC06F1(as.integer(ferret$cdis != 0), init.time = 1972)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' MC06F1(curlew$cbin, init.time = 1817)
+#'
 #'
 #' @export
 
-MC06F1 <- function(records, alpha = 0.05, init.time = min(records),
-                   test.time = as.numeric(format(Sys.Date(), "%Y")),
-                   remove.first = TRUE) {
-  # Sort records
-  records <- sort(records)
-
+MC06F1 <- function(records, alpha = 0.05, init.time) {
   # Determine number of records
-  n <- length(records)
+  n <- sum(records)
 
-  # If using first record as init.time, remove this from the record sequence
-  if (init.time == min(records) & remove.first == TRUE) {
-    records <- tail(records, -1)
-    n <- n - 1
-  }
+  # Determine time of last record
+  tn <- max(which(records == 1))
+
+  # Determine length of sighting record
+  bigT <- length(records)
 
   # Calculate p-value
-  p.value <- (1 - (n / (max(records) - init.time)))^
-    (test.time - (max(records)))
+  p.value <- (1 - (n / tn))^(bigT - tn)
 
   # Calculate width of confidence interval
-  x <- log(alpha, base = (1 - (n / (max(records) - init.time))))
+  x <- log(alpha, base = (1 - (n / tn)))
 
   # Output
   output <- list(
     records = records,
     alpha = alpha,
     init.time = init.time,
-    test.time = test.time,
+    # test.time = test.time,
     p.value = p.value,
-    conf.int = c(max(records), max(records) + x)
+    conf.int = c(init.time + tn - 1, init.time + tn - 1 + x)
   )
 
   return(output)

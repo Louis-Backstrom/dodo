@@ -6,8 +6,8 @@
 #' extinction/non-extinction, and a one-tailed \eqn{1 - \alpha} confidence
 #' interval and point estimate on the time of extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param test.time end of the observation period, typically the present day
@@ -46,6 +46,8 @@
 #' @examples
 #' # Run the Mauritian orchid analysis from Solow & Roberts 2003
 #' SR03F1(orchid, test.time = 1996)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SR03F1(curlew$ccon, test.time = 2022)
 #'
 #' @export
 

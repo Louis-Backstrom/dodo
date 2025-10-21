@@ -26,6 +26,8 @@
 #' @importFrom stats uniroot
 #' @importFrom stats update
 #' @importFrom utils head
+#' @importFrom utils setTxtProgressBar
 #' @importFrom utils tail
+#' @importFrom utils txtProgressBar
 ## usethis namespace: end
 NULL

@@ -4,26 +4,24 @@
 \alias{SO16B2}
 \title{Solow's (2016) "Sequential" model}
 \usage{
-SO16B2(
-  records,
-  init.time = min(records),
-  test.time,
-  curr.time = as.numeric(format(Sys.Date(), "\%Y"))
-)
+SO16B2(records, init.time = NULL, test.time = NULL, curr.time = NULL)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{cbin} format (see
+\code{\link{convert_dodo}} for details).}
 
-\item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case this sighting is removed from the record.}
+\item{init.time}{start of the observation period. Defaults to \code{NULL}; this
+parameter is only necessary if specifying a different \code{test.time} to the end
+of the observation period.}
 
-\item{test.time}{time point to sequentially calculate extinction
-probability at. Must not be earlier than the time of the most recent
-sighting nor later than \code{curr.time}.}
+\item{test.time}{time point to retrospectively calculate extinction
+probability at. Defaults to \code{NULL}, in which case the probability is
+estimated for the end of the observation period.}
 
-\item{curr.time}{end of the observation period, typically the present day
-(defaults to the current year).}
+\item{curr.time}{end of the observation period. Defaults to \code{NULL}; this
+parameter is only necessary if specifying a different \code{test.time} to the end
+of the observation period. If specified, \code{curr.time} - \code{init.time} must equal
+\code{length(records)}.}
 }
 \value{
 a \code{list} object with the original parameters and p(extant) included
@@ -35,13 +33,16 @@ species is extant.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
-to be constant. Uses the uniform prior (1 / (m + T)) specified on p. 797.
+to be constant. Uses the uniform prior (1 / (m + T)) specified on p. 797 of
+Solow (2016).
 }
 \examples{
 # Run the Dodo analysis from Solow 2016
-SO16B2(dodos, test.time = 1672, curr.time = 2015)
+SO16B2(records = as.integer((min(dodos) + 1):2015 \%in\% dodos),
+       init.time = min(dodos), test.time = 1672, curr.time = 2015)
 # Note that Solow 2016 presents p(extinct), which is 1 - p(extant) used here.
-# CHECK
+# Run an example analysis using the Slender-billed Curlew data
+SO16B2(curlew$cbin)
 
 }
 \references{

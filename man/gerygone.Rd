@@ -5,19 +5,15 @@
 \alias{gerygone}
 \title{Lord Howe Gerygone sightings}
 \format{
-a \code{data.frame} with 3 columns and 236 rows.
+a \code{numeric} vector with 236 values.
 }
 \usage{
 gerygone
 }
 \description{
-Frequency-based collection-effort sighting record of the Lord Howe Gerygone
-(\emph{Gerygone insularis}) based on data from the Atlas of Living Australia.
-}
-\note{
-Includes all observations of birds within 10km of Lord Howe Island with
-valid spatial coordinates. The index of collection effort is the total
-number of bird species recorded in that year.
+Lord Howe Gerygone (\emph{Gerygone insularis}) sighting record based on data from
+the Atlas of Living Australia. The temporal range (\code{init.time} to
+\code{test.time}) of these data is 1788 to 2023. Format: \code{cdis}.
 }
 \references{
 \strong{Key Reference}
@@ -30,5 +26,8 @@ Atlas of Living Australia occurrence download, accessed on 25 August 2025.
 McCarthy, M. A. (1998). Identifying declining and threatened species with
 museum data. \emph{Biological Conservation}, 83(1), 9-17.
 \doi{10.1016/S0006-3207(97)00048-7}
+}
+\seealso{
+\link{gerygone_effort}
 }
 \keyword{datasets}

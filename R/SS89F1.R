@@ -5,8 +5,8 @@
 #' \eqn{1 - \alpha} confidence interval and point estimate on the time of
 #' extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #'
@@ -44,6 +44,8 @@
 #' @examples
 #' # Run an example analysis using the Caribbean Monk Seal data
 #' SS89F1(monk_seal)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SS89F1(curlew$ccon)
 #'
 #' @export
 

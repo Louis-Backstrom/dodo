@@ -7,8 +7,8 @@
 BR12F1(records, alpha = 0.05)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) to
 use in the underlying McInerny et al. 2006 model.}
@@ -25,11 +25,13 @@ of extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant. This is \emph{not} the Gaussian-resampled model (GRIWM) also
 presented in Bradshaw et al. 2012 (which incorporates radiometric dating
-error).
+error). Duplicate sightings in a single time unit are discarded.
 }
 \examples{
 # Run the Woolly Mammoth analysis from Bradshaw et al. 2012
 BR12F1(mammoth)
+# Run an example analysis using the Slender-billed Curlew data
+BR12F1(curlew$ccon)
 
 }
 \references{

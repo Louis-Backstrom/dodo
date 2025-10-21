@@ -4,13 +4,13 @@
 \alias{MC98F1}
 \title{McCarthy's (1998) "Partial Solow" model}
 \usage{
-MC98F1(records)
+MC98F1(records, effort)
 }
 \arguments{
-\item{records}{\code{data.frame} with three columns: \code{time}, \code{records}, and
-\code{effort}. The \code{time} column must extend from the start of the observation
-period (which may be prior to the first sighting) to the end (typically the
-present day), with evenly-spaced temporal intervals (typically years).}
+\item{records}{sighting records in \code{cdis} format (see
+\code{\link{convert_dodo}} for details).}
+
+\item{effort}{a vector of effort data, of the same length as \code{records}.}
 }
 \value{
 a \code{list} object with the original parameters and the p-value
@@ -25,7 +25,9 @@ All sighting records are assumed to be certain.
 }
 \examples{
 # Run an example analysis using the Lord Howe Gerygone data
-MC98F1(gerygone)
+MC98F1(records = gerygone, effort = gerygone_effort)
+# Run an example analysis using the Slender-billed Curlew data
+MC98F1(records = curlew$cdis, effort = curlew_effort)
 
 }
 \references{

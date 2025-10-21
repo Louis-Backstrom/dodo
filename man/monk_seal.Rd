@@ -5,14 +5,15 @@
 \alias{monk_seal}
 \title{Caribbean Monk Seal sightings}
 \format{
-A numeric vector with 5 values.
+A \code{numeric} vector with 5 values.
 }
 \usage{
 monk_seal
 }
 \description{
-Caribbean Monk Seal (\emph{Monachus tropicalis}) sighting records from Solow
-(1993) based on data presented in LeBouef et al. (1986).
+Caribbean Monk Seal (\emph{Monachus tropicalis}) sighting record from Solow
+(1993) based on data presented in LeBouef et al. (1986). The temporal range
+(\code{init.time} to \code{test.time}) of these data is 1915 to 1992. Format: \code{ccon}.
 }
 \references{
 \strong{Key Reference}

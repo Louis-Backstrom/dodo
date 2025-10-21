@@ -5,9 +5,8 @@
 #' al. 2013. Estimates a posterior probability that the species is extant at
 #' the end of the survey period.
 #'
-#' @param records `data.frame` with two or more columns: `time` and one or more
-#' columns with the sighting history (0/1) for each distinct sighting class
-#' (the column names for these columns is not important).
+#' @param records sighting records in `umcd` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param priors nested `list` with two elements: `p` and `q`, each of which is
 #' a `list` with the same number of elements as there are sighting classes. For
 #' the quenched model, each element is the a two-element vector with the lower
@@ -47,7 +46,18 @@
 #'     q = list(q1 = c(1.0, 1.0), q2 = c(0.2, 0.7), q3 = c(0.1, 0.5))
 #'   ),
 #'   certain = c(1),
-#'   n.iter = 1e4
+#'   n.iter = 1e3
+#' )
+#' # Run an example analysis using the Slender-billed Curlew data
+#' TH13B2(
+#'   records = curlew$umcd,
+#'   priors = list(
+#'     p = list(p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),
+#'              p4 = c(0, 1), p5 = c(0, 1), p6 = c(0, 1)),
+#'     q = list(q1 = c(1.0, 1.0), q2 = c(1.0, 1.0), q3 = c(0.0, 1.0),
+#'              q4 = c(0.0, 1.0), q5 = c(0.0, 1.0), q6 = c(0.0, 1.0))),
+#'   certain = c(1, 2),
+#'   n.iter = 1e3
 #' )
 #'
 #' @export
@@ -82,6 +92,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   # Run quenched loop
   values <- c()
 
+  pb <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
   for (run in 1:n.iter) {
     # Create p matrix and vector
     p_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
@@ -129,7 +140,10 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
 
     # Calculate P_Q(X_T|s) from Equation 9
     values[run] <- as.numeric(numerator / denominator)
+
+    setTxtProgressBar(pb, run)
   }
+  close(pb)
 
   # Calculate quenched average
   p.extant <- mean(values)

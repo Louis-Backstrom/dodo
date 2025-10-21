@@ -6,8 +6,8 @@
 #' hypotheses of extinction/non-extinction, and a one-tailed \eqn{1 - \alpha}
 #' confidence interval and point estimate on the time of extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start of the observation period. Defaults to the time of
@@ -36,7 +36,9 @@
 #'
 #' @examples
 #' # Run the Black-footed Ferret analysis from Solow 1993
-#' SO93F2(ferret1, init.time = 0, test.time = 229)
+#' SO93F2(ferret$ccon, init.time = 0, test.time = 229)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
@@ -64,14 +66,14 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   s <- sum(records - init.time)
 
   # Calculate p-value
-  p.value <- Fx(x = tn, s = s, n = n) /
-    Fx(x = bigT, s = s, n = n)
+  p.value <- as.numeric(Fx(x = tn, s = s, n = n) /
+                          Fx(x = bigT, s = s, n = n))
 
   # Calculate numerator for point estimate
   i <- 0:floor(s / tn)
   part1 <- (-1)^i
-  part2 <- choose(n, i)
-  part3 <- (s - (i * tn))^(n - 1)
+  part2 <- Rmpfr::chooseMpfr(n, i)
+  part3 <- (s - (Rmpfr::mpfr(i, precBits = 1024) * tn))^(n - 1)
   numerator <- sum(part1 * part2 * part3)
   rm(i, part1, part2, part3)
 
@@ -79,19 +81,22 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   part0 <- n * (n - 1)
   i <- 0:(floor(s / tn) - 1)
   part1 <- (-1)^i
-  part2 <- choose(n - 1, i)
-  part3 <- (s - ((i + 1) * tn))^(n - 2)
+  part2 <- Rmpfr::chooseMpfr(n - 1, i)
+  part3 <- (s - (Rmpfr::mpfr(i + 1, precBits = 1024) * tn))^(n - 2)
   denominator <- part0 * sum(part1 * part2 * part3)
   rm(i, part0, part1, part2, part3)
 
   # Set up Fopt to help find confidence interval
   Fopt <- function(x) {
-    value <- (Fx(x = tn, s = s, n = n) / Fx(x = x, s = s, n = n)) - alpha
+    value <- as.numeric(Fx(x = tn, s = s, n = n) / Fx(x = x, s = s, n = n)) -
+      alpha
     return(value)
   }
 
   # Numerically find the confidence interval
-  conf.int <- uniroot(f = Fopt, interval = c(tn, .Machine$integer.max))$root
+  conf.int <- tryCatch(uniroot(f = Fopt,
+                               interval = c(tn, .Machine$integer.max))$root,
+                       error = function(e) NA)
 
   # Output
   output <- list(
@@ -100,7 +105,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
     init.time = init.time,
     test.time = test.time,
     p.value = p.value,
-    estimate = init.time + tn + numerator / denominator,
+    estimate = as.numeric(init.time + tn + numerator / denominator),
     conf.int = c(init.time + tn, init.time + conf.int)
   )
 
@@ -127,11 +132,17 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 #' @noRd
 
 Fx <- function(x, s, n) {
+
+  if (floor(s / x) == 0) {
+    warning("floor(s / x) is zero - NA produced")
+    return(NA)
+  }
+
   is <- 1:floor(s / x)
 
   part1 <- (-1)^(is - 1)
-  part2 <- choose(n, is)
-  part3 <- (1 - (is * x / s))^(n - 1)
+  part2 <- Rmpfr::chooseMpfr(n, is)
+  part3 <- (1 - (Rmpfr::mpfr(is, precBits = 1024) * x / s))^(n - 1)
 
   result <- 1 - sum(part1 * part2 * part3)
   rm(is, part1, part2, part3)

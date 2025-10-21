@@ -4,10 +4,8 @@
 #' Equation 2 from Burgman et al. 1995. Estimates a p-value for
 #' testing competing hypotheses of extinction/non-extinction.
 #'
-#' @param records `data.frame` with two columns: `time` and `records`. The
-#' `time` column must extend from the start of the observation period (which
-#' may be prior to the first sighting) to the end (typically the present day),
-#' with evenly-spaced temporal intervals (typically years).
+#' @param records sighting records in `cdis` format (see
+#' \code{\link{convert_dodo}} for details).
 #'
 #' @returns a `list` object with the original parameters and the p-value
 #' included as elements.
@@ -28,18 +26,20 @@
 #' @examples
 #' # Run the example analysis from Burgman 1995 (Figure 1b)
 #' BU95F1(burgman_figure1b)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' BU95F1(curlew$cdis)
 #'
 #' @export
 
 BU95F1 <- function(records) {
   # Determine number of records
-  N <- sum(records$records)
+  N <- sum(records)
 
   # Determine the period in which the last record occurred
-  Ce <- max(which(records$records > 0))
+  Ce <- max(which(records > 0))
 
   # Determine the total number of sighting intervals
-  CT <- nrow(records)
+  CT <- length(records)
 
   # Calculate p-value
   p.value <- (Ce / CT)^N

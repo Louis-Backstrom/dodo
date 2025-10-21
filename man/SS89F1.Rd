@@ -7,8 +7,8 @@
 SS89F1(records, alpha = 0.05)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -30,6 +30,8 @@ to be constant.
 \examples{
 # Run an example analysis using the Caribbean Monk Seal data
 SS89F1(monk_seal)
+# Run an example analysis using the Slender-billed Curlew data
+SS89F1(curlew$ccon)
 
 }
 \references{

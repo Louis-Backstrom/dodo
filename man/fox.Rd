@@ -5,14 +5,15 @@
 \alias{fox}
 \title{Tasmanian Fox carcass recoveries}
 \format{
-A numeric vector with 4 values.
+A \code{numeric} vector with 12 values.
 }
 \usage{
 fox
 }
 \description{
-European Red Fox (\emph{Vulpes vulpes}) carcass recovery dates from Caley & Barry
-(2014).
+European Red Fox (\emph{Vulpes vulpes}) carcass recovery data from Caley & Barry
+(2014). The temporal range (\code{init.time} to \code{test.time}) of these data is 2001
+to 2012. Format: \code{cbin}.
 }
 \references{
 \strong{Key Reference}

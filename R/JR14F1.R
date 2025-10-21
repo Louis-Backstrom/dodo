@@ -6,10 +6,8 @@
 #' \eqn{1 - \alpha} confidence interval and point estimate on the time of
 #' extinction. Sighting uncertainty is incorporated.
 #'
-#' @param records `data.frame` with two columns: `time` and `certainty`. The
-#' `time` column contains the date of all sightings, which each have an
-#' associated `certainty`, expressed as a probability in the interval \[0, 1]
-#' (values close to 1 imply a high likelihood that the observation is correct).
+#' @param records sighting records in `ucon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start of the observation period. Defaults to the time of
@@ -38,6 +36,10 @@
 #'
 #' Solow, A. R. (1993). Inferring Extinction from Sighting Data. *Ecology*,
 #' 74(3), 962-964. \doi{10.2307/1940821}
+#'
+#' @examples
+#' # Run an example analysis using the Slender-billed Curlew data
+#' JR14F1(curlew$ucon, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
@@ -74,6 +76,9 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
 
   # Calculate upper bound of confidence interval
   conf.int.upper <- tr / (alpha^(1 / r)) + init.time
+
+  # Remove relative time column
+  records$rtime <- NULL
 
   # Output
   output <- list(

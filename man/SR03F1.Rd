@@ -11,8 +11,8 @@ SR03F1(
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -37,6 +37,8 @@ All sighting records are assumed to be certain.
 \examples{
 # Run the Mauritian orchid analysis from Solow & Roberts 2003
 SR03F1(orchid, test.time = 1996)
+# Run an example analysis using the Slender-billed Curlew data
+SR03F1(curlew$ccon, test.time = 2022)
 
 }
 \references{

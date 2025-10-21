@@ -5,14 +5,15 @@
 \alias{orchid}
 \title{Mauritian orchid sightings}
 \format{
-A numeric vector with 11 values.
+A \code{numeric} vector with 11 values.
 }
 \usage{
 orchid
 }
 \description{
-Mauritian orchid (\emph{Angraecum aff. rutenbergianum}) sighting records from
-Solow & Roberts (2003).
+Mauritian orchid (\emph{Angraecum aff. rutenbergianum}) sighting record from
+Solow & Roberts (2003). The temporal range (\code{init.time} to \code{test.time}) of
+these data is 1933 to 1996. Format: \code{ccon}.
 }
 \references{
 \strong{Key Reference}

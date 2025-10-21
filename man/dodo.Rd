@@ -48,6 +48,14 @@ dodo implements a selection of published extinction models.
 }
 }
 
+\section{Other Functions}{
+
+\itemize{
+\item \code{\link[=convert_dodo]{convert_dodo()}} Convert basic sightings spreadsheet into all \code{dodo}
+formats.
+}
+}
+
 \author{
 \strong{Maintainer}: Louis Backstrom \email{ljb38@st-andrews.ac.uk}
 

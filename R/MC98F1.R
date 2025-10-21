@@ -4,10 +4,9 @@
 #' Equation 2 from McCarthy 1998. Estimates a p-value for testing
 #' competing hypotheses of extinction/non-extinction.
 #'
-#' @param records `data.frame` with three columns: `time`, `records`, and
-#' `effort`. The `time` column must extend from the start of the observation
-#' period (which may be prior to the first sighting) to the end (typically the
-#' present day), with evenly-spaced temporal intervals (typically years).
+#' @param records sighting records in `cdis` format (see
+#' \code{\link{convert_dodo}} for details).
+#' @param effort a vector of effort data, of the same length as `records`.
 #'
 #' @returns a `list` object with the original parameters and the p-value
 #' included as elements.
@@ -24,22 +23,24 @@
 #'
 #' @examples
 #' # Run an example analysis using the Lord Howe Gerygone data
-#' MC98F1(gerygone)
+#' MC98F1(records = gerygone, effort = gerygone_effort)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' MC98F1(records = curlew$cdis, effort = curlew_effort)
 #'
 #' @export
 
-MC98F1 <- function(records) {
+MC98F1 <- function(records, effort) {
   # Determine number of records
-  N <- sum(records$records)
+  N <- sum(records)
 
   # Determine the period in which the last record occurred
-  t <- max(which(records$records > 0))
+  t <- max(which(records > 0))
 
   # Determine the pre-terminal collection effort
-  et <- sum(records[1:t, ]$effort)
+  et <- sum(effort[1:t])
 
   # Determine the total collection effort
-  eT <- sum(records$effort)
+  eT <- sum(effort)
 
   # Calculate p-value
   p.value <- (et / eT)^N
@@ -47,6 +48,7 @@ MC98F1 <- function(records) {
   # Output
   output <- list(
     records = records,
+    effort = effort,
     p.value = p.value
   )
 

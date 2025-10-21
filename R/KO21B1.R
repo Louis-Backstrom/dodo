@@ -5,15 +5,13 @@
 #' the species is extant at the test time, and a point estimate and one-tailed
 #' \eqn{1 - \alpha} credibile interval on the time of extinction.
 #'
-#' @param records `data.frame` with two columns: `time` and `certain`. The
-#' `time` column contains the date of all sightings, which are each either
-#' certain (`certain = TRUE`) or uncertain (`certain = FALSE`).
+#' @param records sighting records in `ubin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param init.time start of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to the end of the observation period.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -31,26 +29,29 @@
 #'
 #' @examples
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2021
-#' KO21B1(woodpecker2, test.time = 2010)
+#' KO21B1(woodpecker$ubin, init.time = 1897, test.time = 2010)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' KO21B1(curlew$ubin, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
-KO21B1 <- function(records, alpha = 0.05, init.time = min(records$time),
-                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-  # Sort records
-  records <- sort_by(records, ~time)
-
+KO21B1 <- function(records, alpha = 0.05, init.time,
+                   test.time = init.time + nrow(records) - 1) {
   # Create date and certainty vectors
-  sighting <- records$time - init.time
-  cat <- 1 - as.integer(records$certain)
-  if (init.time == min(records$time)) {
-    sighting <- sighting[-1]
-    cat <- cat[-1]
-  }
+  sighting <- c(which(records$certain == 1), which(records$uncertain == 1))
+  cat <- c(rep(0, length(which(records$certain == 1))),
+           rep(1, length(which(records$uncertain == 1))))
+
+  combined <- data.frame(sighting, cat)
+  combined <- sort_by(combined, sighting)
+
+  sighting <- combined$sighting
+  cat <- combined$cat
+  rm(combined)
 
   # Calculate model parameters
   Tt <- test.time - init.time
-  t_n <- max(subset(records, certain == TRUE)$time) - init.time
+  t_n <- max(which(records$certain == 1)) - 1
   N <- length(sighting)
   y <- c()
 

@@ -12,8 +12,8 @@ SO93F2(
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -41,7 +41,9 @@ to be constant.
 }
 \examples{
 # Run the Black-footed Ferret analysis from Solow 1993
-SO93F2(ferret1, init.time = 0, test.time = 229)
+SO93F2(ferret$ccon, init.time = 0, test.time = 229)
+# Run an example analysis using the Slender-billed Curlew data
+SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)
 
 }
 \references{

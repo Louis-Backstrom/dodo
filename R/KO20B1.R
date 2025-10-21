@@ -5,14 +5,13 @@
 #' the species is extant at the test time, and a point estimate and one-tailed
 #' \eqn{1 - \alpha} credibile interval on the time of extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `cbin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param init.time start of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to the end of the observation period.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -33,42 +32,36 @@
 #'
 #' @examples
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
-#' KO20B1(woodpecker1, test.time = 2010)
+#' KO20B1(woodpecker$cbin, init.time = 1897, test.time = 2010)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' KO20B1(curlew$cbin, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
-KO20B1 <- function(records, alpha = 0.05, init.time = min(records),
-                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-  # Sort records
-  records <- sort(records)
-
-  # Create 0/1 sighting vector
-  sightings <- vector(length = test.time - init.time + 1)
-  sightings[records - init.time + 1] <- 1
-  if (init.time == min(records)) {
-    sightings <- sightings[-1]
-  }
+KO20B1 <- function(records, alpha = 0.05, init.time,
+                   test.time = init.time + length(records) - 1) {
 
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 
   # Run MCMC function from Kodikara et al. 2020
-  posterior <- coda::mcmc.list(coda::mcmc.list(posterior_cer_mcmc(sightings)))
+  posterior <- coda::mcmc.list(coda::mcmc.list(posterior_cer_mcmc(records)))
 
   sink()
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(posterior))
+  posterior$year <- posterior$tau + init.time - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$tau + init.time > test.time)
+  p.extant <- mean(posterior$year > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$tau) + init.time
+  estimate <- median(posterior$year)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$tau, 0)) + init.time
-  cred.int.upper <- as.numeric(quantile(posterior$tau, 1 - alpha)) + init.time
+  cred.int.lower <- as.numeric(quantile(posterior$year, 0))
+  cred.int.upper <- as.numeric(quantile(posterior$year, 1 - alpha))
 
   # Output
   output <- list(

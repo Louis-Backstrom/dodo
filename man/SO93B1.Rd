@@ -13,8 +13,8 @@ SO93B1(
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
@@ -44,6 +44,8 @@ to be constant.
 \examples{
 # Run the Caribbean Monk Seal analysis from Solow 1993
 SO93B1(monk_seal, test.time = 1992)
+# Run an example analysis using the Slender-billed Curlew data
+SO93B1(curlew$ccon, init.time = 1817, test.time = 2022)
 
 }
 \references{

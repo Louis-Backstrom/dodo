@@ -7,9 +7,8 @@
 TH13B3(records, priors, certain = 1, PXT = NULL, PE = NULL, n.iter = 1e+05)
 }
 \arguments{
-\item{records}{\code{data.frame} with two or more columns: \code{time} and one or more
-columns with the sighting history (0/1) for each distinct sighting class
-(the column names for these columns is not important).}
+\item{records}{sighting records in \code{umcd} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{priors}{nested \code{list} with two elements: \code{p} and \code{q}, each of which is
 a \code{list} with the same number of elements as there are sighting classes. For
@@ -50,7 +49,18 @@ TH13B3(
     q = list(q1 = c(1.0, 1.0), q2 = c(0.2, 0.7), q3 = c(0.1, 0.5))
   ),
   certain = c(1),
-  n.iter = 1e4
+  n.iter = 1e3
+)
+# Run an example analysis using the Slender-billed Curlew data
+TH13B3(
+  records = curlew$umcd,
+  priors = list(
+    p = list(p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),
+             p4 = c(0, 1), p5 = c(0, 1), p6 = c(0, 1)),
+    q = list(q1 = c(1.0, 1.0), q2 = c(1.0, 1.0), q3 = c(0.0, 1.0),
+             q4 = c(0.0, 1.0), q5 = c(0.0, 1.0), q6 = c(0.0, 1.0))),
+  certain = c(1, 2),
+  n.iter = 1e3
 )
 
 }

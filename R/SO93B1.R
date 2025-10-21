@@ -5,8 +5,8 @@
 #' posterior distribution on probability that the species is extant, with
 #' associated point estimate and two-sided \eqn{1 - \alpha} credible interval.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period. Defaults to the time of
@@ -34,6 +34,8 @@
 #' @examples
 #' # Run the Caribbean Monk Seal analysis from Solow 1993
 #' SO93B1(monk_seal, test.time = 1992)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SO93B1(curlew$ccon, init.time = 1817, test.time = 2022)
 #'
 #' @export
 

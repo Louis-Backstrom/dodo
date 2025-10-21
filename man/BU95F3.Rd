@@ -7,10 +7,8 @@
 BU95F3(records)
 }
 \arguments{
-\item{records}{\code{data.frame} with two columns: \code{time} and \code{records}. The
-\code{time} column must extend from the start of the observation period (which
-may be prior to the first sighting) to the end (typically the present day),
-with evenly-spaced temporal intervals (typically years).}
+\item{records}{sighting records in \code{cdis} format (see
+\code{\link{convert_dodo}} for details).}
 }
 \value{
 a \code{list} object with the original parameters and the p-value
@@ -30,6 +28,8 @@ Uses code from the \code{sExtinct} package
 \examples{
 # Run the example analysis from Burgman 1995 (Figure 1b)
 BU95F3(burgman_figure1b)
+# Run an example analysis using the Slender-billed Curlew data
+BU95F3(curlew$cdis)
 
 }
 \references{

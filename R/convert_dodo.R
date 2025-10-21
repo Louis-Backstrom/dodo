@@ -1,0 +1,112 @@
+#' @title Convert basic sightings spreadsheet into all `dodo` formats
+#'
+#' @description
+#' Converts a sightings spreadsheet into all the data formats used in `dodo`
+#' models.
+#'
+#' @param x sightings spreadsheet to be converted. Must be a `data.frame` with
+#' all of the requisite columns included. See Table S1 in Buchanan et al. (2025)
+#' for an example.
+#' @param init.time start of the observation period.
+#' @param test.time end of the observation period, typically the present day
+#' (defaults to the current year).
+#' @param threshold cutoff certainty value for which sightings to consider
+#' certain (for binary certain/uncertain models). Defaults to `0.9`.
+#' @param unique whether to deduplicate the dataset (to mitigate nonidependence
+#' issues). Defaults to `TRUE`.
+#' @param certainty name of the column with certainty values
+#' @param time name of the column with time values
+#'
+#' @returns a `list` object with 10 elements: the original parameters
+#' `init.time`, `test.time`, `threshold`, and `unique`, and the 6 converted
+#' datasets.
+#'
+#' @section Data Formats:
+#' **`ccon`**: *continuous certain sightings*. The simplest format, a vector of
+#' all the (certain) sighting times of the taxon of interest. See e.g.
+#' \code{\link{SO93F1}}.
+#'
+#' **`cbin`**: *binary certain sightings*. A vector of 0/1 (certain) sighting
+#' states at all discrete (integer) time intervals between `init.time` and
+#' `test.time` for the taxon of interest. Similar to `ccon`, but note that
+#' multiple records in an interval collapse to 1. See e.g. \code{\link{CB14B1}}.
+#'
+#' **`cdis`**: *discrete certain sightings*. A vector of (certain) sighting
+#' counts at all discrete (integer) time intervals between `init.time` and
+#' `test.time` for the taxon of interest. Similar to `cbin`, but note that
+#' multiple records in an interval *do not* collapse to 1. See e.g.
+#' \code{\link{BU95F1}}.
+#'
+#' **`ucon`**: *continuous uncertain sightings*. A `data.frame` of all the
+#' sighting times of the taxon of interest, with certainty scores between 0 and
+#' 1 associated with each record. See e.g. \code{\link{JR14F1}}.
+#'
+#' **`ubin`**: *binary uncertain sightings*. A `data.frame` with two columns,
+#' the first being the vector of 0/1 certain sighting states at all discrete
+#' (integer) time intervals between `init.time` and `test.time` for the taxon
+#' of interest, and the second being the equivalent vector for uncertain
+#' sightings. See e.g. \code{\link{KO20B2}}.
+#'
+#' **`umcd`**: *multi-class discrete uncertain sightings*. A `data.frame` of
+#' sighting counts at all discrete (integer) time intervals between `init.time`
+#' and `test.time` for the taxon of interest. Sightings are split up into
+#' classes based on their `certainty` score. See e.g. \code{\link{TH13B1}}.
+#'
+#' @examples
+#' # Convert the raw Slender-billed Curlew data
+#' convert_dodo(curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
+#' certainty = "p_ci", time = "year")
+#'
+#' @export
+
+convert_dodo <- function(x, init.time,
+                         test.time = as.numeric(format(Sys.Date(), "%Y")),
+                         threshold = 0.9, unique = TRUE, certainty, time) {
+  # Remove duplicates
+  if (unique == TRUE) {
+    x <- unique(x)
+  }
+
+  # Continuous certain sightings
+  x_ccon <- sort(x[x[[certainty]] >= threshold, time][[1]])
+
+  # Binary certain sightings from init.time to test.time
+  x_cbin <- as.integer(init.time:test.time %in% x_ccon)
+
+  # Discrete certain sightings from init.time to test.time
+  x_cdis <- as.integer(table(factor(x_ccon, levels = init.time:test.time)))
+
+  # Continuous uncertain sightings from init.time to test.time
+  x_ucon <- x[, c(time, certainty)]
+  names(x_ucon) <- c("time", "certainty")
+  x_ucon <- sort_by(x_ucon, ~time)
+
+  # Binary uncertain sightings from init.time to test.time
+  x_ubin <- data.frame(certain = x_cbin,
+                       uncertain = as.integer(init.time:test.time %in% sort(
+                         x[x[[certainty]] < threshold, time][[1]])))
+
+  # Multi-class discrete uncertain sightings from init.time to test.time
+  x_umcd <- data.frame(time = init.time:test.time)
+  for (certainty_class in sort(unique(x[[certainty]]), decreasing = TRUE)) {
+    x_umcd[paste0("records_", certainty_class)] <- as.integer(table(factor(
+      x[x[[certainty]] == certainty_class, time][[1]],
+      levels = init.time:test.time)))
+  }
+
+  # Output
+  output <- list(
+    init.time = init.time,
+    test.time = test.time,
+    threshold = threshold,
+    unique = unique,
+    ccon = x_ccon,
+    cbin = x_cbin,
+    cdis = x_cdis,
+    ucon = x_ucon,
+    ubin = x_ubin,
+    umcd = x_umcd
+  )
+
+  return(output)
+}

@@ -11,7 +11,9 @@ a \code{data.frame} with 4 columns and 7 rows.
 thompson_table1
 }
 \description{
-Example multi-class sighting records from Table 1 in Thompson et al. (2013).
+Example multi-class sighting record from Table 1 in Thompson et al. (2013).
+The temporal range (\code{init.time} to \code{test.time}) of these data is 0 to 7.
+Format: \code{umcd}.
 }
 \references{
 \strong{Key Reference}

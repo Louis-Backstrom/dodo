@@ -4,22 +4,26 @@
 #' Equation 9 from Solow 2016. Estimates a posterior probability that the
 #' species is extant.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time time point to sequentially calculate extinction
-#' probability at. Must not be earlier than the time of the most recent
-#' sighting nor later than `curr.time`.
-#' @param curr.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param records sighting records in `cbin` format (see
+#' \code{\link{convert_dodo}} for details).
+#' @param init.time start of the observation period. Defaults to `NULL`; this
+#' parameter is only necessary if specifying a different `test.time` to the end
+#' of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to `NULL`, in which case the probability is
+#' estimated for the end of the observation period.
+#' @param curr.time end of the observation period. Defaults to `NULL`; this
+#' parameter is only necessary if specifying a different `test.time` to the end
+#' of the observation period. If specified, `curr.time` - `init.time` must equal
+#' `length(records)`.
 #'
 #' @returns a `list` object with the original parameters and p(extant) included
 #' as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
-#' to be constant. Uses the uniform prior (1 / (m + T)) specified on p. 797.
+#' to be constant. Uses the uniform prior (1 / (m + T)) specified on p. 797 of
+#' Solow (2016).
 #'
 #' @references
 #' **Key Reference**
@@ -39,34 +43,44 @@
 #'
 #' @examples
 #' # Run the Dodo analysis from Solow 2016
-#' SO16B2(dodos, test.time = 1672, curr.time = 2015)
+#' SO16B2(records = as.integer((min(dodos) + 1):2015 %in% dodos),
+#'        init.time = min(dodos), test.time = 1672, curr.time = 2015)
 #' # Note that Solow 2016 presents p(extinct), which is 1 - p(extant) used here.
-#' # CHECK
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SO16B2(curlew$cbin)
 #'
 #' @export
 
-SO16B2 <- function(records, init.time = min(records), test.time,
-                   curr.time = as.numeric(format(Sys.Date(), "%Y"))) {
-  # Sort records
-  records <- sort(records)
-
+SO16B2 <- function(records, init.time = NULL, test.time = NULL,
+                   curr.time = NULL) {
   # Determine number of records
-  n <- length(records)
-
-  # If using first record as init.time, remove this from the record sequence
-  if (init.time == min(records)) {
-    records <- tail(records, -1)
-    n <- n - 1
-  }
+  n <- sum(records)
 
   # Determine length of sighting record
-  m <- max(records) - init.time
+  m <- max(which(records != 0))
 
-  # Determine test time
-  j <- test.time - max(records)
+  # If init.time, test.time, and curr.time are specified, check they are valid
+  if (!is.null(init.time) | !is.null(test.time) | !is.null(curr.time) ) {
+    if (curr.time - init.time != length(records)) {
+      stop("curr.time - init.time != length(records)")
+    }
+  }
 
   # Determine time since last record
-  bigT <- curr.time - max(records)
+  r <- rle(rev(records))
+  if (r$values[1] == 0) {
+    bigT <- r$lengths[1]
+  } else {
+    bigT <- 0
+  }
+  rm(r)
+
+  # Determine test time
+  if (!is.null(test.time)) {
+    j <- test.time - (init.time + m)
+  } else {
+    j <- bigT
+  }
 
   if (j > bigT | j < 0) {
     stop("Invalid test.time!")

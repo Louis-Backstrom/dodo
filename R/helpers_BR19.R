@@ -64,6 +64,7 @@ so93 <- function(ts) {
 #' @noRd
 
 mc06 <- function(ts) {
+  ts <- unique(ts) # McInerny assumes sightings are binary 0/1, so no duplicates
   sr <- ts - ts[1]
   n <- length(sr) - 1
   return(ts[1] + ceiling(sr[n + 1] + log(0.5, 1 - (n / sr[n + 1]))))
@@ -89,7 +90,8 @@ mc06 <- function(ts) {
 
 ole <- function(ts) {
   gam.fit <- function(i, j, v) {
-    return((gamma(2 * v + i) * gamma(v + j)) / (gamma(v + i) * gamma(j)))
+    return(exp((lgamma(2 * v + i) + lgamma(v + j)) -
+                 (lgamma(v + i) + lgamma(j))))
   }
   sights <- rev(sort(ts))
   k <- length(sights)

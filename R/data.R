@@ -1,10 +1,11 @@
 #' @title Caribbean Monk Seal sightings
 #'
 #' @description
-#' Caribbean Monk Seal (*Monachus tropicalis*) sighting records from Solow
-#' (1993) based on data presented in LeBouef et al. (1986).
+#' Caribbean Monk Seal (*Monachus tropicalis*) sighting record from Solow
+#' (1993) based on data presented in LeBouef et al. (1986). The temporal range
+#' (`init.time` to `test.time`) of these data is 1915 to 1992. Format: `ccon`.
 #'
-#' @format A numeric vector with 5 values.
+#' @format A `numeric` vector with 5 values.
 #'
 #' @references
 #' **Key Reference**
@@ -19,46 +20,34 @@
 #' \doi{10.1111/j.1748-7692.1986.tb00028.x}
 "monk_seal"
 
-#' @title Black-footed Ferret sightings (continuous)
+#' @title Black-footed Ferret sightings
 #'
 #' @description
-#' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
-#' (1993) based on data provided by the US Department of the Interior.
+#' Black-footed Ferret (*Mustela nigripes*) sighting record from Solow (1993)
+#' based on data provided by the US Department of the Interior, processed into
+#' various `dodo` formats. The temporal range (`init.time` to `test.time`) of
+#' these data is either 0 to 229 (`ccon`) or 1972 to 1992 (`cdis`). Formats:
+#' `ccon`, `cdis`.
 #'
-#' @format A numeric vector with 28 values.
+#' @format A `list` with 2 elements.
 #'
 #' @note
-#' Dates represent months post January 1972 (e.g. June 1972 is 6).
+#' Times for `ccon` represent months post January 1972 (e.g. June 1972 is 6).
 #'
 #' @references
 #' **Key Reference**
 #'
 #' Solow, A. R. (1993). Inferring Extinction in a Declining Population.
 #' *Journal of Mathematical Biology*, 32(1), 79-82. \doi{10.1007/Bf00160376}
-"ferret1"
-
-#' @title Black-footed Ferret sightings (discrete)
-#'
-#' @description
-#' Black-footed Ferret (*Mustela nigripes*) sighting records from Solow
-#' (1993) based on data provided by the US Department of the Interior.
-#'
-#' @format A `data.frame` with 2 columns and 21 rows.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R. (1993). Inferring Extinction in a Declining Population.
-#' *Journal of Mathematical Biology*, 32(1), 79-82. \doi{10.1007/Bf00160376}
-"ferret2"
+"ferret"
 
 #' @title *Metrarabdotos* n. sp. 5 sightings
 #'
 #' @description
 #' Stratigraphic intervals for *Metrarabdotos* n. sp. 5 from Marshall (1994)
-#' based on data supplied by A. H. Cheetham.
+#' based on data supplied by A. H. Cheetham. Format: `ccon`.
 #'
-#' @format A numeric vector with 11 values.
+#' @format A `numeric` vector with 11 values.
 #'
 #' @note
 #' The oldest sightings are set at time 0.
@@ -74,10 +63,11 @@
 #' @title Example sightings from Burgman et al.
 #'
 #' @description
-#' Example frequency-based sighting records from Figure 1b in Burgman et al.
-#' (1995).
+#' Example frequency-based sighting record from Figure 1b in Burgman et al.
+#' (1995). The temporal range (`init.time` to `test.time`) of these data is 0 to
+#' 16. Format: `cdis`.
 #'
-#' @format a `data.frame` with 2 columns and 16 rows.
+#' @format a `numeric` vector with 16 values.
 #'
 #' @references
 #' **Key Reference**
@@ -90,15 +80,11 @@
 #' @title Lord Howe Gerygone sightings
 #'
 #' @description
-#' Frequency-based collection-effort sighting record of the Lord Howe Gerygone
-#' (*Gerygone insularis*) based on data from the Atlas of Living Australia.
+#' Lord Howe Gerygone (*Gerygone insularis*) sighting record based on data from
+#' the Atlas of Living Australia. The temporal range (`init.time` to
+#' `test.time`) of these data is 1788 to 2023. Format: `cdis`.
 #'
-#' @format a `data.frame` with 3 columns and 236 rows.
-#'
-#' @note
-#' Includes all observations of birds within 10km of Lord Howe Island with
-#' valid spatial coordinates. The index of collection effort is the total
-#' number of bird species recorded in that year.
+#' @format a `numeric` vector with 236 values.
 #'
 #' @references
 #' **Key Reference**
@@ -111,14 +97,45 @@
 #' McCarthy, M. A. (1998). Identifying declining and threatened species with
 #' museum data. *Biological Conservation*, 83(1), 9-17.
 #' \doi{10.1016/S0006-3207(97)00048-7}
+#'
+#' @seealso [gerygone_effort]
 "gerygone"
+
+#' @title Lord Howe Gerygone effort
+#'
+#' @description
+#' Lord Howe Gerygone (*Gerygone insularis*) sampling effort proxy data.
+#' Following McCarthy et al. (1998), effort is approximated by the number of
+#' species recorded in the species' range (within 10km of Lord Howe Island) in
+#' each year. Species records come from the Atlas of Living Australia (all
+#' records of birds with coordinates). The temporal range (`init.time` to
+#' `test.time`) of these data is 1788 to 2023.
+#'
+#' @format a `numeric` vector with 236 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Atlas of Living Australia occurrence download, accessed on 25 August 2025.
+#' \doi{10.26197/ala.dad3870b-1b79-4600-ad12-af429feb1ad2}
+#'
+#' **Other References**
+#'
+#' McCarthy, M. A. (1998). Identifying declining and threatened species with
+#' museum data. *Biological Conservation*, 83(1), 9-17.
+#' \doi{10.1016/S0006-3207(97)00048-7}
+#'
+#' @seealso [gerygone]
+"gerygone_effort"
 
 #' @title Dodo sightings
 #'
 #' @description
-#' Dodo (*Raphus cucullatus*) sighting records from Roberts & Solow (2003).
+#' Dodo (*Raphus cucullatus*) sighting record from Roberts & Solow (2003). The
+#' temporal range (`init.time` to `test.time`) of these data is 1598 to 2002.
+#' Format: `ccon.`
 #'
-#' @format A numeric vector with 10 values.
+#' @format A `numeric` vector with 10 values.
 #'
 #' @references
 #' **Key Reference**
@@ -131,9 +148,9 @@
 #'
 #' @description
 #' Woolly Mammoth (*Mammuthus primigenius*) dated fossil records from Solow et
-#' al. (2006) based on data presented in Guthrie (2004).
+#' al. (2006) based on data presented in Guthrie (2004). Format: `ccon`.
 #'
-#' @format A numeric vector with 25 values.
+#' @format A `numeric` vector with 25 values.
 #'
 #' @note
 #' Includes the 25 most recent fossil records, measured in years before present
@@ -163,9 +180,9 @@
 #'
 #' @description
 #' Siberian and Mongolian records of Cambrian *Anabarella* sp. from Wang et al.
-#' (2016) based on data presented in Maloof et al. (2010).
+#' (2016) based on data presented in Maloof et al. (2010). Format: `ccon`.
 #'
-#' @format A numeric vector with 19 values.
+#' @format A `numeric` vector with 19 values.
 #'
 #' @note
 #' Dates are measured in million years before present (note that values are all
@@ -187,105 +204,33 @@
 #' \doi{10.1130/B30346.1}
 "anabarella"
 
-#' @title Eskimo Curlew sightings
+#' @title Ivory-billed Woodpecker sightings
 #'
 #' @description
-#' Eskimo Curlew (*Numenius borealis*) sighting records from Jarić & Roberts
-#' (2014) based on data from Roberts et al. (2010).
+#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting record from
+#' Roberts et al. (2010), processed into various `dodo` formats. The temporal
+#' range (`init.time` to `test.time`) of these data is 1897 to 2010. Formats:
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`.
 #'
-#' @format a `data.frame` with 2 columns and 49 rows.
-#'
-#' @note
-#' Sighting certainty values are the mean values of the reliability intervals
-#' (i.e. 0.85, 0.7, 0.25).
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Jarić, I., & Roberts, D. L. (2014). Accounting for observation reliability
-#' when inferring extinction based on sighting records. *Biodiversity and*
-#' *Conservation*, 23(11), 2801-2815. \doi{10.1007/s10531-014-0749-8}
-#'
-#' **Other References**
-#'
-#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
-#' reports of putatively extinct species and why it matters. *Conservation*
-#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
-"eskimo_curlew"
-
-#' @title Ivory-billed Woodpecker sightings (certain)
-#'
-#' @description
-#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
-#' Roberts et al. (2010).
-#'
-#' @format A numeric vector with 22 values.
-#'
-#' @note
-#' Only certain sightings are included.
+#' @format a `list` with 6 elements.
 #'
 #' @references
 #' **Key Reference**
 #'
 #' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
-#' reports of putatively extinct species and why it matters. *Conservation*
-#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
-"woodpecker1"
-
-#' @title Ivory-billed Woodpecker sightings (certain and uncertain)
-#'
-#' @description
-#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
-#' Roberts et al. (2010).
-#'
-#' @format A `data.frame` with 2 columns and 68 rows.
-#'
-#' @note
-#' Sightings are indicated as either certain (`certain = TRUE`) or uncertain
-#' (`certain = FALSE`).
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
-#' reports of putatively extinct species and why it matters. *Conservation*
-#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
-"woodpecker2"
-
-#' @title Ivory-billed Woodpecker sightings (variable certainty)
-#'
-#' @description
-#' Ivory-billed Woodpecker (*Campephilus principalis*) sighting records from
-#' Roberts et al. (2010).
-#'
-#' @format A `data.frame` with 2 columns and 68 rows.
-#'
-#' @note
-#' Sighting certainty values are the "extreme" values from Brook et al. 2019
-#' (i.e. 0.99, 0.5, 0.01).
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Roberts, D. L., Elphick, C. S., & Reed, J. M. (2010). Identifying anomalous
-#' reports of putatively extinct species and why it matters. *Conservation*
-#' *Biology*, 24(1), 189-196.\doi{10.1111/j.1523-1739.2009.01292.x}
-#'
-#' **Other References**
-#'
-#' Brook, B. W., Buettel, J. C., & Jaric, I. (2019). A fast re-sampling method
-#' for using reliability ratings of sightings with extinction-date estimators.
-#' *Ecology*, 100(9), e02787. \doi{10.1002/ecy.2787}
-#'
-"woodpecker3"
+#' reports of putatively extinct species and why it matters.
+#' *Conservation Biology*, 24(1), 189-196.
+#' \doi{10.1111/j.1523-1739.2009.01292.x}
+"woodpecker"
 
 #' @title Tasmanian Fox carcass recoveries
 #'
 #' @description
-#' European Red Fox (*Vulpes vulpes*) carcass recovery dates from Caley & Barry
-#' (2014).
+#' European Red Fox (*Vulpes vulpes*) carcass recovery data from Caley & Barry
+#' (2014). The temporal range (`init.time` to `test.time`) of these data is 2001
+#' to 2012. Format: `cbin`.
 #'
-#' @format A numeric vector with 4 values.
+#' @format A `numeric` vector with 12 values.
 #'
 #' @references
 #' **Key Reference**
@@ -298,10 +243,11 @@
 #' @title Mauritian orchid sightings
 #'
 #' @description
-#' Mauritian orchid (*Angraecum aff. rutenbergianum*) sighting records from
-#' Solow & Roberts (2003).
+#' Mauritian orchid (*Angraecum aff. rutenbergianum*) sighting record from
+#' Solow & Roberts (2003). The temporal range (`init.time` to `test.time`) of
+#' these data is 1933 to 1996. Format: `ccon`.
 #'
-#' @format A numeric vector with 11 values.
+#' @format A `numeric` vector with 11 values.
 #'
 #' @references
 #' **Key Reference**
@@ -314,10 +260,12 @@
 #' @title Purple-winged Ground Dove sightings
 #'
 #' @description
-#' Purple-winged Ground Dove (*Paraclaravis geoffroyi*) sighting records from
-#' Lees et al. (2021).
+#' Purple-winged Ground Dove (*Paraclaravis geoffroyi*) sighting record from
+#' Lees et al. (2021), processed into various `dodo` formats. The temporal
+#' range (`init.time` to `test.time`) of these data is 1811 to 2019. Formats:
+#' `ccon`, `cbin`, `ubin`.
 #'
-#' @format A `data.frame` with 2 columns and 61 rows.
+#' @format A `list` with 3 elements.
 #'
 #' @note
 #' Adapted from Supplementary Table 1 in Lees et al. (2021). Almost all specimen
@@ -338,7 +286,9 @@
 #' @title Example sightings from Thompson et al.
 #'
 #' @description
-#' Example multi-class sighting records from Table 1 in Thompson et al. (2013).
+#' Example multi-class sighting record from Table 1 in Thompson et al. (2013).
+#' The temporal range (`init.time` to `test.time`) of these data is 0 to 7.
+#' Format: `umcd`.
 #'
 #' @format a `data.frame` with 4 columns and 7 rows.
 #'
@@ -350,3 +300,70 @@
 #' *Journal of Theoretical Biology*, 338, 16-22.
 #' \doi{10.1016/j.jtbi.2013.08.023}
 "thompson_table1"
+
+#' @title Slender-billed Curlew sightings (raw)
+#'
+#' @description
+#' Unprocessed Slender-billed Curlew (*Numenius tenuirostris*) sighting record
+#' from Buchanan et al. (2025).
+#'
+#' @format a `data.frame` with 6 columns and 1174 rows.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Buchanan, G. M., Chapple, B., Berryman, A. J., Crockford, N., Jansen, J. J.
+#' F. J., & Bond, A. L. (2025). Global extinction of Slender-billed Curlew
+#' (*Numenius tenuirostris*). *Ibis*, 167(2), 357-370. \doi{10.1111/ibi.13368}
+#'
+#' @seealso [curlew]; [convert_dodo()]
+"curlew_raw"
+
+#' @title Slender-billed Curlew sightings (processed)
+#'
+#' @description
+#' Slender-billed Curlew (*Numenius tenuirostris*) sighting record from
+#' Buchanan et al. (2025), processed into various `dodo` formats. The temporal
+#' range (`init.time` to `test.time`) of these data is 1817 to 2022. Formats:
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`.
+#'
+#' @format a `list` with 6 elements.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Buchanan, G. M., Chapple, B., Berryman, A. J., Crockford, N., Jansen, J. J.
+#' F. J., & Bond, A. L. (2025). Global extinction of Slender-billed Curlew
+#' (*Numenius tenuirostris*). *Ibis*, 167(2), 357-370. \doi{10.1111/ibi.13368}
+#'
+#' @seealso [curlew_raw]; [convert_dodo()]; [curlew_effort]
+"curlew"
+
+#' @title Slender-billed Curlew effort
+#'
+#' @description
+#' Sampling effort proxy data for the Slender-billed Curlew
+#' (*Numenius tenuirostris*). Following McCarthy et al. (1998), effort is
+#' approximated by the number of species recorded in the species' range in each
+#' year. Species records come from GBIF (all records of Aves with coordinates),
+#' and range is defined as all of the countries  with 3+ confirmed (p_ci >= 0.9)
+#' records in Buchanan et al. (2025). The temporal range (`init.time` to
+#' `test.time`) of these data is 1817 to 2022.
+#'
+#' @format a `numeric` vector with 206 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Buchanan, G. M., Chapple, B., Berryman, A. J., Crockford, N., Jansen, J. J.
+#' F. J., & Bond, A. L. (2025). Global extinction of Slender-billed Curlew
+#' (*Numenius tenuirostris*). *Ibis*, 167(2), 357-370. \doi{10.1111/ibi.13368}
+#'
+#' **Other References**
+#'
+#' McCarthy, M. A. (1998). Identifying declining and threatened species with
+#' museum data. Biological Conservation, 83(1), 9-17.
+#' \doi{10.1016/S0006-3207(97)00048-7}
+#'
+#' @seealso [curlew]
+"curlew_effort"

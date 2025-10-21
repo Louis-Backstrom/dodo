@@ -7,22 +7,21 @@
 KO20B1(
   records,
   alpha = 0.05,
-  init.time = min(records),
-  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+  init.time,
+  test.time = init.time + length(records) - 1
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{cbin} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
 
-\item{init.time}{start of the observation period. Defaults to the time of
-the first sighting, in which case this sighting is removed from the record.}
+\item{init.time}{start of the observation period.}
 
-\item{test.time}{end of the observation period, typically the present day
-(defaults to the current year).}
+\item{test.time}{time point to retrospectively calculate extinction
+probability at. Defaults to the end of the observation period.}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),
@@ -40,7 +39,9 @@ to be constant.
 }
 \examples{
 # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
-KO20B1(woodpecker1, test.time = 2010)
+KO20B1(woodpecker$cbin, init.time = 1897, test.time = 2010)
+# Run an example analysis using the Slender-billed Curlew data
+KO20B1(curlew$cbin, init.time = 1817, test.time = 2022)
 
 }
 \references{

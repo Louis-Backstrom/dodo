@@ -12,13 +12,14 @@ RS03F1(
 )
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
 
-\item{k}{number of most recent sighting records to use (defaults to 5).}
+\item{k}{number of most recent sighting records to use (defaults to 10, or
+the whole sighting record, if there are fewer than 10 records).}
 
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}
@@ -39,7 +40,9 @@ All sighting records are assumed to be certain.
 }
 \examples{
 # Run the Dodo analysis from Roberts & Solow 2003
-RS03F1(dodos, k = 10, test.time = 2002)
+RS03F1(dodos, test.time = 2002)
+# Run an example analysis using the Slender-billed Curlew data
+RS03F1(curlew$ccon, test.time = 2022)
 
 }
 \references{

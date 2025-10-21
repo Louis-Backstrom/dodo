@@ -5,15 +5,13 @@
 #' the species is extant at the test time, and a point estimate and one-tailed
 #' \eqn{1 - \alpha} credibile interval on the time of extinction.
 #'
-#' @param records `data.frame` with two columns: `time` and `certain`. The
-#' `time` column contains the date of all sightings, which are each either
-#' certain (`certain = TRUE`) or uncertain (`certain = FALSE`).
+#' @param records sighting records in `ubin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param init.time start of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to the end of the observation period.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -33,49 +31,37 @@
 #'
 #' @examples
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
-#' KO20B2(woodpecker2, test.time = 2010)
+#' KO20B2(woodpecker$ubin, init.time = 1897, test.time = 2010)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
-KO20B2 <- function(records, alpha = 0.05, init.time = min(records$time),
-                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-  # Sort records
-  records <- sort_by(records, ~time)
-
-  # Create 0/1 sighting vectors
-  sightings_c <- vector(length = test.time - init.time + 1)
-  sightings_c[subset(records, certain == TRUE)$time - init.time + 1] <- 1
-  if (init.time == min(records$time)) {
-    sightings_c <- sightings_c[-1]
-  }
-  sightings_u <- vector(length = test.time - init.time + 1)
-  sightings_u[subset(records, certain == FALSE)$time - init.time + 1] <- 1
-  if (init.time == min(records$time)) {
-    sightings_u <- sightings_u[-1]
-  }
-
+KO20B2 <- function(records, alpha = 0.05, init.time,
+                   test.time = init.time + length(records) - 1) {
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 
   # Run MCMC function from Kodikara et al. 2020
   posterior <- coda::mcmc.list(coda::mcmc.list(
-    posterior_cer_uncer_mcmc(sightings_c, sightings_u)
+    posterior_cer_uncer_mcmc(records[, 1], records[, 2])
   ))
 
   sink()
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(posterior))
+  posterior$year <- posterior$tau + init.time - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$tau + init.time > test.time)
+  p.extant <- mean(posterior$year > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$tau) + init.time
+  estimate <- median(posterior$year)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$tau, 0)) + init.time
-  cred.int.upper <- as.numeric(quantile(posterior$tau, 1 - alpha)) + init.time
+  cred.int.lower <- as.numeric(quantile(posterior$year, 0))
+  cred.int.upper <- as.numeric(quantile(posterior$year, 1 - alpha))
 
   # Output
   output <- list(

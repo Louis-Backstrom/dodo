@@ -5,14 +5,14 @@
 \alias{metrarabdotos}
 \title{\emph{Metrarabdotos} n. sp. 5 sightings}
 \format{
-A numeric vector with 11 values.
+A \code{numeric} vector with 11 values.
 }
 \usage{
 metrarabdotos
 }
 \description{
 Stratigraphic intervals for \emph{Metrarabdotos} n. sp. 5 from Marshall (1994)
-based on data supplied by A. H. Cheetham.
+based on data supplied by A. H. Cheetham. Format: \code{ccon}.
 }
 \note{
 The oldest sightings are set at time 0.

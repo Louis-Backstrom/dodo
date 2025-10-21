@@ -5,8 +5,8 @@
 #' distribution on the time of extinction, with associated point estimate and
 #' one-sided \eqn{1 - \alpha} credible interval.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period. Defaults to the time of
@@ -31,6 +31,8 @@
 #' @examples
 #' # Run the Anabarella analysis from Wang et al. 2016
 #' WA16B1(-anabarella, alpha = 0.1)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' SO93F1(curlew$ccon, init.time = 1817, test.time = 2022)
 #'
 #' @export
 
@@ -45,18 +47,11 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
     base <- init.time
   }
 
-  # If using first record as init.time, remove this from the record sequence
-  if (init.time == min(records)) {
-    records <- tail(records, -1)
-  }
-
   # Run the ABM model
   abm_results <- abm(
     x = records, distance = FALSE, ext = FALSE, base = base,
     prmean = 0, prSD = 2, alpha = alpha, PLOT = 0
   )
-
-
 
   # Output
   output <- list(

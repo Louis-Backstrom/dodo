@@ -5,14 +5,14 @@
 \alias{anabarella}
 \title{\emph{Anabarella} fossil record}
 \format{
-A numeric vector with 19 values.
+A \code{numeric} vector with 19 values.
 }
 \usage{
 anabarella
 }
 \description{
 Siberian and Mongolian records of Cambrian \emph{Anabarella} sp. from Wang et al.
-(2016) based on data presented in Maloof et al. (2010).
+(2016) based on data presented in Maloof et al. (2010). Format: \code{ccon}.
 }
 \note{
 Dates are measured in million years before present (note that values are all

@@ -5,14 +5,14 @@
 \alias{mammoth}
 \title{Alaskan Mammoth fossil record}
 \format{
-A numeric vector with 25 values.
+A \code{numeric} vector with 25 values.
 }
 \usage{
 mammoth
 }
 \description{
 Woolly Mammoth (\emph{Mammuthus primigenius}) dated fossil records from Solow et
-al. (2006) based on data presented in Guthrie (2004).
+al. (2006) based on data presented in Guthrie (2004). Format: \code{ccon}.
 }
 \note{
 Includes the 25 most recent fossil records, measured in years before present

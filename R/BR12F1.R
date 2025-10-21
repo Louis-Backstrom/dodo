@@ -4,8 +4,8 @@
 #' Equation 4 from Bradshaw et al. 2012. Estimates a point estimate on the time
 #' of extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `ccon` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) to
 #' use in the underlying McInerny et al. 2006 model.
 #'
@@ -16,7 +16,7 @@
 #' All sighting records are assumed to be certain and sampling effort is assumed
 #' to be constant. This is *not* the Gaussian-resampled model (GRIWM) also
 #' presented in Bradshaw et al. 2012 (which incorporates radiometric dating
-#' error).
+#' error). Duplicate sightings in a single time unit are discarded.
 #'
 #' @references
 #' **Key Reference**
@@ -35,12 +35,14 @@
 #' @examples
 #' # Run the Woolly Mammoth analysis from Bradshaw et al. 2012
 #' BR12F1(mammoth)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' BR12F1(curlew$ccon)
 #'
 #' @export
 
 BR12F1 <- function(records, alpha = 0.05) {
-  # Sort records
-  records <- sort(records, decreasing = T)
+  # Sort and de-duplicate records
+  records <- sort(unique(records), decreasing = TRUE)
 
   # Determine number of records
   n <- length(records)
@@ -48,11 +50,21 @@ BR12F1 <- function(records, alpha = 0.05) {
   # Calculate thetas
   theta_k <- c()
   for (i in 2:n) {
-    theta_k[i - 1] <- MC06F1(records[1:i],
-      alpha = alpha,
-      remove.first = FALSE
-    )$conf.int[2]
+    theta_k[i - 1] <- suppressWarnings(
+      log(alpha) / log(1 - (i / (max(records[1:i]) - min(records[1:i]))))
+    )
   }
+
+  # Replace NA theta values with 0. NA values occur when the terminal dates in
+  # the sighting record occur in successive years, in which case the McInerny
+  # estimate is (strictly speaking) undefined, but can be safely inferred to be
+  # 0 (i.e. extinction immediately following the final record).
+
+  if (sum(is.na(theta_k)) > 0) {
+    warning(paste0("Replacing ", sum(is.na(theta_k)),
+                   " NA theta_k values with 0."))
+  }
+  theta_k[is.na(theta_k)] <- 0
 
   # Calculate weights
   d <- 1 / (records[1] - records[2:n])
@@ -65,7 +77,7 @@ BR12F1 <- function(records, alpha = 0.05) {
   output <- list(
     records = sort(records),
     alpha = alpha,
-    estimate = estimate
+    estimate = estimate + max(records)
   )
 
   return(output)

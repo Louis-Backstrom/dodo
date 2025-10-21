@@ -6,14 +6,14 @@
 #' estimate and one-tailed \eqn{1 - \alpha} credibile interval on the time of
 #' extinction.
 #'
-#' @param records numeric vector object containing all sighting records of the
-#' taxon of interest.
+#' @param records sighting records in `cbin` format (see
+#' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period. Defaults to the time of
-#' the first sighting, in which case this sighting is removed from the record.
-#' @param test.time end of the observation period, typically the present day
-#' (defaults to the current year).
+#' @param init.time start of the observation period.
+#' @param test.time time point to retrospectively calculate extinction
+#' probability at. Defaults to the end of the observation period.
+#' @param n.iter number of iterations to run (defaults to 11000).
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -35,29 +35,22 @@
 #' @examples
 #' # Run the fox analysis from Caley & Barry 2014
 #' CB14B1(fox, init.time = 2001, test.time = 2012)
+#' # Run an example analysis using the Slender-billed Curlew data
+#' CB14B1(curlew$cbin, init.time = 1817)
 #'
 #' @export
 
-CB14B1 <- function(records, alpha = 0.05, init.time = min(records),
-                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
-  # Sort records
-  records <- sort(records)
-
-  # Create 0/1 sighting vector
-  sightings <- vector(length = test.time - init.time + 1)
-  sightings[records - init.time + 1] <- 1
-  # if (init.time == min(records)) { # Not used, per paper
-  #   sightings <- sightings[-1]
-  # }
-
+CB14B1 <- function(records, alpha = 0.05, init.time,
+                   test.time = init.time + length(records) - 1,
+                   n.iter = 1e5) {
   # Set hyper priors for lambda and phi (wp for "weak prior")
   lam.wp <- c(1.1, 1.1)
   phi.wp <- c(1.1, 1.1)
 
   # Run sampler
   res.pp.wp <- fit.func1(
-    y = sightings, phi1 = phi.wp[1], phi2 = phi.wp[2],
-    lambda1 = lam.wp[1], lambda2 = lam.wp[2], iter = 1e5
+    y = records, phi1 = phi.wp[1], phi2 = phi.wp[2],
+    lambda1 = lam.wp[1], lambda2 = lam.wp[2], iter = n.iter
   )
 
   # Extract extinction time posterior
@@ -69,6 +62,7 @@ CB14B1 <- function(records, alpha = 0.05, init.time = min(records),
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
+    n.iter = n.iter,
     p.extant = mean(posterior > test.time),
     estimate = median(posterior),
     cred.int = as.numeric(quantile(posterior, c(0, 1 - alpha)))

@@ -50,3 +50,6 @@ rsconnect/
 
 # Trash folder (WIP files not to be included in package build etc.)
 trash/
+
+# Buchanan et al. Table S1
+data-raw/ibi13368-sup-0001-tables1.xlsx

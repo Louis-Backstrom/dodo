@@ -7,8 +7,8 @@
 MA94F1(records, alpha = 0.05, gamma = 0.1)
 }
 \arguments{
-\item{records}{numeric vector object containing all sighting records of the
-taxon of interest.}
+\item{records}{sighting records in \code{ccon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -40,6 +40,8 @@ are sufficiently permissive.
 \examples{
 # Run the *Metrarabdotos* n. sp. 5 analysis from Marshall 1994
 MA94F1(metrarabdotos, alpha = 0.5, gamma = 0.025)
+# Run an example analysis using the Slender-billed Curlew data
+MA94F1(curlew$ccon, alpha = 0.1, gamma = 0.1)
 
 }
 \references{

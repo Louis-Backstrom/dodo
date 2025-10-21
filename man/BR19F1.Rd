@@ -8,14 +8,13 @@ BR19F1(
   records,
   alpha = 0.05,
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  cores = NULL
+  cores = NULL,
+  n.iter = 10000
 )
 }
 \arguments{
-\item{records}{\code{data.frame} with two columns: \code{time} and \code{certainty}. The
-\code{time} column contains the date of all sightings, which each have an
-associated \code{certainty}, expressed as a probability in the interval [0, 1]
-(values close to 1 imply a high likelihood that the observation is correct).}
+\item{records}{sighting records in \code{ucon} format (see
+\code{\link{convert_dodo}} for details).}
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
@@ -25,6 +24,8 @@ the \eqn{1 - \alpha} confidence interval.}
 
 \item{cores}{number of cores to use (defaults to \code{NULL}, in which case
 \code{parallel::detectCores()} is run).}
+
+\item{n.iter}{number of iterations to run (defaults to 10000).}
 }
 \value{
 a \code{list} object with the original parameters and the probability,
@@ -42,11 +43,14 @@ Sampling effort is assumed to be constant.
 }
 \examples{
 # Run the "Extreme" Ivory-billed Woodpecker analysis from Brook et al. 2019
-BR19F1(woodpecker3, alpha = 0.1, cores = 2)
+BR19F1(woodpecker$ucon, test.time = 2010, alpha = 0.1, cores = 2,
+       n.iter = 1e3)
 # NB: alpha = 0.1 as this package presents two-sided confidence intervals
 # vs. one-sided confidence intervals in the original paper; the upper bound
 # of the one-sided alpha = 0.05 CI in Brook et al. is equivalent to the
 # upper bound of the two-sided alpha = 0.1 CI in this example.
+# Run an example analysis using the Slender-billed Curlew data
+BR19F1(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)
 
 }
 \references{

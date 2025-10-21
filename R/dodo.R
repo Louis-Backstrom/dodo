@@ -39,5 +39,9 @@
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.
 #'
+#' @section Other Functions:
+#' * [convert_dodo()] Convert basic sightings spreadsheet into all `dodo`
+#' formats.
+#'
 #' @name dodo
 "_PACKAGE"
