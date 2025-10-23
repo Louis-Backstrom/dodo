@@ -90,5 +90,6 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
     cred.int = c(max(records), cred.int.upper)
   )
 
+  gc()
   return(output)
 }

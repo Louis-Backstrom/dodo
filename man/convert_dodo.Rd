@@ -28,7 +28,8 @@ for an example.}
 certain (for binary certain/uncertain models). Defaults to \code{0.9}.}
 
 \item{unique}{whether to deduplicate the dataset (to mitigate nonidependence
-issues). Defaults to \code{TRUE}.}
+issues). Defaults to \code{TRUE}, in which case the dataset is grouped by every
+column except \code{time}, with the most recent row kept for each group.}
 
 \item{certainty}{name of the column with certainty values}
 

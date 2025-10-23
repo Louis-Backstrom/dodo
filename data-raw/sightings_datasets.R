@@ -146,7 +146,8 @@ curlew_raw <- readxl::read_xlsx("data-raw/ibi13368-sup-0001-tables1.xlsx")
 usethis::use_data(curlew_raw, overwrite = TRUE)
 
 curlew <- convert_dodo(curlew_raw, init.time = 1817, test.time = 2022,
-                       threshold = 0.9, certainty = "p_ci", time = "year")
+                       threshold = 0.9, unique = TRUE, certainty = "p_ci",
+                       time = "year")
 usethis::use_data(curlew, overwrite = TRUE)
 
 curlew_effort <- c(19, 19, 15, 16, 14, 19, 13, 24, 31, 7, 13, 10, 10, 22, 3, 7,

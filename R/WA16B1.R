@@ -32,7 +32,7 @@
 #' # Run the Anabarella analysis from Wang et al. 2016
 #' WA16B1(-anabarella, alpha = 0.1)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' SO93F1(curlew$ccon, init.time = 1817, test.time = 2022)
+#' WA16B1(curlew$ccon, init.time = 1817)
 #'
 #' @export
 

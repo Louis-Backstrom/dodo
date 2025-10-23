@@ -13,7 +13,8 @@
 #' @param threshold cutoff certainty value for which sightings to consider
 #' certain (for binary certain/uncertain models). Defaults to `0.9`.
 #' @param unique whether to deduplicate the dataset (to mitigate nonidependence
-#' issues). Defaults to `TRUE`.
+#' issues). Defaults to `TRUE`, in which case the dataset is grouped by every
+#' column except `time`, with the most recent row kept for each group.
 #' @param certainty name of the column with certainty values
 #' @param time name of the column with time values
 #'
@@ -64,11 +65,14 @@ convert_dodo <- function(x, init.time,
                          threshold = 0.9, unique = TRUE, certainty, time) {
   # Remove duplicates
   if (unique == TRUE) {
-    x <- unique(x)
+    x <- aggregate(x[[time]], by = x[setdiff(names(x), time)], FUN = max)
+    names(x)[names(x) == "x"] <- time
+    x <- x[c(time, setdiff(names(x), time))]
+    x <- x[order(x[, time]), ]
   }
 
   # Continuous certain sightings
-  x_ccon <- sort(x[x[[certainty]] >= threshold, time][[1]])
+  x_ccon <- sort(x[x[[certainty]] >= threshold, time])
 
   # Binary certain sightings from init.time to test.time
   x_cbin <- as.integer(init.time:test.time %in% x_ccon)
@@ -84,13 +88,13 @@ convert_dodo <- function(x, init.time,
   # Binary uncertain sightings from init.time to test.time
   x_ubin <- data.frame(certain = x_cbin,
                        uncertain = as.integer(init.time:test.time %in% sort(
-                         x[x[[certainty]] < threshold, time][[1]])))
+                         x[x[[certainty]] < threshold, time])))
 
   # Multi-class discrete uncertain sightings from init.time to test.time
   x_umcd <- data.frame(time = init.time:test.time)
   for (certainty_class in sort(unique(x[[certainty]]), decreasing = TRUE)) {
     x_umcd[paste0("records_", certainty_class)] <- as.integer(table(factor(
-      x[x[[certainty]] == certainty_class, time][[1]],
+      x[x[[certainty]] == certainty_class, time],
       levels = init.time:test.time)))
   }
 

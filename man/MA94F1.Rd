@@ -34,7 +34,7 @@ interval with a lower and upper bound.
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant. The upper bound of the upper confidence interval is likely to
-be NA, unless there are sufficient sightings or \eqn{alpha} and \eqn{gamma}
+be NA, unless there are sufficient sightings or \eqn{\alpha} and \eqn{\gamma}
 are sufficiently permissive.
 }
 \examples{
