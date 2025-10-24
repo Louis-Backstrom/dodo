@@ -35,7 +35,7 @@
 #' # Run an example analysis using the Caribbean Monk Seal data
 #' SS89B1(monk_seal, length.out = 1e5)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' SS89B1(curlew$ccon, length.out = 1e5)
+#' \dontrun{SS89B1(curlew$ccon, length.out = 1e5)}
 #'
 #' @export
 

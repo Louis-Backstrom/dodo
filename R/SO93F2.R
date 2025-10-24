@@ -38,7 +38,7 @@
 #' # Run the Black-footed Ferret analysis from Solow 1993
 #' SO93F2(ferret$ccon, init.time = 0, test.time = 229)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)
+#' \dontrun{SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)}
 #'
 #' @export
 

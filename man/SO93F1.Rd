@@ -43,7 +43,7 @@ to be constant.
 # Run the Caribbean Monk Seal analysis from Solow 1993
 SO93F1(monk_seal, test.time = 1992)
 # Run an example analysis using the Slender-billed Curlew data
-SO93F1(curlew$ccon, init.time = 1817, test.time = 2022)
+\dontrun{SO93F1(curlew$ccon, init.time = 1817, test.time = 2022)}
 
 }
 \references{

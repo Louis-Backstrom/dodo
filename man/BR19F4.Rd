@@ -50,7 +50,7 @@ BR19F4(woodpecker$ucon, test.time = 2010, alpha = 0.1, cores = 2,
 # of the one-sided alpha = 0.05 CI in Brook et al. is equivalent to the
 # upper bound of the two-sided alpha = 0.1 CI in this example.
 # Run an example analysis using the Slender-billed Curlew data
-BR19F4(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)
+\dontrun{BR19F4(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)}
 
 }
 \references{

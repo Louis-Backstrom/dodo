@@ -46,7 +46,7 @@
 #' # of the one-sided alpha = 0.05 CI in Brook et al. is equivalent to the
 #' # upper bound of the two-sided alpha = 0.1 CI in this example.
 #' # Run an example analysis using the Slender-billed Curlew data
-#' BR19F1(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)
+#' \dontrun{BR19F1(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)}
 #'
 #' @export
 

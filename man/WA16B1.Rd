@@ -4,7 +4,7 @@
 \alias{WA16B1}
 \title{Wang et al.'s (2016) "Adaptive" model}
 \usage{
-WA16B1(records, alpha = 0.05, init.time = min(records))
+WA16B1(records, alpha = 0.05, init.time = min(records), use.mpfr = FALSE)
 }
 \arguments{
 \item{records}{sighting records in \code{ccon} format (see
@@ -15,6 +15,10 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{init.time}{start of the observation period. Defaults to the time of
 the first sighting, in which case this sighting is removed from the record.}
+
+\item{use.mpfr}{whether or not to use multiple-precision floating-point
+computation via the \code{Rmpfr} package. Defaults to \code{FALSE}, but is necessary
+for larger datasets (N > 50). Note that this is very slow, and experimental!}
 }
 \value{
 a \code{list} object with the original parameters and the point estimate
@@ -32,9 +36,11 @@ to be constant.
 }
 \examples{
 # Run the Anabarella analysis from Wang et al. 2016
-WA16B1(-anabarella, alpha = 0.1)
+WA16B1(-anabarella, alpha = 0.1, use.mpfr = FALSE)
+\dontrun{WA16B1(-anabarella, alpha = 0.1, use.mpfr = TRUE)} # Slow!
 # Run an example analysis using the Slender-billed Curlew data
-SO93F1(curlew$ccon, init.time = 1817, test.time = 2022)
+\dontrun{WA16B1(curlew$ccon, init.time = 1817, use.mpfr = FALSE)} # Fails!
+\dontrun{WA16B1(curlew$ccon, init.time = 1817, use.mpfr = TRUE)} # Slow!
 
 }
 \references{

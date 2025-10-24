@@ -37,6 +37,50 @@ integrand.neglambdas <- function(L, th, x, prmean, prSD) {
   return(posterior)
 }
 
+integrand.neglambdas.mpfr <- function(L, th, x, prmean, prSD,
+                                      precBits = 256, return.log = FALSE) {
+  # Convert everything to mpfr
+  L <- Rmpfr::mpfr(L, precBits)
+  th <- Rmpfr::mpfr(th, precBits)
+  x <- Rmpfr::mpfr(x, precBits)
+  prmean <- Rmpfr::mpfr(prmean, precBits)
+  prSD <- Rmpfr::mpfr(prSD, precBits)
+
+  # Check for potential problems with integration
+  # NB: original abm code "[does] not check for xmax < th; if xmax > th, an
+  # error will not be generated" - this code warns instead.
+  if (any(x >= th)) {
+    warning("x must be smaller than th for negative lambda model")
+  }
+
+  safe_log <- function(x, precBits = 256) {
+    negorzero <- Rmpfr::asNumeric(x <= 0) == 1
+    if (any(negorzero)) {
+      x[negorzero] <- Rmpfr::mpfr(1e-100, precBits = precBits)
+    }
+    return(log(x))
+  }
+
+  k <- length(L)
+  log_prior <- dlognorm(L, mean = prmean, sd = prSD) + log(1 / th)
+
+  log_likelihood <- Rmpfr::mpfr(rep(NA, k), precBits)
+  for (i in 1:k) {
+    term1 <- log((1 - L[i]) / th)
+    term2 <- -L[i] * safe_log(1 - x / th, precBits)
+    log_likelihood[i] <- sum(term1 + term2)
+  }
+
+  log_posterior <- log_prior + log_likelihood
+
+  if (return.log == TRUE) {
+    return(log_posterior)
+  } else {
+    posterior <- exp(log_posterior)
+    return(posterior)
+  }
+}
+
 #' @title integrand.poslambdas function from Wang et al. 2016
 #'
 #' @description
@@ -74,6 +118,35 @@ integrand.poslambdas <- function(L, th, x, prmean, prSD) {
   posterior <- exp(posterior)
 
   return(posterior)
+}
+
+integrand.poslambdas.mpfr <- function(L, th, x, prmean, prSD,
+                                      precBits = 256, return.log = FALSE) {
+  # Convert everything to mpfr
+  L <- Rmpfr::mpfr(L, precBits)
+  th <- Rmpfr::mpfr(th, precBits)
+  x <- Rmpfr::mpfr(x, precBits)
+  prmean <- Rmpfr::mpfr(prmean, precBits)
+  prSD <- Rmpfr::mpfr(prSD, precBits)
+
+  k <- length(L)
+  log_prior <- dlognorm(L, mean = prmean, sd = prSD) + log(1 / th)
+
+  log_likelihood <- Rmpfr::mpfr(rep(NA, k), precBits)
+  for (i in 1:k) {
+    term1 <- log((1 + L[i]) / th)
+    term2 <- L[i] * log(x / th)
+    log_likelihood[i] <- sum(term1 + term2)
+  }
+
+  log_posterior <- log_prior + log_likelihood
+
+  if (return.log == TRUE) {
+    return(log_posterior)
+  } else {
+    posterior <- exp(log_posterior)
+    return(posterior)
+  }
 }
 
 #' @title integrand.thetasnegL function from Wang et al. 2016
@@ -115,6 +188,35 @@ integrand.thetasnegL <- function(th, L, x, prmean, prSD) {
   return(posterior)
 }
 
+integrand.thetasnegL.mpfr <- function(th, L, x, prmean, prSD,
+                                      precBits = 256, return.log = FALSE) {
+  # Convert everything to mpfr
+  th <- Rmpfr::mpfr(th, precBits)
+  L <- Rmpfr::mpfr(L, precBits)
+  x <- Rmpfr::mpfr(x, precBits)
+  prmean <- Rmpfr::mpfr(prmean, precBits)
+  prSD <- Rmpfr::mpfr(prSD, precBits)
+
+  k <- length(th)
+  log_prior <- dlognorm(L, mean = prmean, sd = prSD) + log(1 / th)
+
+  log_likelihood <- Rmpfr::mpfr(rep(NA, k), precBits)
+  for (i in 1:k) {
+    term1 <- log((1 - L) / th[i])
+    term2 <- -L * log(1 - x / th[i])
+    log_likelihood[i] <- sum(term1 + term2)
+  }
+
+  log_posterior <- log_prior + log_likelihood
+
+  if (return.log == TRUE) {
+    return(log_posterior)
+  } else {
+    posterior <- exp(log_posterior)
+    return(posterior)
+  }
+}
+
 #' @title integrand.thetasposL function from Wang et al. 2016
 #'
 #' @description
@@ -154,6 +256,35 @@ integrand.thetasposL <- function(th, L, x, prmean, prSD) {
   return(posterior)
 }
 
+integrand.thetasposL.mpfr <- function(th, L, x, prmean, prSD,
+                                      precBits = 256, return.log = FALSE) {
+  # Convert everything to mpfr
+  th <- Rmpfr::mpfr(th, precBits)
+  L <- Rmpfr::mpfr(L, precBits)
+  x <- Rmpfr::mpfr(x, precBits)
+  prmean <- Rmpfr::mpfr(prmean, precBits)
+  prSD <- Rmpfr::mpfr(prSD, precBits)
+
+  k <- length(th)
+  log_prior <- dlognorm(L, mean = prmean, sd = prSD) + log(1 / th)
+
+  log_likelihood <- Rmpfr::mpfr(rep(NA, k), precBits)
+  for (i in 1:k) {
+    term1 <- log((1 + L) / th[i])
+    term2 <- L * log(x / th[i])
+    log_likelihood[i] <- sum(term1 + term2)
+  }
+
+  log_posterior <- log_prior + log_likelihood
+
+  if (return.log == TRUE) {
+    return(log_posterior)
+  } else {
+    posterior <- exp(log_posterior)
+    return(posterior)
+  }
+}
+
 #' @title drefbeta function from Wang et al. 2016
 #'
 #' @description
@@ -182,6 +313,31 @@ drefbeta <- function(x, L) {
   }
 }
 
+#' @title dlognorm function
+#'
+#' @description
+#' Helper function, for Rmpfr calculations.
+#'
+#' @param x value.
+#' @param mean parameter of normal distribution.
+#' @param sd parameter of normal distribution.
+#' @param precBits number of bits of precision for Rmpfr.
+#'
+#' @returns a value.
+#'
+#' @noRd
+
+dlognorm <- function(x, mean, sd, precBits = 256) {
+  x <- Rmpfr::mpfr(x, precBits)
+  mean <- Rmpfr::mpfr(mean, precBits)
+  sd <- Rmpfr::mpfr(sd, precBits)
+
+  log_term <- log(2 * pi * sd^2)
+  squared_term <- (x - mean)^2 / (2 * sd^2)
+
+  return(-0.5 * log_term - squared_term)
+}
+
 #' @title Adaptive Beta Method function from Wang et al. 2016
 #'
 #' @description
@@ -198,6 +354,9 @@ drefbeta <- function(x, L) {
 #' @param prSD prior standard deviation for lambda. Defaults to 1.
 #' @param alpha desired significance level.
 #' @param PLOT whether or not to show plots (defaults to 0, 1 to show plots).
+#' @param use.mpfr whether or not to use multiple-precision floating-point
+#' computation via the `Rmpfr` package. Defaults to `FALSE`, but is necessary
+#' for larger datasets (N > 50). Note that this is very slow, and experimental!
 #'
 #' @returns the model outputs.
 #'
@@ -212,7 +371,7 @@ drefbeta <- function(x, L) {
 #' @noRd
 
 abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
-                prSD = 1, alpha, PLOT = 0) {
+                prSD = 1, alpha, PLOT = 0, use.mpfr = FALSE) {
   # Get confidence level
   conf <- 1 - alpha
 
@@ -221,9 +380,9 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # If a base is specified, check that it is valid
   if (!is.null(base)) {
     if ((distance & ext) & (base > min(x)) |
-      (distance & !ext) & (base < max(x)) |
-      (!distance & ext) & (base < max(x)) |
-      (!distance & !ext) & (base > min(x))) {
+        (distance & !ext) & (base < max(x)) |
+        (!distance & ext) & (base < max(x)) |
+        (!distance & !ext) & (base > min(x))) {
       stop("Invalid value for base")
     }
   }
@@ -266,28 +425,49 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   upperlimL <- 10
   numstepsL <- 40
   Lvals <- seq(lowerlimL, upperlimL, length.out = numstepsL)
-  Ldens <- rep(NA, numstepsL)
   thetavals <- seq(xmax, upperlimth, length.out = numstepsth)
-  thdens <- rep(NA, numstepsth)
+
+  if (use.mpfr == TRUE) {
+    Ldens <- list()
+    thdens <- list()
+  } else {
+    Ldens <- rep(NA, numstepsL)
+    thdens <- rep(NA, numstepsth)
+  }
 
   # Estimate Lambda
 
   # Increment lambda values, integrating over theta values for each
-  for (i in 1:numstepsL) {
-    Ldens[i] <- ifelse(Lvals[i] <= 0,
-      integrate(integrand.thetasnegL, xmax, upperlimth,
-        L = Lvals[i], x = x, prmean = prmean,
-        prSD = prSD
-      )$value,
-      integrate(integrand.thetasposL, xmax, upperlimth,
-        L = Lvals[i], x = x, prmean = prmean,
-        prSD = prSD
-      )$value
-    )
+  if (use.mpfr == TRUE) {
+    for (i in 1:numstepsL) {
+      Ldens[[i]] <- Rmpfr::mpfr(ifelse(
+        Lvals[i] <= 0,
+        Rmpfr::integrateR(integrand.thetasnegL.mpfr, xmax, upperlimth,
+                          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+        )$value,
+        Rmpfr::integrateR(integrand.thetasposL.mpfr, xmax, upperlimth,
+                          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+        )$value
+      ), precBits = 256)
+    }
+    Ldens <- do.call(c, Ldens)
+  } else {
+    for (i in 1:numstepsL) {
+      Ldens[i] <- ifelse(
+        Lvals[i] <= 0,
+        integrate(integrand.thetasnegL, xmax, upperlimth,
+                  L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+
+        )$value,
+        integrate(integrand.thetasposL, xmax, upperlimth,
+                  L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+        )$value
+      )
+    }
   }
 
   # Normalize lambda pdf to unit area
-  Ldens <- Ldens / sum(Ldens)
+  Ldens <- as.numeric(Ldens / sum(Ldens))
 
   # Calculate posterior quantities
   Lmean <- sum(Lvals * Ldens)
@@ -297,19 +477,30 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Estimate Theta
 
   # Increment theta values, integrating over lambda values for each
-  for (i in 1:numstepsth) {
-    thdens[i] <- (integrate(integrand.neglambdas, -Inf, 0,
-      th = thetavals[i],
-      x = x, prmean = prmean, prSD = prSD
-    )$value +
-      integrate(integrand.poslambdas, 0, Inf,
-        th = thetavals[i],
-        x = x, prmean = prmean, prSD = prSD
-      )$value)
+  if (use.mpfr == TRUE) {
+    for (i in 1:numstepsth) {
+      thdens[[i]] <- Rmpfr::mpfr((
+        Rmpfr::integrateR(integrand.neglambdas.mpfr,
+                          Rmpfr::mpfr(lowerlimL, 256), 0, th = thetavals[i],
+                          x = x, prmean = prmean, prSD = prSD)$value +
+          Rmpfr::integrateR(integrand.poslambdas.mpfr, 0,
+                            Rmpfr::mpfr(upperlimL, 256), th = thetavals[i],
+                            x = x, prmean = prmean, prSD = prSD)$value),
+        precBits = 256)
+    }
+    thdens <- do.call(c, thdens)
+  } else {
+    for (i in 1:numstepsth) {
+      thdens[i] <-
+        (integrate(integrand.neglambdas, -Inf, 0, th = thetavals[i],
+                   x = x, prmean = prmean, prSD = prSD)$value +
+           integrate(integrand.poslambdas, 0, Inf, th = thetavals[i],
+                     x = x, prmean = prmean, prSD = prSD)$value)
+    }
   }
 
   # Normalize theta pdf to unit area
-  thdens <- thdens / sum(thdens)
+  thdens <- as.numeric(thdens / sum(thdens))
 
   # Calculate posterior quantities
   cutoff <- which.max(cumsum(thdens) >= conf)

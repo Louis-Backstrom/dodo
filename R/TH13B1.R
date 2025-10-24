@@ -44,13 +44,13 @@
 #'   certain = c(1)
 #' )
 #' # Run an example analysis using the Slender-billed Curlew data
-#' TH13B1(
+#' \dontrun{TH13B1(
 #'   records = curlew$umcd,
 #'   priors = list(
 #'     p = list(p1 = 0.5, p2 = 0.5, p3 = 0.5, p4 = 0.5, p5 = 0.5, p6 = 0.5),
 #'     q = list(q1 = 1.0, q2 = 1.0, q3 = 0.5, q4 = 0.5, q5 = 0.5, q6 = 0.5)),
 #'   certain = c(1, 2)
-#' )
+#' )}
 #'
 #' @export
 

@@ -36,7 +36,7 @@ to be constant.
 # Run the Black-footed Ferret analysis from Jarić & Ebenhard 2010
 JE10F1(ferret$ccon - 5, test.time = 223) # shift dates to align with paper
 # Run an example analysis using the Slender-billed Curlew data
-JE10F1(curlew$ccon, init.time = 1817, test.time = 2022)
+\dontrun{JE10F1(curlew$ccon, init.time = 1817, test.time = 2022)}
 
 }
 \references{

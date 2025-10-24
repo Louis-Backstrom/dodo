@@ -30,7 +30,7 @@ to be constant.
 # Run an example analysis using the Caribbean Monk Seal data
 SL88F1(monk_seal)
 # Run an example analysis using the Slender-billed Curlew data
-SL88F1(curlew$ccon)
+\dontrun{SL88F1(curlew$ccon)}
 
 }
 \references{

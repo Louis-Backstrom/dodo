@@ -27,7 +27,7 @@ All sighting records are assumed to be certain.
 # Run an example analysis using the Lord Howe Gerygone data
 MC98F1(records = gerygone, effort = gerygone_effort)
 # Run an example analysis using the Slender-billed Curlew data
-MC98F1(records = curlew$cdis, effort = curlew_effort)
+\dontrun{MC98F1(records = curlew$cdis, effort = curlew_effort)}
 
 }
 \references{

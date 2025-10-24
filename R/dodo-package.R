@@ -7,6 +7,7 @@
 #' @importFrom graphics lines
 #' @importFrom graphics par
 #' @importFrom Rmpfr mpfr
+#' @importFrom stats aggregate
 #' @importFrom stats dbeta
 #' @importFrom stats dlnorm
 #' @importFrom stats dnorm

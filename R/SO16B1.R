@@ -49,7 +49,7 @@
 #' # Also note that Solow 2016 rounds p to 2 d.p., which explains the slight
 #' # difference between the two final p(extinct) results (0.688 vs 0.692).
 #' # Run an example analysis using the Slender-billed Curlew data
-#' SO16B1(curlew$cbin)
+#' \dontrun{SO16B1(curlew$cbin)}
 #'
 #' @export
 
