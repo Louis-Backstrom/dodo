@@ -52,16 +52,23 @@ TH13B3(
   n.iter = 1e3
 )
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{TH13B3(
+\dontrun{
+TH13B3(
   records = curlew$umcd,
   priors = list(
-    p = list(p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),
-             p4 = c(0, 1), p5 = c(0, 1), p6 = c(0, 1)),
-    q = list(q1 = c(1.0, 1.0), q2 = c(1.0, 1.0), q3 = c(0.0, 1.0),
-             q4 = c(0.0, 1.0), q5 = c(0.0, 1.0), q6 = c(0.0, 1.0))),
+    p = list(
+      p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),
+      p4 = c(0, 1), p5 = c(0, 1), p6 = c(0, 1)
+    ),
+    q = list(
+      q1 = c(1.0, 1.0), q2 = c(1.0, 1.0), q3 = c(0.0, 1.0),
+      q4 = c(0.0, 1.0), q5 = c(0.0, 1.0), q6 = c(0.0, 1.0)
+    )
+  ),
   certain = c(1, 2),
   n.iter = 1e3
-)}
+)
+}
 
 }
 \references{

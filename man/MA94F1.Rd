@@ -41,7 +41,9 @@ are sufficiently permissive.
 # Run the *Metrarabdotos* n. sp. 5 analysis from Marshall 1994
 MA94F1(metrarabdotos, alpha = 0.5, gamma = 0.025)
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{MA94F1(curlew$ccon, alpha = 0.05, gamma = 0.05)}
+\dontrun{
+MA94F1(curlew$ccon, alpha = 0.05, gamma = 0.05)
+}
 
 }
 \references{

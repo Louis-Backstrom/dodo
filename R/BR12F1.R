@@ -57,19 +57,6 @@ BR12F1 <- function(records, alpha = 0.05) {
     )
   }
 
-  # Replace NA theta values with 0. NA values occur when the terminal dates in
-  # the sighting record occur in successive years, in which case the McInerny
-  # estimate is (strictly speaking) undefined, but can be safely (?) inferred to
-  # be 0 (i.e. extinction immediately following the final record).
-
-  if (sum(is.na(theta_k)) > 0) {
-    warning(paste0(
-      "Replacing ", sum(is.na(theta_k)),
-      " NA theta_k values with 0."
-    ))
-  }
-  theta_k[is.na(theta_k)] <- 0
-
   # Calculate weights
   d <- 1 / (records[1] - records[2:n])
   d <- d / max(d)

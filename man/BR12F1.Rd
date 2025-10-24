@@ -31,7 +31,9 @@ error). Duplicate sightings in a single time unit are discarded.
 # Run the Woolly Mammoth analysis from Bradshaw et al. 2012
 BR12F1(mammoth)
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{BR12F1(curlew$ccon)}
+\dontrun{
+BR12F1(curlew$ccon)
+}
 
 }
 \references{

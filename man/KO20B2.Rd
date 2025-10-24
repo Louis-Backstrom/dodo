@@ -40,7 +40,9 @@ Sampling effort is assumed to be constant.
 # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
 KO20B2(woodpecker$ubin, init.time = 1897, test.time = 2010)
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)}
+\dontrun{
+KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)
+}
 
 }
 \references{

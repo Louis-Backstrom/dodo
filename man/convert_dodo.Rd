@@ -79,7 +79,9 @@ classes based on their \code{certainty} score. See e.g. \code{\link{TH13B1}}.
 
 \examples{
 # Convert the raw Slender-billed Curlew data
-convert_dodo(curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
-certainty = "p_ci", time = "year")
+convert_dodo(curlew_raw,
+  init.time = 1817, test.time = 2022, threshold = 0.9,
+  certainty = "p_ci", time = "year"
+)
 
 }

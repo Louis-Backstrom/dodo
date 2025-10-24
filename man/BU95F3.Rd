@@ -29,7 +29,9 @@ Uses code from the \code{sExtinct} package
 # Run the example analysis from Burgman 1995 (Figure 1b)
 BU95F3(burgman_figure1b)
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{BU95F3(curlew$cdis)}
+\dontrun{
+BU95F3(curlew$cdis)
+}
 
 }
 \references{
