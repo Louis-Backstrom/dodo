@@ -47,7 +47,9 @@
 #' # Run the Mauritian orchid analysis from Solow & Roberts 2003
 #' SR03F1(orchid, test.time = 1996)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{SR03F1(curlew$ccon, test.time = 2022)}
+#' \dontrun{
+#' SR03F1(curlew$ccon, test.time = 2022)
+#' }
 #'
 #' @export
 

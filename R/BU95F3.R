@@ -41,7 +41,9 @@
 #' # Run the example analysis from Burgman 1995 (Figure 1b)
 #' BU95F3(burgman_figure1b)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{BU95F3(curlew$cdis)}
+#' \dontrun{
+#' BU95F3(curlew$cdis)
+#' }
 #'
 #' @export
 
@@ -80,7 +82,7 @@ BU95F3 <- function(records) {
         for (indexi in 1:length(KK)) {
           i <- indexi - 1
           dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
-                              ((j - Rmpfr::mpfr(i, precBits = 1024))^N))
+            ((j - Rmpfr::mpfr(i, precBits = 1024))^N))
         }
 
         Sn <- (1 / factorial(j)) * dummy

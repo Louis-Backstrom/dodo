@@ -91,7 +91,7 @@ mc06 <- function(ts) {
 ole <- function(ts) {
   gam.fit <- function(i, j, v) {
     return(exp((lgamma(2 * v + i) + lgamma(v + j)) -
-                 (lgamma(v + i) + lgamma(j))))
+      (lgamma(v + i) + lgamma(j))))
   }
   sights <- rev(sort(ts))
   k <- length(sights)

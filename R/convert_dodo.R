@@ -55,8 +55,10 @@
 #'
 #' @examples
 #' # Convert the raw Slender-billed Curlew data
-#' convert_dodo(curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
-#' certainty = "p_ci", time = "year")
+#' convert_dodo(curlew_raw,
+#'   init.time = 1817, test.time = 2022, threshold = 0.9,
+#'   certainty = "p_ci", time = "year"
+#' )
 #'
 #' @export
 
@@ -86,16 +88,20 @@ convert_dodo <- function(x, init.time,
   x_ucon <- sort_by(x_ucon, ~time)
 
   # Binary uncertain sightings from init.time to test.time
-  x_ubin <- data.frame(certain = x_cbin,
-                       uncertain = as.integer(init.time:test.time %in% sort(
-                         x[x[[certainty]] < threshold, time])))
+  x_ubin <- data.frame(
+    certain = x_cbin,
+    uncertain = as.integer(init.time:test.time %in% sort(
+      x[x[[certainty]] < threshold, time]
+    ))
+  )
 
   # Multi-class discrete uncertain sightings from init.time to test.time
   x_umcd <- data.frame(time = init.time:test.time)
   for (certainty_class in sort(unique(x[[certainty]]), decreasing = TRUE)) {
     x_umcd[paste0("records_", certainty_class)] <- as.integer(table(factor(
       x[x[[certainty]] == certainty_class, time],
-      levels = init.time:test.time)))
+      levels = init.time:test.time
+    )))
   }
 
   # Output

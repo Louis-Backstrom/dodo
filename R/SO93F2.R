@@ -38,7 +38,9 @@
 #' # Run the Black-footed Ferret analysis from Solow 1993
 #' SO93F2(ferret$ccon, init.time = 0, test.time = 229)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)}
+#' \dontrun{
+#' SO93F2(curlew$ccon, init.time = 1817, test.time = 2022)
+#' }
 #'
 #' @export
 
@@ -67,7 +69,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Calculate p-value
   p.value <- as.numeric(Fx(x = tn, s = s, n = n) /
-                          Fx(x = bigT, s = s, n = n))
+    Fx(x = bigT, s = s, n = n))
 
   # Calculate numerator for point estimate
   i <- 0:floor(s / tn)
@@ -94,9 +96,13 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   }
 
   # Numerically find the confidence interval
-  conf.int <- tryCatch(uniroot(f = Fopt,
-                               interval = c(tn, .Machine$integer.max))$root,
-                       error = function(e) NA)
+  conf.int <- tryCatch(
+    uniroot(
+      f = Fopt,
+      interval = c(tn, .Machine$integer.max)
+    )$root,
+    error = function(e) NA
+  )
 
   # Output
   output <- list(
@@ -132,7 +138,6 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 #' @noRd
 
 Fx <- function(x, s, n) {
-
   if (floor(s / x) == 0) {
     warning("floor(s / x) is zero - NA produced")
     return(NA)

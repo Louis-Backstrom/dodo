@@ -39,8 +39,9 @@
 #' # Run an example analysis using the Black-footed Ferret data
 #' MC06F1(as.integer(ferret$cdis != 0), init.time = 1972)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{MC06F1(curlew$cbin, init.time = 1817)}
-#'
+#' \dontrun{
+#' MC06F1(curlew$cbin, init.time = 1817)
+#' }
 #'
 #' @export
 

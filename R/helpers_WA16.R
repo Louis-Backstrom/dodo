@@ -380,9 +380,9 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # If a base is specified, check that it is valid
   if (!is.null(base)) {
     if ((distance & ext) & (base > min(x)) |
-        (distance & !ext) & (base < max(x)) |
-        (!distance & ext) & (base < max(x)) |
-        (!distance & !ext) & (base > min(x))) {
+      (distance & !ext) & (base < max(x)) |
+      (!distance & ext) & (base < max(x)) |
+      (!distance & !ext) & (base > min(x))) {
       stop("Invalid value for base")
     }
   }
@@ -443,10 +443,10 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
       Ldens[[i]] <- Rmpfr::mpfr(ifelse(
         Lvals[i] <= 0,
         Rmpfr::integrateR(integrand.thetasnegL.mpfr, xmax, upperlimth,
-                          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value,
         Rmpfr::integrateR(integrand.thetasposL.mpfr, xmax, upperlimth,
-                          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value
       ), precBits = 256)
     }
@@ -456,11 +456,10 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
       Ldens[i] <- ifelse(
         Lvals[i] <= 0,
         integrate(integrand.thetasnegL, xmax, upperlimth,
-                  L = Lvals[i], x = x, prmean = prmean, prSD = prSD
-
+          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value,
         integrate(integrand.thetasposL, xmax, upperlimth,
-                  L = Lvals[i], x = x, prmean = prmean, prSD = prSD
+          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value
       )
     }
@@ -479,23 +478,33 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Increment theta values, integrating over lambda values for each
   if (use.mpfr == TRUE) {
     for (i in 1:numstepsth) {
-      thdens[[i]] <- Rmpfr::mpfr((
-        Rmpfr::integrateR(integrand.neglambdas.mpfr,
-                          Rmpfr::mpfr(lowerlimL, 256), 0, th = thetavals[i],
-                          x = x, prmean = prmean, prSD = prSD)$value +
-          Rmpfr::integrateR(integrand.poslambdas.mpfr, 0,
-                            Rmpfr::mpfr(upperlimL, 256), th = thetavals[i],
-                            x = x, prmean = prmean, prSD = prSD)$value),
-        precBits = 256)
+      thdens[[i]] <- Rmpfr::mpfr(
+        (
+          Rmpfr::integrateR(integrand.neglambdas.mpfr,
+            Rmpfr::mpfr(lowerlimL, 256), 0,
+            th = thetavals[i],
+            x = x, prmean = prmean, prSD = prSD
+          )$value +
+            Rmpfr::integrateR(integrand.poslambdas.mpfr, 0,
+              Rmpfr::mpfr(upperlimL, 256),
+              th = thetavals[i],
+              x = x, prmean = prmean, prSD = prSD
+            )$value),
+        precBits = 256
+      )
     }
     thdens <- do.call(c, thdens)
   } else {
     for (i in 1:numstepsth) {
       thdens[i] <-
-        (integrate(integrand.neglambdas, -Inf, 0, th = thetavals[i],
-                   x = x, prmean = prmean, prSD = prSD)$value +
-           integrate(integrand.poslambdas, 0, Inf, th = thetavals[i],
-                     x = x, prmean = prmean, prSD = prSD)$value)
+        (integrate(integrand.neglambdas, -Inf, 0,
+          th = thetavals[i],
+          x = x, prmean = prmean, prSD = prSD
+        )$value +
+          integrate(integrand.poslambdas, 0, Inf,
+            th = thetavals[i],
+            x = x, prmean = prmean, prSD = prSD
+          )$value)
     }
   }
 

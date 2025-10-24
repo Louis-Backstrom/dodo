@@ -32,7 +32,9 @@
 #' # Run an example analysis using the Woolly Mammoth data
 #' MC99F1(mammoth, test.time = -11000)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{MC99F1(curlew$ccon, test.time = 2022)}
+#' \dontrun{
+#' MC99F1(curlew$ccon, test.time = 2022)
+#' }
 #'
 #' @export
 

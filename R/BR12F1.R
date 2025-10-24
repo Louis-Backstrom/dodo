@@ -36,7 +36,9 @@
 #' # Run the Woolly Mammoth analysis from Bradshaw et al. 2012
 #' BR12F1(mammoth)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{BR12F1(curlew$ccon)}
+#' \dontrun{
+#' BR12F1(curlew$ccon)
+#' }
 #'
 #' @export
 
@@ -61,8 +63,10 @@ BR12F1 <- function(records, alpha = 0.05) {
   # be 0 (i.e. extinction immediately following the final record).
 
   if (sum(is.na(theta_k)) > 0) {
-    warning(paste0("Replacing ", sum(is.na(theta_k)),
-                   " NA theta_k values with 0."))
+    warning(paste0(
+      "Replacing ", sum(is.na(theta_k)),
+      " NA theta_k values with 0."
+    ))
   }
   theta_k[is.na(theta_k)] <- 0
 

@@ -43,11 +43,15 @@
 #'
 #' @examples
 #' # Run the Dodo analysis from Solow 2016
-#' SO16B2(records = as.integer((min(dodos) + 1):2015 %in% dodos),
-#'        init.time = min(dodos), test.time = 1672, curr.time = 2015)
+#' SO16B2(
+#'   records = as.integer((min(dodos) + 1):2015 %in% dodos),
+#'   init.time = min(dodos), test.time = 1672, curr.time = 2015
+#' )
 #' # Note that Solow 2016 presents p(extinct), which is 1 - p(extant) used here.
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{SO16B2(curlew$cbin)}
+#' \dontrun{
+#' SO16B2(curlew$cbin)
+#' }
 #'
 #' @export
 
@@ -60,7 +64,7 @@ SO16B2 <- function(records, init.time = NULL, test.time = NULL,
   m <- max(which(records != 0))
 
   # If init.time, test.time, and curr.time are specified, check they are valid
-  if (!is.null(init.time) | !is.null(test.time) | !is.null(curr.time) ) {
+  if (!is.null(init.time) | !is.null(test.time) | !is.null(curr.time)) {
     if (curr.time - init.time != length(records)) {
       stop("curr.time - init.time != length(records)")
     }

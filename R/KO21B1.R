@@ -31,7 +31,9 @@
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2021
 #' KO21B1(woodpecker$ubin, init.time = 1897, test.time = 2010)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{KO21B1(curlew$ubin, init.time = 1817, test.time = 2022)}
+#' \dontrun{
+#' KO21B1(curlew$ubin, init.time = 1817, test.time = 2022)
+#' }
 #'
 #' @export
 
@@ -39,8 +41,10 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1) {
   # Create date and certainty vectors
   sighting <- c(which(records$certain == 1), which(records$uncertain == 1))
-  cat <- c(rep(0, length(which(records$certain == 1))),
-           rep(1, length(which(records$uncertain == 1))))
+  cat <- c(
+    rep(0, length(which(records$certain == 1))),
+    rep(1, length(which(records$uncertain == 1)))
+  )
 
   combined <- data.frame(sighting, cat)
   combined <- sort_by(combined, sighting)

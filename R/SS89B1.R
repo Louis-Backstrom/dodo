@@ -35,7 +35,9 @@
 #' # Run an example analysis using the Caribbean Monk Seal data
 #' SS89B1(monk_seal, length.out = 1e5)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{SS89B1(curlew$ccon, length.out = 1e5)}
+#' \dontrun{
+#' SS89B1(curlew$ccon, length.out = 1e5)
+#' }
 #'
 #' @export
 
@@ -52,31 +54,35 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
 
   # Calculate u_n
   parta <- Rmpfr::mpfr(max(records_scaled) - min(records_scaled),
-                       precBits = 1024)^(-n + 2)
+    precBits = 1024
+  )^(-n + 2)
   partb <- (1 - Rmpfr::mpfr(min(records_scaled), precBits = 1024))^(-n + 2)
   partc <- (Rmpfr::mpfr(max(records_scaled), precBits = 1024))^(-n + 2)
   un <- parta - partb - partc + 1
 
   # Set up vector of theta_2 values
   theta <- Rmpfr::mpfr(seq(max(records_scaled), 1, length.out = length.out),
-                       precBits = 1024)
+    precBits = 1024
+  )
 
   # Calculate posterior density distribution
   pdf <- (n - 2) * ((theta - min(records_scaled))^(-n + 1) -
-                      theta^(-n + 1)) / un
+    theta^(-n + 1)) / un
 
   # Sample from posterior
   posterior <- sample(as.numeric(theta), prob = as.numeric(pdf), replace = T)
 
   # Check if close to scale limit
   if (max(posterior) > 0.9) {
-    warning(paste0("Scale factor may be too large - try setting lower (e.g. ",
-                   scale * 0.1, ")"))
+    warning(paste0(
+      "Scale factor may be too large - try setting lower (e.g. ",
+      scale * 0.1, ")"
+    ))
   }
 
   # Back-transform estimates
   estimate <- (mean(posterior) - scale) * ((max(records) - min(records)) /
-                                             scale) + min(records)
+    scale) + min(records)
   cred.int.upper <- (as.numeric(quantile(posterior, 1 - alpha)) - scale) *
     ((max(records) - min(records)) / scale) + min(records)
 
