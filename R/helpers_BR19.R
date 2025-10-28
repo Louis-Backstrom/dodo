@@ -194,12 +194,14 @@ bbj.2018 <- function(dd, iter = 10000, ey = 2018, m = "LAD", plot = FALSE,
     index <- index + 1
   }
 
-  if (round(mean(ext.yr)) >= ey) {
-    bbj$MTE <- which(pp.vec > 0.5)
-    print("Median TE reported because mean TE is later than end year")
-  } else {
-    bbj$MTE <- round(mean(ext.yr))
-  }
+  # if (round(mean(ext.yr)) >= ey) {
+  #   bbj$MTE <- which(pp.vec > 0.5)
+  #   print("Median TE reported because mean TE is later than end year")
+  # } else {
+  #   bbj$MTE <- round(mean(ext.yr))
+  # }
+  bbj$MTE <- round(mean(ext.yr))
+
   bbj$LCI <- ifelse(x[min(which(pp.vec > alpha / 2))] == ey,
     NA, x[min(which(pp.vec > alpha / 2))]
   )
