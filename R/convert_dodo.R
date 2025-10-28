@@ -65,6 +65,10 @@
 convert_dodo <- function(x, init.time,
                          test.time = as.numeric(format(Sys.Date(), "%Y")),
                          threshold = 0.9, unique = TRUE, certainty, time) {
+  # Remove any sightings before init.time or after test.time
+  x <- x[x[[time]] >= init.time, ]
+  x <- x[x[[time]] <= test.time, ]
+
   # Remove duplicates
   if (unique == TRUE) {
     x <- aggregate(x[[time]], by = x[setdiff(names(x), time)], FUN = max)
