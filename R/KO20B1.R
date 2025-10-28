@@ -103,10 +103,11 @@ posterior_cer_mcmc <- function(y_c) {
   n <- sum(y_c)
   t_n <- 0
   i <- 1
-  while (sum(y_c[i:Tt]) > 0) {
-    t_n <- i
-    i <- i + 1
-  }
+  # while (sum(y_c[i:Tt]) > 0) {
+  #   t_n <- i
+  #   i <- i + 1
+  # }
+  t_n <- max(which(y_c == 1))
 
   lik <- c()
 

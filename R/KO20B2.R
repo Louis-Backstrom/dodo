@@ -110,10 +110,11 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u) {
 
   t_n <- 0
   i <- 1
-  while (sum(y_c[i:Tt]) > 0) {
-    t_n <- i
-    i <- i + 1
-  }
+  # while (sum(y_c[i:Tt]) > 0) {
+  #   t_n <- i
+  #   i <- i + 1
+  # }
+  t_n <- max(which(y_c == 1))
 
   n_u_tau <- c()
 
