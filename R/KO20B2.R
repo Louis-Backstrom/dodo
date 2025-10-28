@@ -40,7 +40,7 @@
 #' @export
 
 KO20B2 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + length(records) - 1) {
+                   test.time = init.time + nrow(records) - 1) {
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 

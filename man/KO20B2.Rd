@@ -8,7 +8,7 @@ KO20B2(
   records,
   alpha = 0.05,
   init.time,
-  test.time = init.time + length(records) - 1
+  test.time = init.time + nrow(records) - 1
 )
 }
 \arguments{
