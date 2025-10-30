@@ -34,6 +34,8 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=CB14B1]{CB14B1()}} Caley & Barry's (2014) "Constant" model.
 \item \code{\link[=CB14B2]{CB14B2()}} Caley & Barry's (2014) "Non-constant" model.
 \item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' (2014) "Solow" model.
+\item \code{\link[=SB14B1]{SB14B1()}} Solow & Beet's (2014) "Model 1" model.
+\item \code{\link[=SB14B2]{SB14B2()}} Solow & Beet's (2014) "Model 2" model.
 \item \code{\link[=SO16B1]{SO16B1()}} Solow's (2016) "Retrospective" model.
 \item \code{\link[=SO16B2]{SO16B2()}} Solow's (2016) "Sequential" model.
 \item \code{\link[=WA16B1]{WA16B1()}}	Wang et al.'s (2016) "Adaptive" model.

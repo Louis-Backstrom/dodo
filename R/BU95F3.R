@@ -70,19 +70,19 @@ BU95F3 <- function(records) {
 
     for (k in 1:(j + 1)) {
       if (k <= (CT / r)) {
-        ff <- Rmpfr::mpfr(1, precBits = 1024)
+        ff <- Rmpfr::mpfr(1, precBits = 64)
 
         for (indexn in 1:length(TT)) {
           n <- indexn - 1
           ff <- ff * (CT - (r * k) - n)
         }
 
-        dummy <- Rmpfr::mpfr(0, precBits = 1024)
+        dummy <- Rmpfr::mpfr(0, precBits = 64)
 
         for (indexi in 1:length(KK)) {
           i <- indexi - 1
           dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
-            ((j - Rmpfr::mpfr(i, precBits = 1024))^N))
+            ((j - Rmpfr::mpfr(i, precBits = 64))^N))
         }
 
         Sn <- (1 / factorial(j)) * dummy
@@ -96,7 +96,7 @@ BU95F3 <- function(records) {
   }
 
   # Calculate p-value
-  p.value <- as.numeric(Rmpfr::mpfr(CT, precBits = 1024)^-N * full_sum)
+  p.value <- as.numeric(Rmpfr::mpfr(CT, precBits = 64)^-N * full_sum)
 
   # Output
   output <- list(

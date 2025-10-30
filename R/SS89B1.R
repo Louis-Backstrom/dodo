@@ -54,15 +54,15 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
 
   # Calculate u_n
   parta <- Rmpfr::mpfr(max(records_scaled) - min(records_scaled),
-    precBits = 1024
+    precBits = 64
   )^(-n + 2)
-  partb <- (1 - Rmpfr::mpfr(min(records_scaled), precBits = 1024))^(-n + 2)
-  partc <- (Rmpfr::mpfr(max(records_scaled), precBits = 1024))^(-n + 2)
+  partb <- (1 - Rmpfr::mpfr(min(records_scaled), precBits = 64))^(-n + 2)
+  partc <- (Rmpfr::mpfr(max(records_scaled), precBits = 64))^(-n + 2)
   un <- parta - partb - partc + 1
 
   # Set up vector of theta_2 values
   theta <- Rmpfr::mpfr(seq(max(records_scaled), 1, length.out = length.out),
-    precBits = 1024
+    precBits = 64
   )
 
   # Calculate posterior density distribution

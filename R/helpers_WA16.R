@@ -38,7 +38,7 @@ integrand.neglambdas <- function(L, th, x, prmean, prSD) {
 }
 
 integrand.neglambdas.mpfr <- function(L, th, x, prmean, prSD,
-                                      precBits = 256, return.log = FALSE) {
+                                      precBits = 64, return.log = FALSE) {
   # Convert everything to mpfr
   L <- Rmpfr::mpfr(L, precBits)
   th <- Rmpfr::mpfr(th, precBits)
@@ -53,7 +53,7 @@ integrand.neglambdas.mpfr <- function(L, th, x, prmean, prSD,
     warning("x must be smaller than th for negative lambda model")
   }
 
-  safe_log <- function(x, precBits = 256) {
+  safe_log <- function(x, precBits = 64) {
     negorzero <- Rmpfr::asNumeric(x <= 0) == 1
     if (any(negorzero)) {
       x[negorzero] <- Rmpfr::mpfr(1e-100, precBits = precBits)
@@ -121,7 +121,7 @@ integrand.poslambdas <- function(L, th, x, prmean, prSD) {
 }
 
 integrand.poslambdas.mpfr <- function(L, th, x, prmean, prSD,
-                                      precBits = 256, return.log = FALSE) {
+                                      precBits = 64, return.log = FALSE) {
   # Convert everything to mpfr
   L <- Rmpfr::mpfr(L, precBits)
   th <- Rmpfr::mpfr(th, precBits)
@@ -189,7 +189,7 @@ integrand.thetasnegL <- function(th, L, x, prmean, prSD) {
 }
 
 integrand.thetasnegL.mpfr <- function(th, L, x, prmean, prSD,
-                                      precBits = 256, return.log = FALSE) {
+                                      precBits = 64, return.log = FALSE) {
   # Convert everything to mpfr
   th <- Rmpfr::mpfr(th, precBits)
   L <- Rmpfr::mpfr(L, precBits)
@@ -257,7 +257,7 @@ integrand.thetasposL <- function(th, L, x, prmean, prSD) {
 }
 
 integrand.thetasposL.mpfr <- function(th, L, x, prmean, prSD,
-                                      precBits = 256, return.log = FALSE) {
+                                      precBits = 64, return.log = FALSE) {
   # Convert everything to mpfr
   th <- Rmpfr::mpfr(th, precBits)
   L <- Rmpfr::mpfr(L, precBits)
@@ -327,7 +327,7 @@ drefbeta <- function(x, L) {
 #'
 #' @noRd
 
-dlognorm <- function(x, mean, sd, precBits = 256) {
+dlognorm <- function(x, mean, sd, precBits = 64) {
   x <- Rmpfr::mpfr(x, precBits)
   mean <- Rmpfr::mpfr(mean, precBits)
   sd <- Rmpfr::mpfr(sd, precBits)
@@ -448,7 +448,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
         Rmpfr::integrateR(integrand.thetasposL.mpfr, xmax, upperlimth,
           L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value
-      ), precBits = 256)
+      ), precBits = 64)
     }
     Ldens <- do.call(c, Ldens)
   } else {
@@ -490,7 +490,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
               th = thetavals[i],
               x = x, prmean = prmean, prSD = prSD
             )$value),
-        precBits = 256
+        precBits = 64
       )
     }
     thdens <- do.call(c, thdens)

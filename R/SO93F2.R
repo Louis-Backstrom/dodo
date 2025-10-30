@@ -75,7 +75,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   i <- 0:floor(s / tn)
   part1 <- (-1)^i
   part2 <- Rmpfr::chooseMpfr(n, i)
-  part3 <- (s - (Rmpfr::mpfr(i, precBits = 1024) * tn))^(n - 1)
+  part3 <- (s - (Rmpfr::mpfr(i, precBits = 64) * tn))^(n - 1)
   numerator <- sum(part1 * part2 * part3)
   rm(i, part1, part2, part3)
 
@@ -84,7 +84,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   i <- 0:(floor(s / tn) - 1)
   part1 <- (-1)^i
   part2 <- Rmpfr::chooseMpfr(n - 1, i)
-  part3 <- (s - (Rmpfr::mpfr(i + 1, precBits = 1024) * tn))^(n - 2)
+  part3 <- (s - (Rmpfr::mpfr(i + 1, precBits = 64) * tn))^(n - 2)
   denominator <- part0 * sum(part1 * part2 * part3)
   rm(i, part0, part1, part2, part3)
 
@@ -147,7 +147,7 @@ Fx <- function(x, s, n) {
 
   part1 <- (-1)^(is - 1)
   part2 <- Rmpfr::chooseMpfr(n, is)
-  part3 <- (1 - (Rmpfr::mpfr(is, precBits = 1024) * x / s))^(n - 1)
+  part3 <- (1 - (Rmpfr::mpfr(is, precBits = 64) * x / s))^(n - 1)
 
   result <- 1 - sum(part1 * part2 * part3)
   rm(is, part1, part2, part3)
