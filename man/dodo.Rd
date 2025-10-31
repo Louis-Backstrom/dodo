@@ -39,6 +39,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=SO16B1]{SO16B1()}} Solow's (2016) "Retrospective" model.
 \item \code{\link[=SO16B2]{SO16B2()}} Solow's (2016) "Sequential" model.
 \item \code{\link[=WA16B1]{WA16B1()}}	Wang et al.'s (2016) "Adaptive" model.
+\item \code{\link[=TH17I1]{TH17I1()}} Thompson et al.'s (2017) "Iterative" model.
 \item \code{\link[=BR19F1]{BR19F1()}} Brook et al.'s (2019) "Solow" model.
 \item \code{\link[=BR19F2]{BR19F2()}} Brook et al.'s (2019) "Solow & Roberts" model.
 \item \code{\link[=BR19F3]{BR19F3()}} Brook et al.'s (2019) "Roberts & Solow" model.

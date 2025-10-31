@@ -32,6 +32,7 @@
 #' * [SO16B1()] Solow's (2016) "Retrospective" model.
 #' * [SO16B2()] Solow's (2016) "Sequential" model.
 #' * [WA16B1()]	Wang et al.'s (2016) "Adaptive" model.
+#' * [TH17I1()] Thompson et al.'s (2017) "Iterative" model.
 #' * [BR19F1()] Brook et al.'s (2019) "Solow" model.
 #' * [BR19F2()] Brook et al.'s (2019) "Solow & Roberts" model.
 #' * [BR19F3()] Brook et al.'s (2019) "Roberts & Solow" model.

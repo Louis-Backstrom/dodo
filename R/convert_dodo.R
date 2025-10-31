@@ -15,8 +15,10 @@
 #' @param unique whether to deduplicate the dataset (to mitigate nonidependence
 #' issues). Defaults to `TRUE`, in which case the dataset is grouped by every
 #' column except `time`, with the most recent row kept for each group.
-#' @param certainty name of the column with certainty values
-#' @param time name of the column with time values
+#' @param time name of the column with time values.
+#' @param certainty name of the column with certainty values.
+#' @param certainty_lower name of the column with certainty lower bound values.
+#' @param certainty_upper name of the column with certainty upper bound values.
 #'
 #' @returns a `list` object with 10 elements: the original parameters
 #' `init.time`, `test.time`, `threshold`, and `unique`, and the 6 converted
@@ -53,18 +55,25 @@
 #' and `test.time` for the taxon of interest. Sightings are split up into
 #' classes based on their `certainty` score. See e.g. \code{\link{TH13B1}}.
 #'
+#' **`iucn`**: *IUCN-format sightings*. A `data.frame` of sighting certainty
+#' (\eqn{p(ci)}) bounds (lower and upper) at all discrete (integer) time
+#' intervals between `init.time` and `test.time` for the taxon of interest. If
+#' there are multiple sightings in a single time interval, they are assumed
+#' to be independent of one another and the overall \eqn{p(ci)} score for that
+#' period is defined as \eqn{1 - \prod 1 - p(ci)}. See e.g. \code{\link{TH17I1}}.
+#'
 #' @examples
 #' # Convert the raw Slender-billed Curlew data
-#' convert_dodo(curlew_raw,
-#'   init.time = 1817, test.time = 2022, threshold = 0.9,
-#'   certainty = "p_ci", time = "year"
-#' )
+#' convert_dodo(x = curlew_raw, init.time = 1817, test.time = 2022,
+#'              threshold = 0.9, time = "year", certainty = "p_ci",
+#'              certainty_lower = "p_ci_min", certainty_upper = "p_ci_max")
 #'
 #' @export
 
 convert_dodo <- function(x, init.time,
                          test.time = as.numeric(format(Sys.Date(), "%Y")),
-                         threshold = 0.9, unique = TRUE, certainty, time) {
+                         threshold = 0.9, unique = TRUE, time, certainty,
+                         certainty_lower, certainty_upper) {
   # Remove any sightings before init.time or after test.time
   x <- x[x[[time]] >= init.time, ]
   x <- x[x[[time]] <= test.time, ]
@@ -108,6 +117,19 @@ convert_dodo <- function(x, init.time,
     )))
   }
 
+  # Helper function for IUCN records
+  pci_prod <- function(x) {return(1 - prod(1 - x))}
+
+  # IUCN format records from init.time to test.time
+  x_iucn <- data.frame(time = init.time:test.time)
+  x_iucn$record <- x_iucn$time %in% x[[time]]
+  x_iucn <- merge(x_iucn, aggregate(
+    x[, c(certainty, certainty_lower, certainty_upper)],
+    by = x[time], FUN = pci_prod), by.x = "time", by.y = time, all.x = TRUE)
+  x_iucn[is.na(x_iucn)] <- 0
+  names(x_iucn) <- c("time", "record", "certainty",
+                     "certainty_lower", "certainty_upper")
+
   # Output
   output <- list(
     init.time = init.time,
@@ -119,7 +141,8 @@ convert_dodo <- function(x, init.time,
     cdis = x_cdis,
     ucon = x_ucon,
     ubin = x_ubin,
-    umcd = x_umcd
+    umcd = x_umcd,
+    iucn = x_iucn
   )
 
   return(output)

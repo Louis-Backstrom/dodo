@@ -10,8 +10,10 @@ convert_dodo(
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
   threshold = 0.9,
   unique = TRUE,
+  time,
   certainty,
-  time
+  certainty_lower,
+  certainty_upper
 )
 }
 \arguments{
@@ -31,9 +33,13 @@ certain (for binary certain/uncertain models). Defaults to \code{0.9}.}
 issues). Defaults to \code{TRUE}, in which case the dataset is grouped by every
 column except \code{time}, with the most recent row kept for each group.}
 
-\item{certainty}{name of the column with certainty values}
+\item{time}{name of the column with time values.}
 
-\item{time}{name of the column with time values}
+\item{certainty}{name of the column with certainty values.}
+
+\item{certainty_lower}{name of the column with certainty lower bound values.}
+
+\item{certainty_upper}{name of the column with certainty upper bound values.}
 }
 \value{
 a \code{list} object with 10 elements: the original parameters
@@ -75,13 +81,19 @@ sightings. See e.g. \code{\link{KO20B2}}.
 sighting counts at all discrete (integer) time intervals between \code{init.time}
 and \code{test.time} for the taxon of interest. Sightings are split up into
 classes based on their \code{certainty} score. See e.g. \code{\link{TH13B1}}.
+
+\strong{\code{iucn}}: \emph{IUCN-format sightings}. A \code{data.frame} of sighting certainty
+(\eqn{p(ci)}) bounds (lower and upper) at all discrete (integer) time
+intervals between \code{init.time} and \code{test.time} for the taxon of interest. If
+there are multiple sightings in a single time interval, they are assumed
+to be independent of one another and the overall \eqn{p(ci)} score for that
+period is defined as \eqn{1 - \prod 1 - p(ci)}. See e.g. \code{\link{TH17I1}}.
 }
 
 \examples{
 # Convert the raw Slender-billed Curlew data
-convert_dodo(curlew_raw,
-  init.time = 1817, test.time = 2022, threshold = 0.9,
-  certainty = "p_ci", time = "year"
-)
+convert_dodo(x = curlew_raw, init.time = 1817, test.time = 2022,
+             threshold = 0.9, time = "year", certainty = "p_ci",
+             certainty_lower = "p_ci_min", certainty_upper = "p_ci_max")
 
 }

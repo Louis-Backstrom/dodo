@@ -177,11 +177,10 @@ usethis::use_data(thompson_table1, overwrite = TRUE)
 curlew_raw <- readxl::read_xlsx("data-raw/ibi13368-sup-0001-tables1.xlsx")
 usethis::use_data(curlew_raw, overwrite = TRUE)
 
-curlew <- convert_dodo(curlew_raw,
-  init.time = 1817, test.time = 2022,
-  threshold = 0.9, unique = TRUE, certainty = "p_ci",
-  time = "year"
-)
+curlew <- convert_dodo(
+  x = curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
+  unique = TRUE, time = "year", certainty = "p_ci",
+  certainty_lower = "p_ci_min", certainty_upper = "p_ci_max")
 usethis::use_data(curlew, overwrite = TRUE)
 
 curlew_effort <- c(
@@ -237,3 +236,66 @@ gerygone_effort <- c(
   74
 )
 usethis::use_data(gerygone_effort, overwrite = TRUE)
+
+grebe_records <- data.frame(
+  time = c(1929, 1960, 1963, 1969, 1970, 1971,
+           1972, 1982, 1985, 1986, 1988),
+  certainty_lower = c(0.99, 0.95, 0.75, 0.75, 0.1, 0.1,
+                      0.6, 0.6, 0.2, 0.2, 0.2),
+  certainty_upper = c(1, 0.99, 0.94, 0.94, 0.4, 0.4,
+                      0.8, 0.8, 0.8, 0.7, 0.5)
+)
+
+grebe <- data.frame(time = 1929:2017)
+grebe$record <- grebe$time %in% grebe_records$time
+grebe <- merge(grebe, grebe_records, by = "time", all.x = TRUE)
+grebe[is.na(grebe)] <- 0
+grebe$certainty <- (grebe$certainty_lower + grebe$certainty_upper) / 2
+grebe <- grebe[, c("time", "record", "certainty",
+                    "certainty_lower", "certainty_upper")]
+rm(grebe_records)
+usethis::use_data(grebe, overwrite = TRUE)
+
+grebe_passive <- list(epsilon = c(0, 0.05), p_i = c(0.1, 0.65),
+                      p_r = c(0.4, 0.6))
+
+grebe_active <- data.frame(
+  time = c(1989, 1990, 1993, 1994, 1997, 1998, 1999, 2000, 2004, 2009),
+  epsilon_lower = c(0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.7, 0.8, 0.8),
+  epsilon_upper = c(0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.95, 0.9, 0.95, 0.95),
+  p_i_lower = rep(0.9, 10),
+  p_i_upper = rep(0.95, 10),
+  p_r_lower = rep(0.7, 10),
+  p_r_upper = rep(0.9, 10)
+)
+
+grebe_surveys <- data.frame(time = 1929:2017)
+grebe_surveys$survey <- grebe_surveys$time %in% grebe_active$time
+grebe_surveys <- merge(grebe_surveys, grebe_active, by = "time", all.x = TRUE)
+
+grebe_surveys$epsilon_lower[is.na(grebe_surveys$epsilon_lower)] <-
+  grebe_passive$epsilon[1]
+grebe_surveys$epsilon_upper[is.na(grebe_surveys$epsilon_upper)] <-
+  grebe_passive$epsilon[2]
+grebe_surveys$epsilon <-
+  (grebe_surveys$epsilon_lower + grebe_surveys$epsilon_upper) / 2
+
+grebe_surveys$p_i_lower[is.na(grebe_surveys$p_i_lower)] <-
+  grebe_passive$p_i[1]
+grebe_surveys$p_i_upper[is.na(grebe_surveys$p_i_upper)] <-
+  grebe_passive$p_i[2]
+grebe_surveys$p_i <-
+  (grebe_surveys$p_i_lower + grebe_surveys$p_i_upper) / 2
+
+grebe_surveys$p_r_lower[is.na(grebe_surveys$p_r_lower)] <-
+  grebe_passive$p_r[1]
+grebe_surveys$p_r_upper[is.na(grebe_surveys$p_r_upper)] <-
+  grebe_passive$p_r[2]
+grebe_surveys$p_r <-
+  (grebe_surveys$p_r_lower + grebe_surveys$p_r_upper) / 2
+
+grebe_surveys <- grebe_surveys[, c(
+  "time", "survey", "epsilon", "epsilon_lower", "epsilon_upper", "p_i",
+  "p_i_lower", "p_i_upper", "p_r", "p_r_lower", "p_r_upper")]
+rm(grebe_passive, grebe_active)
+usethis::use_data(grebe_surveys, overwrite = TRUE)
