@@ -8,7 +8,8 @@ SO93F2(
   records,
   alpha = 0.05,
   init.time = min(records),
-  test.time = as.numeric(format(Sys.Date(), "\%Y"))
+  test.time = as.numeric(format(Sys.Date(), "\%Y")),
+  precBits = 1024
 )
 }
 \arguments{
@@ -23,6 +24,9 @@ the first sighting, in which case  this sighting is removed from the record.}
 
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}
+
+\item{precBits}{number of bits of precision to use in \code{Rmpfr} arithmetic.
+Defaults to 1024, which should be sufficient for most datasets.}
 }
 \value{
 a \code{list} object with the original parameters and the p-value, point

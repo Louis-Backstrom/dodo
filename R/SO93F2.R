@@ -14,6 +14,8 @@
 #' the first sighting, in which case  this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
+#' @param precBits number of bits of precision to use in `Rmpfr` arithmetic.
+#' Defaults to 1024, which should be sufficient for most datasets.
 #'
 #' @returns a `list` object with the original parameters and the p-value, point
 #' estimate, and confidence interval included as elements. The confidence
@@ -45,7 +47,8 @@
 #' @export
 
 SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
-                   test.time = as.numeric(format(Sys.Date(), "%Y"))) {
+                   test.time = as.numeric(format(Sys.Date(), "%Y")),
+                   precBits = 1024) {
   # Sort records
   records <- sort(records)
 
@@ -67,24 +70,32 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   # Determine s value
   s <- sum(records - init.time)
 
+  # Convert everything to mpfr
+  s <- Rmpfr::mpfr(s, precBits = precBits)
+  n <- Rmpfr::mpfr(n, precBits = precBits)
+  tn <- Rmpfr::mpfr(tn, precBits = precBits)
+  bigT <- Rmpfr::mpfr(bigT, precBits = precBits)
+
   # Calculate p-value
   p.value <- as.numeric(Fx(x = tn, s = s, n = n) /
     Fx(x = bigT, s = s, n = n))
 
   # Calculate numerator for point estimate
-  i <- 0:floor(s / tn)
-  part1 <- (-1)^i
+  i <- 0:as.integer(floor(s / tn))
+  i <- Rmpfr::mpfr(i, precBits = precBits)
+  part1 <- (Rmpfr::mpfr(-1, precBits = precBits))^i
   part2 <- Rmpfr::chooseMpfr(n, i)
-  part3 <- (s - (Rmpfr::mpfr(i, precBits = 64) * tn))^(n - 1)
+  part3 <- (s - i * tn)^(n - 1)
   numerator <- sum(part1 * part2 * part3)
   rm(i, part1, part2, part3)
 
   # Calculate denominator for point estimate
   part0 <- n * (n - 1)
-  i <- 0:(floor(s / tn) - 1)
-  part1 <- (-1)^i
+  i <- 0:as.integer((floor(s / tn) - 1))
+  i <- Rmpfr::mpfr(i, precBits = precBits)
+  part1 <- (Rmpfr::mpfr(-1, precBits = precBits))^i
   part2 <- Rmpfr::chooseMpfr(n - 1, i)
-  part3 <- (s - (Rmpfr::mpfr(i + 1, precBits = 64) * tn))^(n - 2)
+  part3 <- (s - (i + 1) * tn)^(n - 2)
   denominator <- part0 * sum(part1 * part2 * part3)
   rm(i, part0, part1, part2, part3)
 
@@ -99,7 +110,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   conf.int <- tryCatch(
     uniroot(
       f = Fopt,
-      interval = c(tn, .Machine$integer.max)
+      interval = c(as.integer(tn), as.integer(s))
     )$root,
     error = function(e) NA
   )
@@ -110,9 +121,10 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
+    precBits = precBits,
     p.value = p.value,
     estimate = as.numeric(init.time + tn + numerator / denominator),
-    conf.int = c(init.time + tn, init.time + conf.int)
+    conf.int = c(init.time + as.numeric(tn), init.time + conf.int)
   )
 
   return(output)
@@ -138,19 +150,18 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 #' @noRd
 
 Fx <- function(x, s, n) {
-  if (floor(s / x) == 0) {
+  if (as.integer(floor(s / x)) == 0) {
     warning("floor(s / x) is zero - NA produced")
     return(NA)
   }
 
-  is <- 1:floor(s / x)
+  y <- x / s
+  is <- 1:as.integer(floor(1 / y))
 
-  part1 <- (-1)^(is - 1)
-  part2 <- Rmpfr::chooseMpfr(n, is)
-  part3 <- (1 - (Rmpfr::mpfr(is, precBits = 64) * x / s))^(n - 1)
+  vals <- list()
+  for (i in is) {
+    vals[[i]] <- (-1)^(i-1) * Rmpfr::chooseMpfr(n, i) * (1 - i * y)^(n - 1)
+  }
 
-  result <- 1 - sum(part1 * part2 * part3)
-  rm(is, part1, part2, part3)
-
-  return(result)
+  return(1 - sum(do.call(c, vals)))
 }
