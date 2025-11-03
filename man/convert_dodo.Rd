@@ -92,8 +92,10 @@ period is defined as \eqn{1 - \prod 1 - p(ci)}. See e.g. \code{\link{TH17I1}}.
 
 \examples{
 # Convert the raw Slender-billed Curlew data
-convert_dodo(x = curlew_raw, init.time = 1817, test.time = 2022,
-             threshold = 0.9, time = "year", certainty = "p_ci",
-             certainty_lower = "p_ci_min", certainty_upper = "p_ci_max")
+convert_dodo(
+  x = curlew_raw, init.time = 1817, test.time = 2022,
+  threshold = 0.9, time = "year", certainty = "p_ci",
+  certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
+)
 
 }

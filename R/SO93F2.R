@@ -160,7 +160,7 @@ Fx <- function(x, s, n) {
 
   vals <- list()
   for (i in is) {
-    vals[[i]] <- (-1)^(i-1) * Rmpfr::chooseMpfr(n, i) * (1 - i * y)^(n - 1)
+    vals[[i]] <- (-1)^(i - 1) * Rmpfr::chooseMpfr(n, i) * (1 - i * y)^(n - 1)
   }
 
   return(1 - sum(do.call(c, vals)))

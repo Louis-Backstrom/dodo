@@ -31,7 +31,7 @@ as elements.
 \description{
 The deterministic variant (\eqn{P_D(X_T|\bm{s})}) of Equation 9 in Thompson
 et al. 2013. Estimates a posterior probability that the species is extant at
-the end of the survey period.
+the end of the observation period.
 }
 \note{
 Sampling effort is assumed to be constant.

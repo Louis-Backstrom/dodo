@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The records and surveys model from Thompson et al. 2017. Estimates a
-#' probability that the species is extant at the end of the survey period.
+#' probability that the species is extant at the end of the observation period.
 #'
 #' @param records sighting records in `iucn` format (see
 #' \code{\link{convert_dodo}} for details).
@@ -53,11 +53,11 @@ TH17I1 <- function(records, surveys) {
         data[i, ]$certainty_upper * (1 - PXt_upper)
     } else {
       PXt1 <- (1 - data[i, ]$epsilon * data[i, ]$p_i *
-                 data[i, ]$p_r) * PXt
+        data[i, ]$p_r) * PXt
       PXt1_lower <- (1 - data[i, ]$epsilon_lower * data[i, ]$p_i_lower *
-                       data[i, ]$p_r_lower) * PXt_lower
+        data[i, ]$p_r_lower) * PXt_lower
       PXt1_upper <- (1 - data[i, ]$epsilon_upper * data[i, ]$p_i_upper *
-                       data[i, ]$p_r_upper) * PXt_upper
+        data[i, ]$p_r_upper) * PXt_upper
     }
 
     data[i, ]$PXt <- PXt1

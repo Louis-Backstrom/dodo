@@ -3,7 +3,7 @@
 #' @description
 #' The quenched variant (\eqn{P_Q(X_T|\bm{s})}) of Equation 9 in Thompson et
 #' al. 2013. Estimates a posterior probability that the species is extant at
-#' the end of the survey period.
+#' the end of the observation period.
 #'
 #' @param records sighting records in `umcd` format (see
 #' \code{\link{convert_dodo}} for details).

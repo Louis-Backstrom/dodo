@@ -20,7 +20,7 @@ a \code{list} object with the original parameters and the iterative and
 }
 \description{
 The records and surveys model from Thompson et al. 2017. Estimates a
-probability that the species is extant at the end of the survey period.
+probability that the species is extant at the end of the observation period.
 }
 \note{
 This model incorporates both sighting uncertainty and variable survey effort.

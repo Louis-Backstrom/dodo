@@ -64,9 +64,11 @@
 #'
 #' @examples
 #' # Convert the raw Slender-billed Curlew data
-#' convert_dodo(x = curlew_raw, init.time = 1817, test.time = 2022,
-#'              threshold = 0.9, time = "year", certainty = "p_ci",
-#'              certainty_lower = "p_ci_min", certainty_upper = "p_ci_max")
+#' convert_dodo(
+#'   x = curlew_raw, init.time = 1817, test.time = 2022,
+#'   threshold = 0.9, time = "year", certainty = "p_ci",
+#'   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
+#' )
 #'
 #' @export
 
@@ -118,17 +120,22 @@ convert_dodo <- function(x, init.time,
   }
 
   # Helper function for IUCN records
-  pci_prod <- function(x) {return(1 - prod(1 - x))}
+  pci_prod <- function(x) {
+    return(1 - prod(1 - x))
+  }
 
   # IUCN format records from init.time to test.time
   x_iucn <- data.frame(time = init.time:test.time)
   x_iucn$record <- x_iucn$time %in% x[[time]]
   x_iucn <- merge(x_iucn, aggregate(
     x[, c(certainty, certainty_lower, certainty_upper)],
-    by = x[time], FUN = pci_prod), by.x = "time", by.y = time, all.x = TRUE)
+    by = x[time], FUN = pci_prod
+  ), by.x = "time", by.y = time, all.x = TRUE)
   x_iucn[is.na(x_iucn)] <- 0
-  names(x_iucn) <- c("time", "record", "certainty",
-                     "certainty_lower", "certainty_upper")
+  names(x_iucn) <- c(
+    "time", "record", "certainty",
+    "certainty_lower", "certainty_upper"
+  )
 
   # Output
   output <- list(
