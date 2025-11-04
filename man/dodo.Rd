@@ -47,6 +47,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=BR19F3]{BR19F3()}} Brook et al.'s (2019) "Roberts & Solow" model.
 \item \code{\link[=BR19F4]{BR19F4()}} Brook et al.'s (2019) "McInerny" model.
 \item \code{\link[=BR19F5]{BR19F5()}} Brook et al.'s (2019) "Last Appearance Date" model.
+\item \code{\link[=TH19B1]{TH19B1()}} Thompson et al.'s (2017) "Bayesian Updating" model.
 \item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s (2020) "Certain-only" model.
 \item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s (2020) "Uncertain" model.
 \item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s (2021) "Change-point" model.

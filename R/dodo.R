@@ -40,6 +40,7 @@
 #' * [BR19F3()] Brook et al.'s (2019) "Roberts & Solow" model.
 #' * [BR19F4()] Brook et al.'s (2019) "McInerny" model.
 #' * [BR19F5()] Brook et al.'s (2019) "Last Appearance Date" model.
+#' * [TH19B1()] Thompson et al.'s (2017) "Bayesian Updating" model.
 #' * [KO20B1()] Kodikara et al.'s (2020) "Certain-only" model.
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.
