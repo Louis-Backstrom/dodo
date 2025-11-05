@@ -6,6 +6,7 @@
 \usage{
 JE10F2(
   records,
+  alpha = 0.05,
   init.time = min(records),
   test.time = as.numeric(format(Sys.Date(), "\%Y"))
 )
@@ -13,6 +14,9 @@ JE10F2(
 \arguments{
 \item{records}{sighting records in \code{ccon} format (see
 \code{\link{convert_dodo}} for details).}
+
+\item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
+the \eqn{1 - \alpha} confidence interval.}
 
 \item{init.time}{start of the observation period. Defaults to the time of
 the first sighting, in which case this sighting is removed from the record.}
@@ -22,11 +26,13 @@ the first sighting, in which case this sighting is removed from the record.}
 }
 \value{
 a \code{list} object with the original parameters and the coefficient of
-trend (c) and p-value included as elements.
+trend (c), p-value, and confidence interval included as elements. The
+confidence interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{
 Equation 6 from Jarić & Ebenhard 2010. Estimates a p-value for testing
-competing hypotheses of extinction/non-extinction.
+competing hypotheses of extinction/non-extinction and a one-tailed
+\eqn{1 - \alpha} confidence interval on the time of extinction.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
@@ -47,6 +53,12 @@ JE10F2(curlew$ccon, init.time = 1817, test.time = 2022)
 Jarić, I., & Ebenhard, T. (2010). A method for inferring extinction based on
 sighting records that change in frequency over time. \emph{Wildlife Biology},
 16(3), 267-275. \doi{10.2981/09-044}
+
+\strong{Other References}
+
+McCrea, R. S., Cheale, T., Campillo-Funollet, E., & Roberts, D. L. (2024).
+Inferring species extinction from sighting data. *Cambridge Prisms: *
+\emph{Extinction}, 2, e19. \doi{10.1017/ext.2024.18}
 }
 \seealso{
 \code{\link[=JE10F1]{JE10F1()}}
