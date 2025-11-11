@@ -311,3 +311,43 @@ grebe_surveys <- grebe_surveys[, c(
 )]
 rm(grebe_passive, grebe_active)
 usethis::use_data(grebe_surveys, overwrite = TRUE)
+
+starling <- data.frame(
+  time = 1930:2013,
+  record = 1930:2013 %in% c(1930, 1995, 2008),
+  certainty = ifelse(1930:2013 == 2008, 0.6, 1930:2013 %in%
+    c(1930, 1995, 2008)),
+  certainty_lower = ifelse(1930:2013 == 2008, 0.4, 1930:2013 %in%
+    c(1930, 1995, 2008)),
+  certainty_upper = ifelse(1930:2013 == 2008, 0.8, 1930:2013 %in%
+    c(1930, 1995, 2008))
+)
+usethis::use_data(starling, overwrite = TRUE)
+
+starling_surveys <- data.frame(
+  time = 1930:2013,
+  survey = 1930:2013 %in% c(1983, 2008, 2010)
+)
+starling_surveys$epsilon_lower <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.8^(1 / 3), 0)
+starling_surveys$p_i_lower <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.8^(1 / 3), 0)
+starling_surveys$p_r_lower <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.8^(1 / 3), 0)
+starling_surveys$epsilon_upper <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.95^(1 / 3), 0)
+starling_surveys$p_i_upper <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.95^(1 / 3), 0)
+starling_surveys$p_r_upper <- ifelse(starling_surveys$time %in%
+  c(1983, 2008, 2010), 0.95^(1 / 3), 0)
+starling_surveys$epsilon <- (starling_surveys$epsilon_lower +
+  starling_surveys$epsilon_upper) / 2
+starling_surveys$p_i <- (starling_surveys$p_i_lower +
+  starling_surveys$p_i_upper) / 2
+starling_surveys$p_r <- (starling_surveys$p_r_lower +
+  starling_surveys$p_r_upper) / 2
+starling_surveys <- starling_surveys[, c(
+  "time", "survey", "epsilon", "epsilon_lower", "epsilon_upper", "p_i",
+  "p_i_lower", "p_i_upper", "p_r", "p_r_lower", "p_r_upper"
+)]
+usethis::use_data(starling_surveys, overwrite = TRUE)

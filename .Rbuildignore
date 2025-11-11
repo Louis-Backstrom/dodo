@@ -3,4 +3,15 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-^trash$
+^trash/
+^\.Rhistory$
+^\.RData$
+^\.Ruserdata$
+^_bookdown_files$
+^docs$
+^\.quarto$
+^.*\.html$
+^.*\.pdf$
+^.*\.docx$
+^.*\.xlsx$
+^trash/
