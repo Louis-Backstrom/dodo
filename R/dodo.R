@@ -18,6 +18,7 @@
 #' * [RS03F1()] Roberts & Solow's (2003) "Optimal Linear Estimation" model.
 #' * [SR03F1()] Solow & Roberts' (2003) "Non-parametric" model.
 #' * [MC06F1()] McInerny et al.'s (2006) "Sighting Rate" model.
+#' * [RO09B1()] Rout et al.'s (2009) "Declining" model.
 #' * [JE10F1()] Jarić & Ebenhard's (2010) "Stationary" model.
 #' * [JE10F2()] Jarić & Ebenhard's (2010) "Non-stationary" model.
 #' * [BR12F1()] Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.

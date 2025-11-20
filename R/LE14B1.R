@@ -149,17 +149,23 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     }
 
     for (h in 1:nrow(UQ_unique)) {
-      US[[paste0("pU", h, "k")]] <- runif(1, US[[paste0("pU", h, "L")]],
-                                          US[[paste0("pU", h, "U")]])
-      US[[paste0("qU", h, "k")]] <- runif(1, US[[paste0("qU", h, "L")]],
-                                          US[[paste0("qU", h, "U")]])
+      US[[paste0("pU", h, "k")]] <- runif(
+        1, US[[paste0("pU", h, "L")]],
+        US[[paste0("pU", h, "U")]]
+      )
+      US[[paste0("qU", h, "k")]] <- runif(
+        1, US[[paste0("qU", h, "L")]],
+        US[[paste0("qU", h, "U")]]
+      )
       if (US[[paste0("SumU", h)]] > 0) {
         US[[paste0("pU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-                                        1 - US[[paste0("pU", h, "k")]],
-                                        US[[paste0("pU", h, "k")]])
+          1 - US[[paste0("pU", h, "k")]],
+          US[[paste0("pU", h, "k")]]
+        )
         US[[paste0("qU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-                                        1 - US[[paste0("qU", h, "k")]],
-                                        US[[paste0("qU", h, "k")]])
+          1 - US[[paste0("qU", h, "k")]],
+          US[[paste0("qU", h, "k")]]
+        )
       } else {
         US[[paste0("pU", h)]] <- rep(1, bigT)
         US[[paste0("qU", h)]] <- rep(1, bigT)

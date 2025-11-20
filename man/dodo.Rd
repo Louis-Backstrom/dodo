@@ -25,6 +25,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=RS03F1]{RS03F1()}} Roberts & Solow's (2003) "Optimal Linear Estimation" model.
 \item \code{\link[=SR03F1]{SR03F1()}} Solow & Roberts' (2003) "Non-parametric" model.
 \item \code{\link[=MC06F1]{MC06F1()}} McInerny et al.'s (2006) "Sighting Rate" model.
+\item \code{\link[=RO09B1]{RO09B1()}} Rout et al.'s (2009) "Declining" model.
 \item \code{\link[=JE10F1]{JE10F1()}} Jarić & Ebenhard's (2010) "Stationary" model.
 \item \code{\link[=JE10F2]{JE10F2()}} Jarić & Ebenhard's (2010) "Non-stationary" model.
 \item \code{\link[=BR12F1]{BR12F1()}} Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.
