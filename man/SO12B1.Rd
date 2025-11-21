@@ -35,9 +35,11 @@ Sampling effort is assumed to be constant. Uses an exponential prior.
 woodpecker$ubin$record <- woodpecker$ubin$certain +
   woodpecker$ubin$uncertain
 woodpecker$ubin$certain <- ifelse(seq_len(nrow(woodpecker$ubin)) <= 48,
-                                  woodpecker$ubin$record, 0)
+  woodpecker$ubin$record, 0
+)
 woodpecker$ubin$uncertain <- ifelse(seq_len(nrow(woodpecker$ubin)) > 48,
-                                    woodpecker$ubin$record, 0)
+  woodpecker$ubin$record, 0
+)
 woodpecker$ubin$record <- NULL
 # Run analysis
 SO12B1(records = woodpecker$ubin, init.time = 1897, increment = 0.01)

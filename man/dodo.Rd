@@ -29,6 +29,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=JE10F1]{JE10F1()}} Jarić & Ebenhard's (2010) "Stationary" model.
 \item \code{\link[=JE10F2]{JE10F2()}} Jarić & Ebenhard's (2010) "Non-stationary" model.
 \item \code{\link[=BR12F1]{BR12F1()}} Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model.
+\item \code{\link[=SO12B1]{SO12B1()}} Solow et al.'s (2012) "Uncertain" model.
 \item \code{\link[=TH13B1]{TH13B1()}} Thompson et al.'s (2013) "Deterministic" model.
 \item \code{\link[=TH13B2]{TH13B2()}} Thompson et al.'s (2013) "Quenched" model.
 \item \code{\link[=TH13B3]{TH13B3()}} Thompson et al.'s (2013) "Annealed" model.
