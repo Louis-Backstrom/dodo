@@ -2,13 +2,10 @@
 #'
 #' @description
 #' Equation 3 and others from Solow 1993. Estimates a Bayes factor and
-#' posterior distribution on probability that the species is extant, with
-#' associated point estimate and two-sided \eqn{1 - \alpha} credible interval.
+#' posterior probability that the species is extant at the test time.
 #'
 #' @param records sighting records in `ccon` format (see
 #' \code{\link{convert_dodo}} for details).
-#' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
-#' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period. Defaults to the time of
 #' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
@@ -41,7 +38,7 @@
 #'
 #' @export
 
-SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
+SO93B1 <- function(records, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
                    pi = 0.5) {
   # Sort records
@@ -71,7 +68,6 @@ SO93B1 <- function(records, alpha = 0.05, init.time = min(records),
   # Output
   output <- list(
     records = records,
-    alpha = alpha,
     init.time = init.time,
     test.time = test.time,
     pi = pi,

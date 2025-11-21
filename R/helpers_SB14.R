@@ -11,6 +11,8 @@
 #' prior, if it is used.
 #' @param increment a `numeric`.
 #' @param increment2 a `numeric`.
+#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
+#' version of the model (only for model 1). Defaults to `FALSE`.
 #'
 #' @returns a `list` with the model outputs.
 #'
@@ -45,7 +47,8 @@
 #' @noRd
 
 sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
-                                increment = 0.01, increment2 = 0.01) {
+                                increment = 0.01, increment2 = 0.01,
+                                SO12 = FALSE) {
   data <- DATA$data
   indmc <- (data[, 2] == 1)
   tMin <- min(data[, 1])
@@ -73,7 +76,8 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   } else {
     p_t_tau_E <- likelihood.all(
       tLV = tLV, indmc = indmc, tL = tL,
-      increment = increment, n = n, dVec = dVec, modelnumber = modelnumber
+      increment = increment, n = n, dVec = dVec, modelnumber = modelnumber,
+      SO12 = SO12
     )
   }
 
@@ -182,6 +186,8 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
 #' @param n an `integer`.
 #' @param dVec a `numeric` vector.
 #' @param modelnumber which model (1 or 2) to run.
+#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
+#' version of the model (only for model 1). Defaults to `FALSE`.
 #'
 #' @returns A `numeric` representing the likelihood integrand evaluated at each
 #' possible extinction time.
@@ -216,7 +222,8 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
 #'
 #' @noRd
 
-likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber) {
+likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber,
+                           SO12 = FALSE) {
   integrand <- list()
 
   for (iy in 1:length(tLV)) {
@@ -228,7 +235,7 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber) {
     if (TE > tL) {
       integrand[[iy]] <- likelihood.integrated(
         TE = TE, n = n, m = m, mc = mc,
-        modelnumber = modelnumber, increment = increment
+        modelnumber = modelnumber, increment = increment, tL = tL, SO12 = SO12
       )
     }
   }
@@ -248,6 +255,9 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber) {
 #' @param mc an integer.
 #' @param modelnumber which model (1 or 2) to run.
 #' @param increment a `numeric`.
+#' @param tL a `numeric`.
+#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
+#' version of the model (only for model 1). Defaults to `FALSE`.
 #'
 #' @returns a value representing the integrated likelihood.
 #'
@@ -281,7 +291,8 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber) {
 #'
 #' @noRd
 
-likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment) {
+likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment, tL,
+                                  SO12 = FALSE) {
   omega <- seq(
     from = (increment / 2),
     to = (1 - (increment / 2)),
@@ -293,7 +304,7 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment) {
   for (i in 1:length(omega)) {
     out <- out + increment * likelihood.each(
       omega = omega[i], TE = TE, n = n,
-      m = m, mc = mc, modelnumber = modelnumber
+      m = m, mc = mc, modelnumber = modelnumber, tL = tL, SO12 = SO12
     )
   }
 
@@ -312,6 +323,9 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment) {
 #' @param m an integer.
 #' @param mc an integer.
 #' @param modelnumber which model (1 or 2) to run.
+#' @param tL a `numeric`.
+#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
+#' version of the model (only for model 1). Defaults to `FALSE`.
 #'
 #' @returns A `numeric` representing the computed likelihood.
 #'
@@ -345,7 +359,8 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment) {
 #'
 #' @noRd
 
-likelihood.each <- function(omega, TE, n, m, mc, modelnumber) {
+likelihood.each <- function(omega, TE, n, m, mc, modelnumber, tL,
+                            SO12 = FALSE) {
   out <- 0
   z <- (1 - omega) / omega
 
@@ -358,7 +373,15 @@ likelihood.each <- function(omega, TE, n, m, mc, modelnumber) {
   for (j in mc:m) {
     termj1 <- logcomb(j - mc, m - mc)
     termj2 <- (n - j) * log(z)
-    termj3 <- -n * log(TE + z)
+    if (SO12 == TRUE) {
+      if (modelnumber == 1) {
+        termj3 <- -n * log(TE + z * (1 - tL))
+      } else {
+        stop("SO12 is TRUE but modelnumber is not 1")
+      }
+    } else {
+      termj3 <- -n * log(TE + z)
+    }
 
     partj <- termj1 + termj2 + termj3
     new <- exp(

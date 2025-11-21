@@ -6,7 +6,6 @@
 \usage{
 SO93B1(
   records,
-  alpha = 0.05,
   init.time = min(records),
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
   pi = 0.5
@@ -15,9 +14,6 @@ SO93B1(
 \arguments{
 \item{records}{sighting records in \code{ccon} format (see
 \code{\link{convert_dodo}} for details).}
-
-\item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
-the \eqn{1 - \alpha} credible interval.}
 
 \item{init.time}{start of the observation period. Defaults to the time of
 the first sighting, in which case this sighting is removed from the record.}
@@ -34,8 +30,7 @@ and p(extant) included as elements.
 }
 \description{
 Equation 3 and others from Solow 1993. Estimates a Bayes factor and
-posterior distribution on probability that the species is extant, with
-associated point estimate and two-sided \eqn{1 - \alpha} credible interval.
+posterior probability that the species is extant at the test time.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed

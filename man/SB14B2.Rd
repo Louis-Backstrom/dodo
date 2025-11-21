@@ -44,6 +44,11 @@ about extinction. \emph{Conservation Biology}, 28(4), 1119-1123.
 
 \strong{Other References}
 
+Solow, A., Smith, W., Burgman, M., Rout, T., Wintle, B., & Roberts, D.
+(2012). Uncertain sightings and the extinction of the Ivory-billed
+Woodpecker. \emph{Conservation Biology}, 26(1), 180-184.
+\doi{10.1111/j.1523-1739.2011.01743.x}
+
 Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
 extinction date of the thylacine with mixed certainty data.
 \emph{Conservation Biology}, 32(2), 477-483. \doi{10.1111/cobi.13037}

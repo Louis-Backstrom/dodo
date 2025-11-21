@@ -25,6 +25,11 @@
 #'
 #' **Other References**
 #'
+#' Solow, A., Smith, W., Burgman, M., Rout, T., Wintle, B., & Roberts, D.
+#' (2012). Uncertain sightings and the extinction of the Ivory-billed
+#' Woodpecker. *Conservation Biology*, 26(1), 180-184.
+#' \doi{10.1111/j.1523-1739.2011.01743.x}
+#'
 #' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
 #' extinction date of the thylacine with mixed certainty data.
 #' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
@@ -74,7 +79,7 @@ SB14B2 <- function(records, init.time, increment = 0.01) {
   fit <- sb14.extended.model(
     DATA = DATA, inputs = inputs, modelnumber = 2,
     increment = increment, increment2 = increment,
-    gamma = 6
+    gamma = 6, SO12 = FALSE
   ) # NB: gamma parameter not used for Unif!
 
   # Output
