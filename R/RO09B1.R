@@ -2,11 +2,14 @@
 #'
 #' @description
 #' Equation 6 and others from Rout et al. 2009. Estimates a pre-extinction rate
-#' of decline, and a Bayes factor comparing competing hypotheses of extinction
-#' / persistence.
+#' of decline, a Bayes factor comparing competing hypotheses of extinction
+#' / persistence, and a posterior probability that the species is extant at the
+#' end of the observation period.
 #'
 #' @param records sighting records in `cbin` format (see
 #' \code{\link{convert_dodo}} for details).
+#' @param pi prior probability that \eqn{H_0} is true (defaults to
+#' \eqn{\pi = 0.5}).
 #'
 #' @returns a `list` object with the original parameters and the rate of
 #' decline (\eqn{a}) and Bayes factor included as elements.
@@ -35,7 +38,7 @@
 #'
 #' @export
 
-RO09B1 <- function(records) {
+RO09B1 <- function(records, pi = 0.5) {
   # Set up JAGS model
   data <- list(
     records = records,
@@ -81,18 +84,24 @@ RO09B1 <- function(records) {
   sink()
 
   a_mean <- summary(samples)$statistics["a", "Mean"]
-  S  <- length(records)
-  n  <- sum(records)
+  S <- length(records)
+  n <- sum(records)
   sn <- max(which(records == 1))
 
+  # Calculate Bayes factor
   Bayes.factor <- (n * (1 - a_mean) - 1) /
     ((S / sn)^(n * (1 - a_mean) - 1) - 1)
+
+  # Calculate posterior
+  posterior <- (1 + ((1 - pi) / (pi * Bayes.factor)))^-1
 
   # Output
   output <- list(
     records = records,
+    pi = pi,
     a = summary(samples)$statistics["a", "Mean"],
-    Bayes.factor = Bayes.factor
+    Bayes.factor = Bayes.factor,
+    p.extant = posterior
   )
 
   return(output)

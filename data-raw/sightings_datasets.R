@@ -351,3 +351,22 @@ starling_surveys <- starling_surveys[, c(
   "p_i_lower", "p_i_upper", "p_r", "p_r_lower", "p_r_upper"
 )]
 usethis::use_data(starling_surveys, overwrite = TRUE)
+
+weissmarshall_surveys <- surveys <- c(
+  0.0, 1.4, 1.6, 2.3, 3.9, 4.1, 4.7, 5.1, 5.4, 5.9, 6.1, 6.6, 7.0, 7.4, 7.9,
+  8.6, 9.2, 9.9, 10.2, 10.4, 10.8, 11.2, 11.4, 11.7, 11.9, 12.5, 14.1, 14.9,
+  15.4, 16.3, 18.4, 20.7, 22.5, 25.8, 27.6, 31.4
+)
+usethis::use_data(weissmarshall_surveys, overwrite = TRUE)
+
+verneuilinoides <- c(
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+)
+usethis::use_data(verneuilinoides, overwrite = TRUE)
+
+eggerellina_brevis <- c(
+  1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+)
+usethis::use_data(eggerellina_brevis, overwrite = TRUE)

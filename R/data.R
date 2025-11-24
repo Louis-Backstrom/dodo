@@ -437,3 +437,53 @@
 #' extinct. *Methods in Ecology and Evolution*, 5(8), 791-796.
 #' \doi{10.1111/2041-210x.12227}
 "starling_surveys"
+
+#' @title Weiss & Marshall surveys
+#'
+#' @description
+#' Palaeontological survey data from Weiss & Marshall (2014).
+#'
+#' @format a `numeric` vector with 36 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Weiss, R. E., & Marshall, C. R. (1999). The Uncertainty in the True End
+#' Point of a Fossil's Stratigraphic Range When Stratigraphic Sections Are
+#' Sampled Discretely. *Mathematical Geology*, 31(4), 435-453.
+#' \doi{10.1023/A:1007542725180}
+"weissmarshall_surveys"
+
+#' @title Verneuilinoides sp. A records
+#'
+#' @description
+#' Verneuilinoides sp. A (species 25) sighting record from Weiss & Marshall
+#' (2014). Format: `cbin`.
+#'
+#' @format a `numeric` vector with 36 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Weiss, R. E., & Marshall, C. R. (1999). The Uncertainty in the True End
+#' Point of a Fossil's Stratigraphic Range When Stratigraphic Sections Are
+#' Sampled Discretely. *Mathematical Geology*, 31(4), 435-453.
+#' \doi{10.1023/A:1007542725180}
+"verneuilinoides"
+
+#' @title Eggerellina brevis records
+#'
+#' @description
+#' Eggerellina brevis (species 43) sighting record from Weiss & Marshall
+#' (2014). Format: `cbin`.
+#'
+#' @format a `numeric` vector with 36 values.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Weiss, R. E., & Marshall, C. R. (1999). The Uncertainty in the True End
+#' Point of a Fossil's Stratigraphic Range When Stratigraphic Sections Are
+#' Sampled Discretely. *Mathematical Geology*, 31(4), 435-453.
+#' \doi{10.1023/A:1007542725180}
+"eggerellina_brevis"

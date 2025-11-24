@@ -3,7 +3,7 @@
 #' @description
 #' Constant population model from Caley & Barry 2014. Estimates a posterior
 #' probability that the species is extant at the test time, and a point
-#' estimate and one-tailed \eqn{1 - \alpha} credibile interval on the time of
+#' estimate and one-tailed \eqn{1 - \alpha} credible interval on the time of
 #' extinction.
 #'
 #' @param records sighting records in `cbin` format (see

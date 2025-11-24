@@ -4,11 +4,14 @@
 \alias{RO09B1}
 \title{Rout et al.'s (2009) "Declining" model}
 \usage{
-RO09B1(records)
+RO09B1(records, pi = 0.5)
 }
 \arguments{
 \item{records}{sighting records in \code{cbin} format (see
 \code{\link{convert_dodo}} for details).}
+
+\item{pi}{prior probability that \eqn{H_0} is true (defaults to
+\eqn{\pi = 0.5}).}
 }
 \value{
 a \code{list} object with the original parameters and the rate of
@@ -16,8 +19,9 @@ decline (\eqn{a}) and Bayes factor included as elements.
 }
 \description{
 Equation 6 and others from Rout et al. 2009. Estimates a pre-extinction rate
-of decline, and a Bayes factor comparing competing hypotheses of extinction
-/ persistence.
+of decline, a Bayes factor comparing competing hypotheses of extinction
+/ persistence, and a posterior probability that the species is extant at the
+end of the observation period.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed

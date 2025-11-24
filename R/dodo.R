@@ -15,6 +15,7 @@
 #' * [BU95F3()] Burgman et al.'s (1995) "Empty Cells" model.
 #' * [MC98F1()] McCarthy's (1998) "Non-random" model.
 #' * [MC99F1()] McFarlane's (1999) "Partial Solow" model.
+#' * [WM99B1()] Weiss & Marshall's (1999) "Discrete-time" model.
 #' * [RS03F1()] Roberts & Solow's (2003) "Optimal Linear Estimation" model.
 #' * [SR03F1()] Solow & Roberts' (2003) "Non-parametric" model.
 #' * [MC06F1()] McInerny et al.'s (2006) "Sighting Rate" model.
