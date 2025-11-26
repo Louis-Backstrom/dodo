@@ -26,6 +26,7 @@
 #' @importFrom stats sd
 #' @importFrom stats uniroot
 #' @importFrom stats update
+#' @importFrom stats weighted.mean
 #' @importFrom utils head
 #' @importFrom utils setTxtProgressBar
 #' @importFrom utils tail

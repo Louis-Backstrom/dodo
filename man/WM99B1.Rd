@@ -8,9 +8,9 @@ WM99B1(
   records,
   surveys,
   alpha = 0.05,
-  init.time = min(surveys),
   test.time = max(surveys),
-  priors
+  priors,
+  increment = 0.001
 )
 }
 \arguments{
@@ -23,15 +23,15 @@ in \code{records}.}
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
 
-\item{init.time}{start of the observation period.}
-
 \item{test.time}{time point to retrospectively calculate extinction
-probability at.}
+probability at. Defaults to the time of the final survey.}
 
 \item{priors}{\code{list} with three elements: \code{lambda}, \code{c} and \code{d}. \code{lambda} is
 the mean lifetime (half-life) for the exponential prior on \code{S}, the time of
 extinction. \code{c} and \code{d} are the two shape parameters for the beta prior on
 \code{pi}, the pre-extinction detection probability.}
+
+\item{increment}{step size used for integration. Defaults to 0.001.}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),
@@ -53,10 +53,12 @@ All sighting records are assumed to be certain.
 WM99B1(verneuilinoides, weissmarshall_surveys,
   priors = list(lambda = 800, c = 11, d = 70)
 )
+# 737.1544 - 7.4 = 729.7544 ≈ 730. from paper
 # Run the Eggerellina brevis analysis from Weiss & Marshall 1999
 WM99B1(eggerellina_brevis, weissmarshall_surveys,
   priors = list(lambda = 800, c = 85, d = 17)
 )
+# 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 # Run an example analysis using the Slender-billed Curlew data
 \dontrun{
 WM99B1(curlew, 1817:2022, priors = list(lambda = 1e6, c = 1, d = 1))

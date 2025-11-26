@@ -52,4 +52,4 @@ rsconnect/
 trash/
 
 # Buchanan et al. Table S1
-data-raw/ibi13368-sup-0001-tables1.xlsx
+data-raw/*.xlsx

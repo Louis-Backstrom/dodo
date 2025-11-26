@@ -11,13 +11,13 @@
 #' in `records`.
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
-#' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
-#' probability at.
+#' probability at. Defaults to the time of the final survey.
 #' @param priors `list` with three elements: `lambda`, `c` and `d`. `lambda` is
 #' the mean lifetime (half-life) for the exponential prior on `S`, the time of
 #' extinction. `c` and `d` are the two shape parameters for the beta prior on
 #' `pi`, the pre-extinction detection probability.
+#' @param increment step size used for integration. Defaults to 0.001.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -41,10 +41,12 @@
 #' WM99B1(verneuilinoides, weissmarshall_surveys,
 #'   priors = list(lambda = 800, c = 11, d = 70)
 #' )
+#' # 737.1544 - 7.4 = 729.7544 ≈ 730. from paper
 #' # Run the Eggerellina brevis analysis from Weiss & Marshall 1999
 #' WM99B1(eggerellina_brevis, weissmarshall_surveys,
 #'   priors = list(lambda = 800, c = 85, d = 17)
 #' )
+#' # 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 #' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
 #' WM99B1(curlew, 1817:2022, priors = list(lambda = 1e6, c = 1, d = 1))
@@ -52,8 +54,8 @@
 #'
 #' @export
 
-WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
-                   test.time = max(surveys), priors) {
+WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
+                   priors, increment = 0.001) {
   # Sort records and surveys
   rs <- data.frame(
     t = surveys,
@@ -63,7 +65,6 @@ WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
   rs <- sort_by(rs, ~t)
   t <- rs$t
   y <- rs$y
-  rm(rs)
 
   t0 <- min(t)
   t <- t - t0
@@ -75,14 +76,6 @@ WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
   J <- length(t)
 
   # Helper functions
-  check <- function(S, tm) {
-    return(S >= tm)
-  }
-
-  aS <- function(S, y, t) {
-    return(sum(y[which(t <= S)]))
-  }
-
   bS <- function(S, y, t) {
     return(sum(1 - y[which(t <= S)]))
   }
@@ -91,14 +84,6 @@ WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
     gj <- exp(lgamma(am + c) + lgamma(bj + d) - lgamma(am + bj + c + d) +
       log(exp(-lambda^(-1) * tj) - exp(-lambda^(-1) * tj1)))
     return(gj)
-  }
-
-  ding <- function(a, t0, t1) {
-    f <- function(x, a) {
-      return(x^(a - 1) * exp(-x))
-    }
-    integrand <- integrate(f, t0, t1, a = a)
-    return(gamma(a)^(-1) * integrand$value)
   }
 
   # Calculate constant of proportionality
@@ -138,8 +123,8 @@ WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
   }
 
   # Get quantiles
-  q050 <- pq(t, q, 0.5, priors$lambda)
-  q950 <- pq(t, q, 0.95, priors$lambda)
+  # median <- pq(t, q, 0.5, priors$lambda)
+  qupper <- pq(t, q, 1 - alpha, priors$lambda)
 
   # Get p(extinct)
   pqe <- function(t, q, epsilon, lambda) {
@@ -151,17 +136,35 @@ WM99B1 <- function(records, surveys, alpha = 0.05, init.time = min(surveys),
     lambda = priors$lambda
   )$root
 
+  # Get posterior mean
+  S <- seq(min(t), max(t) + 10 * priors$lambda, by = increment) # estimate
+  # shape of the posterior out to 10 prior half-lives beyond the final survey
+
+  S_posterior <- numeric(length = length(S))
+  for (i in 1:length(S_posterior)) {
+    S_posterior[i] <- exp(
+      log(K0^(-1)) +
+        lgamma(am + priors$c) +
+        lgamma(bS(S[i], y, t) + priors$d) -
+        lgamma(am + bS(S[i], y, t) + priors$c + priors$d) +
+        log(priors$lambda^(-1)) +
+        (-priors$lambda^(-1) * S[i])
+    ) *
+      S[i] >= tm
+  }
+
+  mean <- weighted.mean(S, S_posterior)
+
   # Output
   output <- list(
     records = records,
     surveys = surveys,
     alpha = alpha,
-    init.time = init.time,
     test.time = test.time,
     priors = priors,
     p.extant = 1 - p.extinct,
-    estimate = q050 + t0,
-    cred.int = c(tm + t0, q950 + t0)
+    estimate = mean + t0,
+    cred.int = c(tm + t0, qupper + t0)
   )
 
   return(output)
