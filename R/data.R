@@ -325,11 +325,11 @@
 #' Slender-billed Curlew (*Numenius tenuirostris*) sighting record from
 #' Buchanan et al. (2025), processed into various `dodo` formats. The temporal
 #' range (`init.time` to `test.time`) of these data is 1817 to 2022. Formats:
-#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`. An additional "format",
-#' `buchanan`, contains the data in the exact `iucn` format as used in Buchanan
-#' et al. (2025).
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`, `iucn`. An additional
+#' "format", `buchanan`, contains the data in the exact `iucn` format as used
+#' in Buchanan et al. (2025).
 #'
-#' @format a `list` with 7 elements.
+#' @format a `list` with 8 elements.
 #'
 #' @references
 #' **Key Reference**

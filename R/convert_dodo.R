@@ -20,8 +20,8 @@
 #' @param certainty_lower name of the column with certainty lower bound values.
 #' @param certainty_upper name of the column with certainty upper bound values.
 #'
-#' @returns a `list` object with 10 elements: the original parameters
-#' `init.time`, `test.time`, `threshold`, and `unique`, and the 6 converted
+#' @returns a `list` object with 11 elements: the original parameters
+#' `init.time`, `test.time`, `threshold`, and `unique`, and the 7 converted
 #' datasets.
 #'
 #' @section Data Formats:

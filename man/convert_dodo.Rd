@@ -42,8 +42,8 @@ column except \code{time}, with the most recent row kept for each group.}
 \item{certainty_upper}{name of the column with certainty upper bound values.}
 }
 \value{
-a \code{list} object with 10 elements: the original parameters
-\code{init.time}, \code{test.time}, \code{threshold}, and \code{unique}, and the 6 converted
+a \code{list} object with 11 elements: the original parameters
+\code{init.time}, \code{test.time}, \code{threshold}, and \code{unique}, and the 7 converted
 datasets.
 }
 \description{
