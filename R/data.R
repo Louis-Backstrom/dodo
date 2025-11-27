@@ -325,9 +325,11 @@
 #' Slender-billed Curlew (*Numenius tenuirostris*) sighting record from
 #' Buchanan et al. (2025), processed into various `dodo` formats. The temporal
 #' range (`init.time` to `test.time`) of these data is 1817 to 2022. Formats:
-#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`.
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`. An additional "format",
+#' `buchanan`, contains the data in the exact `iucn` format as used in Buchanan
+#' et al. (2025).
 #'
-#' @format a `list` with 6 elements.
+#' @format a `list` with 7 elements.
 #'
 #' @references
 #' **Key Reference**
@@ -338,6 +340,23 @@
 #'
 #' @seealso [curlew_raw]; [convert_dodo()]; [curlew_effort]
 "curlew"
+
+#' @title Slender-billed Curlew surveys
+#'
+#' @description
+#' Slender-billed Curlew (*Numenius tenuirostris*) survey data from Buchanan et
+#' al. (2025). The temporal range (`init.time` to `test.time`) of these data
+#' is 1892 to 2022.
+#'
+#' @format a `data.frame` with 11 columns and 206 rows.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Buchanan, G. M., Chapple, B., Berryman, A. J., Crockford, N., Jansen, J. J.
+#' F. J., & Bond, A. L. (2025). Global extinction of Slender-billed Curlew
+#' (*Numenius tenuirostris*). *Ibis*, 167(2), 357-370. \doi{10.1111/ibi.13368}
+"curlew_surveys"
 
 #' @title Slender-billed Curlew effort
 #'

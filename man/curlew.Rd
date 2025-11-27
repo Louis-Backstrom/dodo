@@ -5,7 +5,7 @@
 \alias{curlew}
 \title{Slender-billed Curlew sightings (processed)}
 \format{
-a \code{list} with 6 elements.
+a \code{list} with 7 elements.
 }
 \usage{
 curlew
@@ -14,7 +14,9 @@ curlew
 Slender-billed Curlew (\emph{Numenius tenuirostris}) sighting record from
 Buchanan et al. (2025), processed into various \code{dodo} formats. The temporal
 range (\code{init.time} to \code{test.time}) of these data is 1817 to 2022. Formats:
-\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcd}.
+\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcd}. An additional "format",
+\code{buchanan}, contains the data in the exact \code{iucn} format as used in Buchanan
+et al. (2025).
 }
 \references{
 \strong{Key Reference}

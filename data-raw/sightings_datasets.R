@@ -182,7 +182,101 @@ curlew <- convert_dodo(
   unique = TRUE, time = "year", certainty = "p_ci",
   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
 )
+
+curlew$buchanan <- readxl::read_xlsx("data-raw/Numenius tenuirostris.xlsx",
+  sheet = 2, range = "A9:D125"
+)
+names(curlew$buchanan) <- c(
+  "time", "certainty_lower", "certainty",
+  "certainty_upper"
+)
+curlew$buchanan <- merge(curlew$buchanan, data.frame("time" = 1892:2022),
+  all = TRUE
+)
+curlew$buchanan$record <- !is.na(curlew$buchanan$certainty)
+curlew$buchanan[is.na(curlew$buchanan)] <- 0
+curlew$buchanan <- curlew$buchanan[, c(
+  "time", "record", "certainty",
+  "certainty_lower", "certainty_upper"
+)]
+
 usethis::use_data(curlew, overwrite = TRUE)
+
+curlew_passive <- list(
+  epsilon = c(0.7, 0.75, 0.8), p_i = c(0.6, 0.65, 0.7), p_r = c(0.7, 0.8, 0.9)
+)
+
+curlew_active <- data.frame(
+  time = c(
+    1989, 1990, 1992, 1994, 1996, 1997, 1998, 1999,
+    2000, 2003, 2004, 2005, 2009, 2010, 2011
+  ),
+  epsilon = c(
+    0.125, 0.125, 0.125, 0.125, 0.01, 0.01, 0.125, 0.01,
+    0.0015, 0.5, 0.5, 0.5, 0.125, 0.9, 0.75
+  ),
+  epsilon_lower = c(
+    0.1, 0.1, 0.1, 0.1, 0.001, 0.001, 0.1, 0.001,
+    0.001, 0.33, 0.33, 0.33, 0.1, 0.85, 0.7
+  ),
+  epsilon_upper = c(
+    0.15, 0.15, 0.15, 0.15, 0.05, 0.05, 0.25, 0.02,
+    0.002, 0.66, 0.66, 0.66, 0.15, 0.95, 0.8
+  ),
+  p_i = c(
+    0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65,
+    0.65, 0.65, 0.65, 0.65, 0.65, 0.65, 0.65
+  ),
+  p_i_lower = c(
+    0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6,
+    0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6
+  ),
+  p_i_upper = c(
+    0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,
+    0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7
+  ),
+  p_r = c(
+    0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8,
+    0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8
+  ),
+  p_r_lower = c(
+    0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7,
+    0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7
+  ),
+  p_r_upper = c(
+    0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9,
+    0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9
+  )
+)
+
+curlew_surveys <- data.frame(time = 1817:2022)
+curlew_surveys$survey <- curlew_surveys$time %in% curlew_active$time
+curlew_surveys <- merge(curlew_surveys, curlew_active,
+  by = "time",
+  all.x = TRUE
+)
+
+curlew_surveys$epsilon_lower[is.na(curlew_surveys$epsilon_lower)] <-
+  curlew_passive$epsilon[1]
+curlew_surveys$epsilon[is.na(curlew_surveys$epsilon)] <-
+  curlew_passive$epsilon[2]
+curlew_surveys$epsilon_upper[is.na(curlew_surveys$epsilon_upper)] <-
+  curlew_passive$epsilon[3]
+curlew_surveys$p_i_lower[is.na(curlew_surveys$p_i_lower)] <-
+  curlew_passive$p_i[1]
+curlew_surveys$p_i[is.na(curlew_surveys$p_i)] <-
+  curlew_passive$p_i[2]
+curlew_surveys$p_i_upper[is.na(curlew_surveys$p_i_upper)] <-
+  curlew_passive$p_i[3]
+curlew_surveys$p_r_lower[is.na(curlew_surveys$p_r_lower)] <-
+  curlew_passive$p_r[1]
+curlew_surveys$p_r[is.na(curlew_surveys$p_r)] <-
+  curlew_passive$p_r[2]
+curlew_surveys$p_r_upper[is.na(curlew_surveys$p_r_upper)] <-
+  curlew_passive$p_r[3]
+
+rm(curlew_passive, curlew_active)
+usethis::use_data(curlew_surveys, overwrite = TRUE)
 
 curlew_effort <- c(
   19, 19, 15, 16, 14, 19, 13, 24, 31, 7, 13, 10, 10, 22, 3, 7,
