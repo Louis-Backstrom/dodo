@@ -4,12 +4,14 @@
 \alias{SO12B1}
 \title{Solow et al.'s (2012) "Uncertain" model}
 \usage{
-SO12B1(records, init.time, increment = 0.01, gamma = 1)
+SO12B1(records, init.time, increment = 0.01, gamma = 1, record.check = "error")
 }
 \arguments{
 \item{records}{sighting records in \code{ubin} format (see
 \code{\link{convert_dodo}} for details). Note that all uncertain sightings
-must follow the final certain sighting.}
+must follow the final certain sighting. If any uncertain sightings occur
+prior to the final certain sighting, these are handled as specified by
+\verb{record check}.}
 
 \item{init.time}{start of the observation period.}
 
@@ -17,6 +19,11 @@ must follow the final certain sighting.}
 the original code from Solow & Beet 2014.}
 
 \item{gamma}{parameter for the exponential prior. Defaults to 1.}
+
+\item{record.check}{what to do with uncertain sightings prior to the final
+certain sighting. Three options: \code{error} (default, throws an error),
+\code{remove} (problematic sightings are removed from the data), and \code{coerce}
+(problematic sightings are treated as certain sightings).}
 }
 \value{
 a \code{list} object with the original parameters and the Bayes factor
@@ -31,18 +38,10 @@ Sampling effort is assumed to be constant. Uses an exponential prior.
 }
 \examples{
 # Run the Ivory-billed Woodpecker analysis from Solow et al. 2012
-# Create modified dataset
-woodpecker$ubin$record <- woodpecker$ubin$certain +
-  woodpecker$ubin$uncertain
-woodpecker$ubin$certain <- ifelse(seq_len(nrow(woodpecker$ubin)) <= 48,
-  woodpecker$ubin$record, 0
+SO12B1(
+  records = woodpecker$ubin, init.time = 1897, increment = 0.01,
+  record.check = "coerce"
 )
-woodpecker$ubin$uncertain <- ifelse(seq_len(nrow(woodpecker$ubin)) > 48,
-  woodpecker$ubin$record, 0
-)
-woodpecker$ubin$record <- NULL
-# Run analysis
-SO12B1(records = woodpecker$ubin, init.time = 1897, increment = 0.01)
 # Run an example analysis using the Slender-billed Curlew data
 \dontrun{
 SO12B1(curlew$ubin, init.time = 1817, increment = 0.01)

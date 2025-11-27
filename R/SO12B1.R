@@ -6,11 +6,17 @@
 #'
 #' @param records sighting records in `ubin` format (see
 #' \code{\link{convert_dodo}} for details). Note that all uncertain sightings
-#' must follow the final certain sighting.
+#' must follow the final certain sighting. If any uncertain sightings occur
+#' prior to the final certain sighting, these are handled as specified by
+#' `record check`.
 #' @param init.time start of the observation period.
 #' @param increment step size used for integration. Defaults to 0.01, following
 #' the original code from Solow & Beet 2014.
 #' @param gamma parameter for the exponential prior. Defaults to 1.
+#' @param record.check what to do with uncertain sightings prior to the final
+#' certain sighting. Three options: `error` (default, throws an error),
+#' `remove` (problematic sightings are removed from the data), and `coerce`
+#' (problematic sightings are treated as certain sightings).
 #'
 #' @returns a `list` object with the original parameters and the Bayes factor
 #' included as elements.
@@ -35,18 +41,10 @@
 #'
 #' @examples
 #' # Run the Ivory-billed Woodpecker analysis from Solow et al. 2012
-#' # Create modified dataset
-#' woodpecker$ubin$record <- woodpecker$ubin$certain +
-#'   woodpecker$ubin$uncertain
-#' woodpecker$ubin$certain <- ifelse(seq_len(nrow(woodpecker$ubin)) <= 48,
-#'   woodpecker$ubin$record, 0
+#' SO12B1(
+#'   records = woodpecker$ubin, init.time = 1897, increment = 0.01,
+#'   record.check = "coerce"
 #' )
-#' woodpecker$ubin$uncertain <- ifelse(seq_len(nrow(woodpecker$ubin)) > 48,
-#'   woodpecker$ubin$record, 0
-#' )
-#' woodpecker$ubin$record <- NULL
-#' # Run analysis
-#' SO12B1(records = woodpecker$ubin, init.time = 1897, increment = 0.01)
 #' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
 #' SO12B1(curlew$ubin, init.time = 1817, increment = 0.01)
@@ -54,7 +52,42 @@
 #'
 #' @export
 
-SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1) {
+SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1,
+                   record.check = "error") {
+  # Check whether records are in valid format (first uncertain sighting follows
+  # the last certain sighting)
+  min_u <- min(which(records$uncertain == 1))
+  max_c <- max(which(records$certain == 1))
+  format_valid <- min_u > max_c
+
+  # If record format is not valid, apply fix as specified in function call
+  if (format_valid == FALSE) {
+    if (record.check == "error") {
+      # If record.check = "error", throw an error
+      stop("First uncertain sighting comes before the final certain sighting.")
+    } else if (record.check == "remove") {
+      # If record.check = "remove", remove all early uncertain sightings
+      warning(paste0(
+        sum(records$uncertain[1:max_c]),
+        " uncertain sightings have been removed!"
+      ))
+      records$uncertain[1:max_c] <- 0
+    } else if (record.check == "coerce") {
+      # If record.check = "coerce", make all early uncertain sightings certain
+      warning(paste0(
+        sum(records$uncertain[1:max_c]),
+        " uncertain sightings have been made certain!"
+      ))
+      records$certain[which(records$uncertain[1:max_c] == 1)] <- 1
+      records$uncertain[1:max_c] <- 0
+    } else {
+      stop(
+        "First uncertain sighting comes before the final certain sighting.",
+        "Specify a valid solution using the record.check argument."
+      )
+    }
+  }
+
   # Set up model parameters
   certain <- which(records$certain == 1)
   uncertain <- which(records$uncertain == 1)
@@ -81,6 +114,7 @@ SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1) {
     init.time = init.time,
     increment = increment,
     gamma = gamma,
+    record.check = record.check,
     Bayes.factor = fit$Results
   )
 
