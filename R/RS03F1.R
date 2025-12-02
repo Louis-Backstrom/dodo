@@ -3,13 +3,15 @@
 #' @description
 #' Equations from Roberts & Solow 2003 (Equations 12-18 from Solow 2005).
 #' Estimates a p-value for testing competing hypotheses of
-#' extinction/non-extinction, and a two-tailed \eqn{1 - \alpha} confidence
-#' interval and point estimate on the time of extinction.
+#' extinction/non-extinction, and a \eqn{1 - \alpha} confidence interval and
+#' point estimate on the time of extinction.
 #'
 #' @param records sighting records in `ccon` format (see
 #' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
+#' @param conf.int what kind of confidence interval to present. Valid options
+#' are `"two-sided"` (the default) or `"one-sided"`.
 #' @param k number of most recent sighting records to use (defaults to 10, or
 #' the whole sighting record, if there are fewer than 10 records).
 #' @param test.time end of the observation period, typically the present day
@@ -52,7 +54,7 @@
 #'
 #' @export
 
-RS03F1 <- function(records, alpha = 0.05,
+RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
                    k = ifelse(length(records) >= 10, 10, length(records)),
                    test.time = as.numeric(format(Sys.Date(), "%Y"))) {
   # Sort records
@@ -66,8 +68,15 @@ RS03F1 <- function(records, alpha = 0.05,
   v <- (1 / (k - 1)) *
     sum(log((sights[1] - sights[k]) / (sights[1] - sights[2:(k - 1)])))
   e <- matrix(rep(1, k), ncol = 1)
-  SL <- (-log(1 - alpha / 2) / length(sights))^-v
-  SU <- (-log(alpha / 2) / length(sights))^-v
+  if (conf.int == "two-sided") {
+    SL <- (-log(1 - alpha / 2) / length(sights))^-v
+    SU <- (-log(alpha / 2) / length(sights))^-v
+  } else if (conf.int == "one-sided") {
+    SL <- (-log(1 - 0) / length(sights))^-v
+    SU <- (-log(alpha) / length(sights))^-v
+  } else {
+    stop("invalid value for conf.int, should be either one-sided or two-sided")
+  }
   lambda <- outer(1:k, 1:k, myfun, v = v)
   lambda <- ifelse(lower.tri(lambda), lambda, t(lambda))
   a <- as.vector(solve(t(e) %*% solve(lambda) %*% e)) * solve(lambda) %*% e

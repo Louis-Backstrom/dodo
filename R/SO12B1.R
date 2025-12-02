@@ -82,8 +82,8 @@ SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1,
       records$uncertain[1:max_c] <- 0
     } else {
       stop(
-        "First uncertain sighting comes before the final certain sighting.",
-        "Specify a valid solution using the record.check argument."
+        "First uncertain sighting comes before the final certain sighting!",
+        "Specify a valid solution using the record.check argument"
       )
     }
   }

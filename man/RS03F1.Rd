@@ -7,6 +7,7 @@
 RS03F1(
   records,
   alpha = 0.05,
+  conf.int = "two-sided",
   k = ifelse(length(records) >= 10, 10, length(records)),
   test.time = as.numeric(format(Sys.Date(), "\%Y"))
 )
@@ -17,6 +18,9 @@ RS03F1(
 
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
+
+\item{conf.int}{what kind of confidence interval to present. Valid options
+are \code{"two-sided"} (the default) or \code{"one-sided"}.}
 
 \item{k}{number of most recent sighting records to use (defaults to 10, or
 the whole sighting record, if there are fewer than 10 records).}
@@ -32,8 +36,8 @@ interval is a two-element numeric vector called \code{conf.int}.
 \description{
 Equations from Roberts & Solow 2003 (Equations 12-18 from Solow 2005).
 Estimates a p-value for testing competing hypotheses of
-extinction/non-extinction, and a two-tailed \eqn{1 - \alpha} confidence
-interval and point estimate on the time of extinction.
+extinction/non-extinction, and a \eqn{1 - \alpha} confidence interval and
+point estimate on the time of extinction.
 }
 \note{
 All sighting records are assumed to be certain.
