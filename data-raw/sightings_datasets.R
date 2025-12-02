@@ -179,7 +179,7 @@ usethis::use_data(curlew_raw, overwrite = TRUE)
 
 curlew <- convert_dodo(
   x = curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
-  unique = TRUE, time = "year", certainty = "p_ci",
+  unique = TRUE, aggregate = "max", time = "year", certainty = "p_ci",
   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
 )
 

@@ -10,6 +10,7 @@ convert_dodo(
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
   threshold = 0.9,
   unique = TRUE,
+  aggregate = "pci_prod",
   time,
   certainty,
   certainty_lower,
@@ -32,6 +33,11 @@ certain (for binary certain/uncertain models). Defaults to \code{0.9}.}
 \item{unique}{whether to deduplicate the dataset (to mitigate nonidependence
 issues). Defaults to \code{TRUE}, in which case the dataset is grouped by every
 column except \code{time}, with the most recent row kept for each group.}
+
+\item{aggregate}{what function to use when aggregating records into \code{iucn}
+format. Default is \code{"pci_prod"}, which returns \eqn{1 - \prod(1 - x)} where
+\eqn{x} is the vector of certainty values for each time step. Other sensible
+functions include \verb{"min}, \code{"mean"}, or \code{"max"}.}
 
 \item{time}{name of the column with time values.}
 
@@ -87,14 +93,15 @@ classes based on their \code{certainty} score. See e.g. \code{\link{TH13B1}}.
 intervals between \code{init.time} and \code{test.time} for the taxon of interest. If
 there are multiple sightings in a single time interval, they are assumed
 to be independent of one another and the overall \eqn{p(ci)} score for that
-period is defined as \eqn{1 - \prod 1 - p(ci)}. See e.g. \code{\link{TH17I1}}.
+period is defined as \eqn{1 - \prod 1 - p(ci)}.
+See e.g. \code{\link{TH17I1}}.
 }
 
 \examples{
 # Convert the raw Slender-billed Curlew data
 convert_dodo(
-  x = curlew_raw, init.time = 1817, test.time = 2022,
-  threshold = 0.9, time = "year", certainty = "p_ci",
+  x = curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
+  unique = TRUE, aggregate = "pci_prod", time = "year", certainty = "p_ci",
   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
 )
 

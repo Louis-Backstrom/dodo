@@ -62,7 +62,7 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
   # True positive detectability bounds for certain sightings
   pWL <- 0
-  pWU <- 2 * S / tn
+  pWU <- 2 * S / tn # can exceed 1!
 
   # False positive detectability bounds for certain sightings
   qWL <- 0
@@ -78,9 +78,12 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
   # Number of uncertain sighting types/qualities
   UQ <- records
-  UQ_unique <- UQ[UQ$record == TRUE & UQ$certainty < threshold, ]
+  UQ_unique <- unique(UQ[
+    UQ$record == TRUE & UQ$certainty < threshold,
+    !names(UQ) %in% c("record", "time")
+  ])
 
-  # Create uncertain sighting quality list
+  # Create uncertain sighting quality list; NB: pU and qU can exceed 1!
   US <- list()
   for (h in 1:nrow(UQ_unique)) {
     US[[paste0("U", h)]] <- ifelse(UQ$time %in% merge(

@@ -15,6 +15,10 @@
 #' @param unique whether to deduplicate the dataset (to mitigate nonidependence
 #' issues). Defaults to `TRUE`, in which case the dataset is grouped by every
 #' column except `time`, with the most recent row kept for each group.
+#' @param aggregate what function to use when aggregating records into `iucn`
+#' format. Default is `"pci_prod"`, which returns \eqn{1 - \prod(1 - x)} where
+#' \eqn{x} is the vector of certainty values for each time step. Other sensible
+#' functions include `"min`, `"mean"`, or `"max"`.
 #' @param time name of the column with time values.
 #' @param certainty name of the column with certainty values.
 #' @param certainty_lower name of the column with certainty lower bound values.
@@ -60,13 +64,14 @@
 #' intervals between `init.time` and `test.time` for the taxon of interest. If
 #' there are multiple sightings in a single time interval, they are assumed
 #' to be independent of one another and the overall \eqn{p(ci)} score for that
-#' period is defined as \eqn{1 - \prod 1 - p(ci)}. See e.g. \code{\link{TH17I1}}.
+#' period is defined as \eqn{1 - \prod 1 - p(ci)}.
+#' See e.g. \code{\link{TH17I1}}.
 #'
 #' @examples
 #' # Convert the raw Slender-billed Curlew data
 #' convert_dodo(
-#'   x = curlew_raw, init.time = 1817, test.time = 2022,
-#'   threshold = 0.9, time = "year", certainty = "p_ci",
+#'   x = curlew_raw, init.time = 1817, test.time = 2022, threshold = 0.9,
+#'   unique = TRUE, aggregate = "pci_prod", time = "year", certainty = "p_ci",
 #'   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
 #' )
 #'
@@ -74,8 +79,8 @@
 
 convert_dodo <- function(x, init.time,
                          test.time = as.numeric(format(Sys.Date(), "%Y")),
-                         threshold = 0.9, unique = TRUE, time, certainty,
-                         certainty_lower, certainty_upper) {
+                         threshold = 0.9, unique = TRUE, aggregate = "pci_prod",
+                         time, certainty, certainty_lower, certainty_upper) {
   # Remove any sightings before init.time or after test.time
   x <- x[x[[time]] >= init.time, ]
   x <- x[x[[time]] <= test.time, ]
@@ -129,8 +134,10 @@ convert_dodo <- function(x, init.time,
   x_iucn$record <- x_iucn$time %in% x[[time]]
   x_iucn <- merge(x_iucn, aggregate(
     x[, c(certainty, certainty_lower, certainty_upper)],
-    by = x[time], FUN = pci_prod
-  ), by.x = "time", by.y = time, all.x = TRUE)
+    by = x[time], FUN = aggregate
+  ),
+  by.x = "time", by.y = time, all.x = TRUE
+  )
   x_iucn[is.na(x_iucn)] <- 0
   names(x_iucn) <- c(
     "time", "record", "certainty",
