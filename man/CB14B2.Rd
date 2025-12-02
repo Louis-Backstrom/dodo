@@ -9,8 +9,8 @@ CB14B2(
   alpha = 0.05,
   init.time = min(records),
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  burn.in = 1000,
-  n.iter = 11000
+  burn.in = 10000,
+  n.iter = 110000
 )
 }
 \arguments{
@@ -26,9 +26,9 @@ the \eqn{1 - \alpha} credible interval.}
 probability at. Defaults to the end of the observation period.}
 
 \item{burn.in}{number of initial iterations to discard as burn-in (defaults
-to 1000).}
+to 10,000).}
 
-\item{n.iter}{number of iterations to run (defaults to 11000).}
+\item{n.iter}{number of iterations to run (defaults to 110,000).}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),

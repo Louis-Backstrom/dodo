@@ -14,7 +14,7 @@
 #' (defaults to the current year).
 #' @param cores number of cores to use (defaults to `NULL`, in which case
 #' `parallel::detectCores()` is run).
-#' @param n.iter number of iterations to run (defaults to 10000).
+#' @param n.iter number of iterations to run (defaults to 10,000).
 #'
 #' @returns a `list` object with the original parameters and the probability,
 #' point estimate, and confidence interval included as elements. The confidence

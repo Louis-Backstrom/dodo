@@ -13,7 +13,7 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
-#' @param n.iter number of iterations to run (defaults to 11000).
+#' @param n.iter number of iterations to run (defaults to 100,000).
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible

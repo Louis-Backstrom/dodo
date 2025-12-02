@@ -24,7 +24,7 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{n.iter}{number of iterations to run (defaults to 11000).}
+\item{n.iter}{number of iterations to run (defaults to 100,000).}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),

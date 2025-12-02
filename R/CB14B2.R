@@ -14,8 +14,8 @@
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
 #' @param burn.in number of initial iterations to discard as burn-in (defaults
-#' to 1000).
-#' @param n.iter number of iterations to run (defaults to 11000).
+#' to 10,000).
+#' @param n.iter number of iterations to run (defaults to 110,000).
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -46,7 +46,7 @@
 
 CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
-                   burn.in = 1000, n.iter = 11000) {
+                   burn.in = 10000, n.iter = 110000) {
   # Run sampler then discard burn in period
   res <- fit.func2(
     iter = n.iter, y = records, pgr.init = 0.0,

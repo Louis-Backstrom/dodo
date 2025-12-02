@@ -15,7 +15,7 @@
 #' certain. Defaults to `0.9`.
 #' @param prior a two-element `numeric` vector with the lower and upper bounds
 #' of the (uniform) prior for extant (P(X_T)). Defaults to `c(0, 1)`.
-#' @param n.iter number of iterations to run (defaults to 10000).
+#' @param n.iter number of iterations to run (defaults to 10,000).
 #'
 #' @returns a `list` object with the original parameters and p(extant) included
 #' as elements.

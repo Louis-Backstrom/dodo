@@ -25,7 +25,7 @@ the \eqn{1 - \alpha} confidence interval.}
 \item{cores}{number of cores to use (defaults to \code{NULL}, in which case
 \code{parallel::detectCores()} is run).}
 
-\item{n.iter}{number of iterations to run (defaults to 10000).}
+\item{n.iter}{number of iterations to run (defaults to 10,000).}
 }
 \value{
 a \code{list} object with the original parameters and the probability,

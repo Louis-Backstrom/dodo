@@ -21,7 +21,7 @@ certain. Defaults to \code{0.9}.}
 \item{prior}{a two-element \code{numeric} vector with the lower and upper bounds
 of the (uniform) prior for extant (P(X_T)). Defaults to \code{c(0, 1)}.}
 
-\item{n.iter}{number of iterations to run (defaults to 10000).}
+\item{n.iter}{number of iterations to run (defaults to 10,000).}
 }
 \value{
 a \code{list} object with the original parameters and p(extant) included
