@@ -20,6 +20,7 @@
 #' \eqn{P_E = 1 / T}.
 #' @param n.iter number of iterations to calculate averages over. Defaults to
 #' 100,000, which is usually sufficient to ensure accurate estimates.
+#' @param pb whether to show a progress bar. Defaults to `FALSE`.
 #'
 #' @returns a `list` object with the original parameters and p(extant) included
 #' as elements.
@@ -70,7 +71,7 @@
 #' @export
 
 TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
-                   n.iter = 1e5) {
+                   n.iter = 1e5, pb = FALSE) {
   # Sort records
   records <- sort_by(records, ~time)
 
@@ -99,7 +100,10 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   # Run quenched loop
   values <- c()
 
-  pb <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
+  if (pb == TRUE) {
+    pb <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
+  }
+
   for (run in 1:n.iter) {
     # Create p matrix and vector
     p_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
@@ -148,9 +152,14 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     # Calculate P_Q(X_T|s) from Equation 9
     values[run] <- as.numeric(numerator / denominator)
 
-    setTxtProgressBar(pb, run)
+    if (pb == TRUE) {
+      setTxtProgressBar(pb, run)
+    }
   }
-  close(pb)
+
+  if (pb == TRUE) {
+    close(pb)
+  }
 
   # Calculate quenched average
   p.extant <- mean(values)
@@ -160,6 +169,10 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     records = records,
     priors = priors,
     certain = certain,
+    PXT = PXT,
+    PE = PE,
+    n.iter = n.iter,
+    pb = pb,
     p.extant = p.extant
   )
 

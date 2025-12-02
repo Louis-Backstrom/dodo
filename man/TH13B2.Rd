@@ -4,7 +4,15 @@
 \alias{TH13B2}
 \title{Thompson et al.'s (2013) "Quenched" model}
 \usage{
-TH13B2(records, priors, certain = 1, PXT = NULL, PE = NULL, n.iter = 1e+05)
+TH13B2(
+  records,
+  priors,
+  certain = 1,
+  PXT = NULL,
+  PE = NULL,
+  n.iter = 1e+05,
+  pb = FALSE
+)
 }
 \arguments{
 \item{records}{sighting records in \code{umcd} format (see
@@ -27,6 +35,8 @@ and upper bounds of a uniform prior for the rate \eqn{p_i^\alpha} or
 
 \item{n.iter}{number of iterations to calculate averages over. Defaults to
 100,000, which is usually sufficient to ensure accurate estimates.}
+
+\item{pb}{whether to show a progress bar. Defaults to \code{FALSE}.}
 }
 \value{
 a \code{list} object with the original parameters and p(extant) included
