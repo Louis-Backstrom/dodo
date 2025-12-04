@@ -375,6 +375,7 @@ dlognorm <- function(x, mean, sd, precBits = 64) {
 #' @noRd
 
 abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
+                prSD = 1, alpha, PLOT = 0, use.mpfr = FALSE, cores = NULL,
                 pb = FALSE) {
   # Get confidence level
   conf <- 1 - alpha
@@ -437,15 +438,6 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
     thdens <- rep(NA, numstepsth)
   }
 
-
-  # Increment lambda values, integrating over theta values for each
-  if (use.mpfr == TRUE) {
-    for (i in 1:numstepsL) {
-      Ldens[[i]] <- Rmpfr::mpfr(ifelse(
-        Lvals[i] <= 0,
-        Rmpfr::integrateR(integrand.thetasnegL.mpfr, xmax, upperlimth,
-          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
-        )$value,
   # Estimate Theta
 
   # Increment theta values, integrating over lambda values for each
