@@ -63,6 +63,10 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
   # True positive detectability bounds for certain sightings
   pWL <- 0
   pWU <- 2 * S / tn # can exceed 1!
+  if (pWU > 1) {
+    warning("S / tn > 0.5, setting upper detectability bound at 1")
+    pWU <- 1
+  }
 
   # False positive detectability bounds for certain sightings
   qWL <- 0
@@ -94,6 +98,10 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     US[[paste0("pU", h, "U")]] <- (S / tn) / UQ_unique[h, ]$certainty_lower
     US[[paste0("qU", h, "L")]] <- US[[paste0("pU", h, "L")]] - (S / tn)
     US[[paste0("qU", h, "U")]] <- US[[paste0("pU", h, "U")]] - (S / tn)
+  }
+
+  if (any(US[grepl("pU|qU", names(US))] > 1) == TRUE) {
+    stop("At least one uncertain sighting detectability bound > 1!")
   }
 
   # Survey quality bounds
