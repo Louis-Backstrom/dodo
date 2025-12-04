@@ -14,6 +14,10 @@
 #' @param use.mpfr whether or not to use multiple-precision floating-point
 #' computation via the `Rmpfr` package. Defaults to `FALSE`, but is necessary
 #' for larger datasets (N > 50). Note that this is very slow, and experimental!
+#' @param cores number of cores to use if using `Rmpfr` calculation (defaults
+#' to `NULL`, in which case `parallel::detectCores()` is run).
+#' @param pb whether to show a progress bar if using `Rmpfr` calculation.
+#' Defaults to `FALSE`.
 #'
 #' @returns a `list` object with the original parameters and the point estimate
 #' and credible interval included as elements. The credible interval is a
@@ -48,7 +52,7 @@
 #' @export
 
 WA16B1 <- function(records, alpha = 0.05, init.time = min(records),
-                   use.mpfr = FALSE) {
+                   use.mpfr = FALSE, cores = NULL, pb = FALSE) {
   # Sort records
   records <- sort(records)
 
@@ -62,7 +66,8 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records),
   # Run the ABM model
   abm_results <- abm(
     x = records, distance = FALSE, ext = FALSE, base = base,
-    prmean = 0, prSD = 2, alpha = alpha, PLOT = 0, use.mpfr = use.mpfr
+    prmean = 0, prSD = 2, alpha = alpha, PLOT = 0,
+    use.mpfr = use.mpfr, cores = cores, pb = pb
   )
 
   # Output

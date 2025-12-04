@@ -4,7 +4,14 @@
 \alias{WA16B1}
 \title{Wang et al.'s (2016) "Adaptive" model}
 \usage{
-WA16B1(records, alpha = 0.05, init.time = min(records), use.mpfr = FALSE)
+WA16B1(
+  records,
+  alpha = 0.05,
+  init.time = min(records),
+  use.mpfr = FALSE,
+  cores = NULL,
+  pb = FALSE
+)
 }
 \arguments{
 \item{records}{sighting records in \code{ccon} format (see
@@ -19,6 +26,12 @@ the first sighting, in which case this sighting is removed from the record.}
 \item{use.mpfr}{whether or not to use multiple-precision floating-point
 computation via the \code{Rmpfr} package. Defaults to \code{FALSE}, but is necessary
 for larger datasets (N > 50). Note that this is very slow, and experimental!}
+
+\item{cores}{number of cores to use if using \code{Rmpfr} calculation (defaults
+to \code{NULL}, in which case \code{parallel::detectCores()} is run).}
+
+\item{pb}{whether to show a progress bar if using \code{Rmpfr} calculation.
+Defaults to \code{FALSE}.}
 }
 \value{
 a \code{list} object with the original parameters and the point estimate

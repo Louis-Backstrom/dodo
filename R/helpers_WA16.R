@@ -357,6 +357,10 @@ dlognorm <- function(x, mean, sd, precBits = 64) {
 #' @param use.mpfr whether or not to use multiple-precision floating-point
 #' computation via the `Rmpfr` package. Defaults to `FALSE`, but is necessary
 #' for larger datasets (N > 50). Note that this is very slow, and experimental!
+#' @param cores number of cores to use if using `Rmpfr` calculation (defaults
+#' to `NULL`, in which case `parallel::detectCores()` is run).
+#' @param pb whether to show a progress bar if using `Rmpfr` calculation.
+#' Defaults to `FALSE`.
 #'
 #' @returns the model outputs.
 #'
@@ -371,7 +375,7 @@ dlognorm <- function(x, mean, sd, precBits = 64) {
 #' @noRd
 
 abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
-                prSD = 1, alpha, PLOT = 0, use.mpfr = FALSE) {
+                pb = FALSE) {
   # Get confidence level
   conf <- 1 - alpha
 
@@ -428,14 +432,11 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   thetavals <- seq(xmax, upperlimth, length.out = numstepsth)
 
   if (use.mpfr == TRUE) {
-    Ldens <- list()
     thdens <- list()
   } else {
-    Ldens <- rep(NA, numstepsL)
     thdens <- rep(NA, numstepsth)
   }
 
-  # Estimate Lambda
 
   # Increment lambda values, integrating over theta values for each
   if (use.mpfr == TRUE) {
@@ -445,54 +446,70 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
         Rmpfr::integrateR(integrand.thetasnegL.mpfr, xmax, upperlimth,
           L = Lvals[i], x = x, prmean = prmean, prSD = prSD
         )$value,
-        Rmpfr::integrateR(integrand.thetasposL.mpfr, xmax, upperlimth,
-          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
-        )$value
-      ), precBits = 64)
-    }
-    Ldens <- do.call(c, Ldens)
-  } else {
-    for (i in 1:numstepsL) {
-      Ldens[i] <- ifelse(
-        Lvals[i] <= 0,
-        integrate(integrand.thetasnegL, xmax, upperlimth,
-          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
-        )$value,
-        integrate(integrand.thetasposL, xmax, upperlimth,
-          L = Lvals[i], x = x, prmean = prmean, prSD = prSD
-        )$value
-      )
-    }
-  }
-
-  # Normalize lambda pdf to unit area
-  Ldens <- as.numeric(Ldens / sum(Ldens))
-
-  # Calculate posterior quantities
-  Lmean <- sum(Lvals * Ldens)
-  Lhat <- Lmean
-  Lvar <- sum(Ldens * (Lvals - Lmean)^2)
-
   # Estimate Theta
 
   # Increment theta values, integrating over lambda values for each
   if (use.mpfr == TRUE) {
-    for (i in 1:numstepsth) {
-      thdens[[i]] <- Rmpfr::mpfr(
-        (
-          Rmpfr::integrateR(integrand.neglambdas.mpfr,
-            Rmpfr::mpfr(lowerlimL, 256), 0,
-            th = thetavals[i],
-            x = x, prmean = prmean, prSD = prSD
-          )$value +
-            Rmpfr::integrateR(integrand.poslambdas.mpfr, 0,
-              Rmpfr::mpfr(upperlimL, 256),
-              th = thetavals[i],
-              x = x, prmean = prmean, prSD = prSD
-            )$value),
-        precBits = 64
-      )
+    # Convert constants to mpfr
+    lowerlimL_mpfr <- Rmpfr::mpfr(lowerlimL, 256)
+    upperlimL_mpfr <- Rmpfr::mpfr(upperlimL, 256)
+    thetavals_mpfr <- Rmpfr::mpfr(thetavals, 256)
+    x_mpfr <- Rmpfr::mpfr(x, 256)
+    prmean_mpfr <- Rmpfr::mpfr(prmean, 256)
+    prSD_mpfr <- Rmpfr::mpfr(prSD, 256)
+
+    # Initialise parallel cluster
+    num_cores <- ifelse(is.null(cores), parallel::detectCores() - 1, cores)
+    cl <- parallel::makeCluster(num_cores)
+
+    parallel::clusterEvalQ(cl, library(Rmpfr))
+
+    parallel::clusterExport(
+      cl,
+      varlist = ls(envir = asNamespace("dodo")),
+      envir = asNamespace("dodo")
+    )
+
+    thdens <- vector("list", numstepsth)
+
+    # Progress bar
+    if (pb == TRUE) {
+      pbar <- txtProgressBar(min = 0, max = numstepsth, style = 3)
     }
+
+    # Compute in chunks
+    chunk_size <- 10
+    for (start_idx in seq(1, numstepsth, by = chunk_size)) {
+      end_idx <- min(start_idx + chunk_size - 1, numstepsth)
+      res <- parallel::parLapplyLB(cl, start_idx:end_idx, function(i) {
+        val <- Rmpfr::mpfr(
+          Rmpfr::integrateR(integrand.neglambdas.mpfr,
+            lowerlimL_mpfr, 0,
+            th = thetavals_mpfr[i],
+            x = x_mpfr, prmean = prmean_mpfr, prSD = prSD_mpfr
+          )$value +
+            Rmpfr::integrateR(integrand.poslambdas.mpfr,
+              0, upperlimL_mpfr,
+              th = thetavals_mpfr[i],
+              x = x_mpfr, prmean = prmean_mpfr, prSD = prSD_mpfr
+            )$value,
+          precBits = 64
+        )
+        list(i = i, val = val)
+      })
+      for (r in res) {
+        thdens[[r$i]] <- r$val
+      }
+      if (pb == TRUE) {
+        setTxtProgressBar(pbar, end_idx)
+      }
+    }
+
+    if (pb == TRUE) {
+      close(pbar)
+    }
+
+    parallel::stopCluster(cl)
     thdens <- do.call(c, thdens)
   } else {
     for (i in 1:numstepsth) {
@@ -539,8 +556,8 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
     CIupper <- base - CIupper
     thetavals <- base - thetavals
   }
-  temp <- t(as.matrix(c(thhat, xmax, CIupper, Lhat, Lvar)))
-  colnames(temp) <- c("th-hat", "xmax", "CIupper", "L-hat", "var(L)")
+  temp <- t(as.matrix(c(thhat, xmax, CIupper)))
+  colnames(temp) <- c("th-hat", "xmax", "CIupper")
 
   return(temp)
 }
