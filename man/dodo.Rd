@@ -39,6 +39,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=CB14B2]{CB14B2()}} Caley & Barry's (2014) "Non-constant" model.
 \item \code{\link[=JR14F1]{JR14F1()}} Jarić & Roberts' (2014) "Solow" model.
 \item \code{\link[=LE14B1]{LE14B1()}} Lee's (2014) "Simple" model.
+\item \code{\link[=LE14B2]{LE14B2()}} Lee et al.'s (2014) "Variable Reliability" model.
 \item \code{\link[=SB14B1]{SB14B1()}} Solow & Beet's (2014) "Model 1" model.
 \item \code{\link[=SB14B2]{SB14B2()}} Solow & Beet's (2014) "Model 2" model.
 \item \code{\link[=AL15B1]{AL15B1()}} Alroy's (2015) "Agnostic" model.

@@ -21,7 +21,7 @@ confidence interval included as elements.
 }
 \description{
 Equation 2 from McInerny et al. 2006. Estimates a p-value for testing
-competing hypotheses of extinction/non-extinction, and a one-tailed
+competing hypotheses of extinction/non-extinction, and a one-sided
 \eqn{1 - \alpha} confidence interval on the time of extinction.
 }
 \note{

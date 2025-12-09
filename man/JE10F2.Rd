@@ -31,7 +31,7 @@ confidence interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{
 Equation 6 from Jarić & Ebenhard 2010. Estimates a p-value for testing
-competing hypotheses of extinction/non-extinction and a one-tailed
+competing hypotheses of extinction/non-extinction and a one-sided
 \eqn{1 - \alpha} confidence interval on the time of extinction.
 }
 \note{

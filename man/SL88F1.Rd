@@ -19,7 +19,7 @@ interval included as elements. The confidence interval is a two-element
 numeric vector called \code{conf.int}.
 }
 \description{
-Equation 3 from Springer & Lilje 1988. Estimates a one-tailed
+Equation 3 from Springer & Lilje 1988. Estimates a one-sided
 \eqn{1 - \alpha} confidence interval on the time of extinction.
 }
 \note{

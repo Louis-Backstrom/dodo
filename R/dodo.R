@@ -32,6 +32,7 @@
 #' * [CB14B2()] Caley & Barry's (2014) "Non-constant" model.
 #' * [JR14F1()] Jarić & Roberts' (2014) "Solow" model.
 #' * [LE14B1()] Lee's (2014) "Simple" model.
+#' * [LE14B2()] Lee et al.'s (2014) "Variable Reliability" model.
 #' * [SB14B1()] Solow & Beet's (2014) "Model 1" model.
 #' * [SB14B2()] Solow & Beet's (2014) "Model 2" model.
 #' * [AL15B1()] Alroy's (2015) "Agnostic" model.

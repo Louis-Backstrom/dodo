@@ -446,7 +446,7 @@ starling_surveys <- starling_surveys[, c(
 )]
 usethis::use_data(starling_surveys, overwrite = TRUE)
 
-weissmarshall_surveys <- surveys <- c(
+weissmarshall_surveys <- c(
   0.0, 1.4, 1.6, 2.3, 3.9, 4.1, 4.7, 5.1, 5.4, 5.9, 6.1, 6.6, 7.0, 7.4, 7.9,
   8.6, 9.2, 9.9, 10.2, 10.4, 10.8, 11.2, 11.4, 11.7, 11.9, 12.5, 14.1, 14.9,
   15.4, 16.3, 18.4, 20.7, 22.5, 25.8, 27.6, 31.4
@@ -464,3 +464,9 @@ eggerellina_brevis <- c(
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 )
 usethis::use_data(eggerellina_brevis, overwrite = TRUE)
+
+lee_s1 <- data.frame(
+  certain = c(1, 0, 0, 0, 0, 1, 0, 0, 0),
+  uncertain = c(0, 1, 0, 1, 0, 1, 0, 1, 0)
+)
+usethis::use_data(lee_s1, overwrite = TRUE)

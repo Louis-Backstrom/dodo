@@ -19,7 +19,7 @@ and confidence interval included as elements. The confidence interval is a
 two-element numeric vector called \code{conf.int}.
 }
 \description{
-Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-tailed
+Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-sided
 \eqn{1 - \alpha} confidence interval and point estimate on the time of
 extinction.
 }

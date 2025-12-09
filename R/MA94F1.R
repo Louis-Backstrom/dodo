@@ -1,7 +1,7 @@
 #' @title Marshall's (1994) "Distribution-free" model
 #'
 #' @description
-#' Equations 1 and 2 from Marshall 1994. Estimates a one-tailed
+#' Equations 1 and 2 from Marshall 1994. Estimates a one-sided
 #' \eqn{1 - \alpha} confidence interval on time of extinction; the upper bound
 #' of this confidence interval is in itself a \eqn{1 - 2\gamma} confidence
 #' interval with a lower and upper bound.

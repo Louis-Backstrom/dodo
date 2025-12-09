@@ -26,7 +26,7 @@ confidence interval, and the third element is the upper bound of the upper
 bound of the confidence interval.
 }
 \description{
-Equations 1 and 2 from Marshall 1994. Estimates a one-tailed
+Equations 1 and 2 from Marshall 1994. Estimates a one-sided
 \eqn{1 - \alpha} confidence interval on time of extinction; the upper bound
 of this confidence interval is in itself a \eqn{1 - 2\gamma} confidence
 interval with a lower and upper bound.

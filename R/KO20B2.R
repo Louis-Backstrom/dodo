@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Model 2 from Kodikara et al. 2020. Estimates a posterior probability that
-#' the species is extant at the test time, and a point estimate and one-tailed
+#' the species is extant at the test time, and a point estimate and one-sided
 #' \eqn{1 - \alpha} credible interval on the time of extinction.
 #'
 #' @param records sighting records in `ubin` format (see

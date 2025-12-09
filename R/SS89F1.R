@@ -1,7 +1,7 @@
 #' @title Strauss & Sadler's (1989) "Classical" model
 #'
 #' @description
-#' Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-tailed
+#' Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-sided
 #' \eqn{1 - \alpha} confidence interval and point estimate on the time of
 #' extinction.
 #'

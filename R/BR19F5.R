@@ -2,7 +2,7 @@
 #'
 #' @description
 #' The Last Appearance Date variant of the model from Brook et al. 2019.
-#' Estimates a "probability" of extinction at the test time, and a two-tailed
+#' Estimates a "probability" of extinction at the test time, and a two-sided
 #' \eqn{1 - \alpha} confidence interval and point estimate on the time of
 #' extinction. Sighting uncertainty is incorporated.
 #'

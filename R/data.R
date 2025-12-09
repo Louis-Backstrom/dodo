@@ -506,3 +506,21 @@
 #' Sampled Discretely. *Mathematical Geology*, 31(4), 435-453.
 #' \doi{10.1023/A:1007542725180}
 "eggerellina_brevis"
+
+#' @title Example sightings from Lee et al.
+#'
+#' @description
+#' Example binary sighting record from Appendix S1 in Lee et al. (2014). The
+#' temporal range (`init.time` to `test.time`) of these data is 1 to 9.
+#' Format: `ubin`.
+#'
+#' @format a `data.frame` with 2 columns and 9 rows.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Lee, T. E., McCarthy, M. A., Wintle, B. A., Bode, M., Roberts, D. L., &
+#' Burgman, M. A. (2014). Inferring extinctions from sighting records of
+#' variable reliability. *Journal of Applied Ecology*, 51(1), 251-258.
+#' \doi{10.1111/1365-2664.12144}
+"lee_s1"

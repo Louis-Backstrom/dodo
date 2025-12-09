@@ -1,7 +1,7 @@
 #' @title Springer & Lilje's (1988) "Broken Stick" model
 #'
 #' @description
-#' Equation 3 from Springer & Lilje 1988. Estimates a one-tailed
+#' Equation 3 from Springer & Lilje 1988. Estimates a one-sided
 #' \eqn{1 - \alpha} confidence interval on the time of extinction.
 #'
 #' @param records sighting records in `ccon` format (see

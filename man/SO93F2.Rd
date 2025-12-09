@@ -36,7 +36,7 @@ interval is a two-element numeric vector called \code{conf.int}.
 \description{
 Equations 3 and 4 from Solow 1993 (Equation 7 from Solow 2005), and
 Equation 8 from Solow 2005. Estimates a p-value for testing competing
-hypotheses of extinction/non-extinction, and a one-tailed \eqn{1 - \alpha}
+hypotheses of extinction/non-extinction, and a one-sided \eqn{1 - \alpha}
 confidence interval and point estimate on the time of extinction.
 }
 \note{
