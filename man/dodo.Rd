@@ -20,8 +20,9 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=BU95F1]{BU95F1()}} Burgman et al.'s (1995) "Discrete-time" model.
 \item \code{\link[=BU95F2]{BU95F2()}} Burgman et al.'s (1995) "Runs Test" model.
 \item \code{\link[=BU95F3]{BU95F3()}} Burgman et al.'s (1995) "Empty Cells" model.
-\item \code{\link[=MC98F1]{MC98F1()}} McCarthy's (1998) "Non-random" model.
-\item \code{\link[=MC99F1]{MC99F1()}} McFarlane's (1999) "Partial Solow" model.
+\item \code{\link[=MA97F1]{MA97F1()}} Marshall's (1997) "Non-random" model.
+\item \code{\link[=MC98F1]{MC98F1()}} McCarthy's (1998) "Partial Solow" model.
+\item \code{\link[=MC99F1]{MC99F1()}} McFarlane's (1999) "Median Gap" model.
 \item \code{\link[=WM99B1]{WM99B1()}} Weiss & Marshall's (1999) "Discrete-time" model.
 \item \code{\link[=RS03F1]{RS03F1()}} Roberts & Solow's (2003) "Optimal Linear Estimation" model.
 \item \code{\link[=SR03F1]{SR03F1()}} Solow & Roberts' (2003) "Non-parametric" model.
