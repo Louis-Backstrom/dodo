@@ -47,8 +47,8 @@
 #' @examples
 #' # Run the Dodo analysis from Roberts & Solow 2003
 #' RS03F1(dodos, test.time = 2002)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' RS03F1(curlew$ccon, test.time = 2022)
 #' }
 #'

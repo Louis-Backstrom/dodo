@@ -41,14 +41,11 @@
 #' \dontrun{
 #' WA16B1(-anabarella, alpha = 0.1, use.mpfr = TRUE) # Slow!
 #' }
+#' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-#' \dontrun{
 #' WA16B1(curlew$ccon, init.time = 1817, use.mpfr = FALSE) # Fails!
-#' }
-#' \dontrun{
 #' WA16B1(curlew$ccon, init.time = 1817, use.mpfr = TRUE) # Slow!
 #' }
-#'
 #' @export
 
 WA16B1 <- function(records, alpha = 0.05, init.time = min(records),

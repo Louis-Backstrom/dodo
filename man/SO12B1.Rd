@@ -42,8 +42,8 @@ SO12B1(
   records = woodpecker$ubin, init.time = 1897, increment = 0.01,
   record.check = "coerce"
 )
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 SO12B1(curlew$ubin, init.time = 1817, increment = 0.01)
 }
 

@@ -49,8 +49,8 @@ Sampling effort is assumed to be constant.
 \examples{
 # Run the example analysis from Lee et al. 2014
 LE14B2(lee_s1, init.time = 1)
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 LE14B2(curlew$ubin, init.time = 1817)
 }
 

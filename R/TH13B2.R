@@ -49,8 +49,8 @@
 #'   certain = c(1),
 #'   n.iter = 1e3
 #' )
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' TH13B2(
 #'   records = curlew$umcd,
 #'   priors = list(

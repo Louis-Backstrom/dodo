@@ -35,8 +35,8 @@
 #' @examples
 #' # Run an example analysis using the Lord Howe Gerygone data
 #' MA97F1(records = gerygone, effort = gerygone_effort, init.time = 1788)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' MA97F1(records = curlew$cdis, effort = curlew_effort, init.time = 1817)
 #' }
 #' @export

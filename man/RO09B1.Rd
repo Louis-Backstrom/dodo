@@ -25,11 +25,13 @@ end of the observation period.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
-to be constant.
+to be constant. The Bayes Factor presented here is the inverse of the Bayes
+Factor as presented in the original paper, to allow for comparability with
+other models in this package (values > 1 imply extinction).
 }
 \examples{
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 RO09B1(curlew$cbin)
 }
 

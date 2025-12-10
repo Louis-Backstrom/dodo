@@ -34,8 +34,8 @@
 #' @examples
 #' # Run an example analysis using the Caribbean Monk Seal data
 #' AL15B1(as.integer(1915:1992 %in% monk_seal))
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' AL15B1(curlew$cbin)
 #' }
 #'

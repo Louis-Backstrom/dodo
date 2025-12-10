@@ -44,8 +44,8 @@
 #' @examples
 #' # Run an example analysis using the Caribbean Monk Seal data
 #' SS89F1(monk_seal)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' SS89F1(curlew$ccon)
 #' }
 #'

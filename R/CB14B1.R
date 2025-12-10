@@ -35,8 +35,8 @@
 #' @examples
 #' # Run the fox analysis from Caley & Barry 2014
 #' CB14B1(fox, init.time = 2001, test.time = 2012)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' CB14B1(curlew$cbin, init.time = 1817)
 #' }
 #'

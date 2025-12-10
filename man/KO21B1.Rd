@@ -39,8 +39,8 @@ Sampling effort is assumed to be constant.
 \examples{
 # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2021
 KO21B1(woodpecker$ubin, init.time = 1897, test.time = 2010)
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 KO21B1(curlew$ubin, init.time = 1817, test.time = 2022)
 }
 

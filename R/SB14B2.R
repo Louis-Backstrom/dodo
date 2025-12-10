@@ -54,8 +54,8 @@
 #' @examples
 #' # Run the Ivory-billed Woodpecker analysis from Solow & Beet 2014
 #' SB14B2(records = woodpecker$ubin, init.time = 1897, increment = 0.01)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' SB14B2(curlew$ubin, init.time = 1817, increment = 0.01)
 #' }
 #'

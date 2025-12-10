@@ -42,8 +42,8 @@ only includes the Solow 1993a variant, as it is the focus of the original
 paper.
 }
 \examples{
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 JR14F1(curlew$ucon, init.time = 1817, test.time = 2022)
 }
 

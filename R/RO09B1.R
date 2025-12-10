@@ -16,7 +16,9 @@
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
-#' to be constant.
+#' to be constant. The Bayes Factor presented here is the inverse of the Bayes
+#' Factor as presented in the original paper, to allow for comparability with
+#' other models in this package (values > 1 imply extinction).
 #'
 #' @references
 #' **Key Reference**
@@ -31,8 +33,8 @@
 #' 74(3), 962-964. \doi{10.2307/1940821}
 #'
 #' @examples
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' RO09B1(curlew$cbin)
 #' }
 #'
@@ -100,7 +102,7 @@ RO09B1 <- function(records, pi = 0.5) {
     records = records,
     pi = pi,
     a = summary(samples)$statistics["a", "Mean"],
-    Bayes.factor = Bayes.factor,
+    Bayes.factor = 1 / Bayes.factor,
     p.extant = posterior
   )
 

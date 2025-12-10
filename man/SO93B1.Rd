@@ -34,13 +34,16 @@ posterior probability that the species is extant at the test time.
 }
 \note{
 All sighting records are assumed to be certain and sampling effort is assumed
-to be constant.
+to be constant. The Bayes Factor presented here is the inverse of the Bayes
+Factor as presented in the original paper, to allow for comparability with
+other models in this package (values > 1 imply extinction).
 }
 \examples{
 # Run the Caribbean Monk Seal analysis from Solow 1993
 SO93B1(monk_seal, test.time = 1992)
-# Run an example analysis using the Slender-billed Curlew data
+# NB: take 1 / Bayes.factor to reproduce Solow 1993 result
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 SO93B1(curlew$ccon, init.time = 1817, test.time = 2022)
 }
 

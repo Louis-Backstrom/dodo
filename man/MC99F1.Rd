@@ -37,8 +37,8 @@ to be constant.
 \examples{
 # Run an example analysis using the Woolly Mammoth data
 MC99F1(mammoth, test.time = -11000)
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 MC99F1(curlew$ccon, test.time = 2022)
 }
 

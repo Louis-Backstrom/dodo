@@ -41,8 +41,8 @@ to be constant.
 \examples{
 # Run the Black-footed Ferret analysis from Jarić & Ebenhard 2010
 JE10F2(ferret$ccon - 5, test.time = 223) # shift dates to align with paper
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 JE10F2(curlew$ccon, init.time = 1817, test.time = 2022)
 }
 

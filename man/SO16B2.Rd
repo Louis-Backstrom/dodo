@@ -42,9 +42,9 @@ SO16B2(
   records = as.integer((min(dodos) + 1):2015 \%in\% dodos),
   init.time = min(dodos), test.time = 1672, curr.time = 2015
 )
-# Note that Solow 2016 presents p(extinct), which is 1 - p(extant) used here.
-# Run an example analysis using the Slender-billed Curlew data
+# NB: Solow 2016 presents p(extinct), which is 1 - p(extant) used here.
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 SO16B2(curlew$cbin)
 }
 

@@ -53,14 +53,11 @@ WA16B1(-anabarella, alpha = 0.1, use.mpfr = FALSE)
 \dontrun{
 WA16B1(-anabarella, alpha = 0.1, use.mpfr = TRUE) # Slow!
 }
+\dontrun{
 # Run an example analysis using the Slender-billed Curlew data
-\dontrun{
 WA16B1(curlew$ccon, init.time = 1817, use.mpfr = FALSE) # Fails!
-}
-\dontrun{
 WA16B1(curlew$ccon, init.time = 1817, use.mpfr = TRUE) # Slow!
 }
-
 }
 \references{
 \strong{Key Reference}

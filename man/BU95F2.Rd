@@ -25,8 +25,8 @@ to be constant.
 \examples{
 # Run the example analysis from Burgman 1995 (Figure 1b)
 BU95F2(burgman_figure1b)
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 BU95F2(curlew$cdis)
 }
 

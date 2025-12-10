@@ -28,8 +28,8 @@
 #' @examples
 #' # Run the Alaotra Grebe analysis from Thompson et al. 2017
 #' TH17I1(records = grebe, surveys = grebe_surveys)
-#' # Run the Slender-billed Curlew analysis from Buchanan et al. 2025
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' TH17I1(curlew$buchanan, surveys = curlew_surveys)
 #' }
 #'

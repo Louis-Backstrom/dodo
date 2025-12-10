@@ -35,8 +35,8 @@
 #' @examples
 #' # Run the example analysis from Lee et al. 2014
 #' LE14B2(lee_s1, init.time = 1)
-#' # Run an example analysis using the Slender-billed Curlew data
 #' \dontrun{
+#' # Run an example analysis using the Slender-billed Curlew data
 #' LE14B2(curlew$ubin, init.time = 1817)
 #' }
 #'
@@ -90,20 +90,9 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
 
   unlink(model_file)
 
-  # Extract posteriors
+  # Extract posteriors (only keep te estimates for samples where Extant == 0)
   p.extant <- mean(bugs_model$sims.list$Extant)
-  te <- bugs_model$sims.list$te
-
-  # Check if any extinction time estimates are prior to last certain sighting
-  te.keep <- bugs_model$sims.list$te >= max(which(data$y == 1))
-  if (mean(te.keep) < 1) {
-    warning(paste0(
-      ceiling(100 * (1 - mean(te.keep))), "% of the posterior ",
-      "of extinction time lies prior to the final certain ",
-      "sighting and will be dropped!"
-    ))
-  }
-  te <- te[te.keep]
+  te <- bugs_model$sims.list$te[bugs_model$sims.list$Extant == 0]
 
   estimate <- mean(te) + init.time - 1
   cred.int <- as.numeric(quantile(te, c(0, 0.95)) + init.time - 1)

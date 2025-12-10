@@ -37,8 +37,8 @@
 #'   records = starling, surveys = starling_surveys, threshold = 0.9,
 #'   prior = c(0.24, 0.48), n.iter = 1e4
 #' )
-#' # Run an example analysis using the Alaotra Grebe data
 #' \dontrun{
+#' # Run an example analysis using the Alaotra Grebe data
 #' LE14B1(
 #'   records = grebe, surveys = grebe_surveys, threshold = 0.9,
 #'   prior = c(0, 1), n.iter = 1e4

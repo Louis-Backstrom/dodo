@@ -48,8 +48,8 @@ to be constant.
 \examples{
 # Run the fox analysis from Caley & Barry 2014
 CB14B2(fox, init.time = 2001, test.time = 2012, n.iter = 11e4, burn.in = 1e4)
-# Run an example analysis using the Slender-billed Curlew data
 \dontrun{
+# Run an example analysis using the Slender-billed Curlew data
 CB14B2(curlew$cbin, init.time = 1817, n.iter = 11e3, burn.in = 1e3)
 }
 
