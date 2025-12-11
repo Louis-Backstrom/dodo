@@ -9,8 +9,8 @@ LE14B2(
   alpha = 0.05,
   init.time,
   n.chains = 4,
-  n.iter = 11000,
-  n.burnin = 1000,
+  n.iter = 15000,
+  n.burnin = 5000,
   n.thin = 10
 )
 }
