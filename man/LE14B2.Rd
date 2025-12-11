@@ -11,7 +11,8 @@ LE14B2(
   n.chains = 4,
   n.iter = 15000,
   n.burnin = 5000,
-  n.thin = 10
+  n.thin = 10,
+  debug = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,9 @@ the \eqn{1 - \alpha} credible interval.}
 \item{n.burnin}{number of iterations to discard as burn-in. Defaults to 1000.}
 
 \item{n.thin}{thinning rate. Defaults to 10.}
+
+\item{debug}{whether to open the OpenBUGS interface during execution.
+Defaults to \code{FALSE}.}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),

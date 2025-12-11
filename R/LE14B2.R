@@ -16,6 +16,8 @@
 #' @param n.iter number of iterations in each chain. Defaults to 11000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to 1000.
 #' @param n.thin thinning rate. Defaults to 10.
+#' @param debug whether to open the OpenBUGS interface during execution.
+#' Defaults to `FALSE`.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -43,7 +45,8 @@
 #' @export
 
 LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
-                   n.iter = 15000, n.burnin = 5000, n.thin = 10) {
+                   n.iter = 15000, n.burnin = 5000, n.thin = 10,
+                   debug = FALSE) {
   # Convert records into model format
   data <- list(y = records$certain, z = records$uncertain, T = nrow(records))
 
@@ -85,7 +88,7 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
     n.iter = n.iter,
     n.burnin = n.burnin,
     n.thin = n.thin,
-    debug = FALSE
+    debug = debug
   )
 
   unlink(model_file)
