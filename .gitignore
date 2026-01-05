@@ -53,3 +53,6 @@ trash/
 
 # Buchanan et al. Table S1
 data-raw/*.xlsx
+
+# pkgdown
+docs
