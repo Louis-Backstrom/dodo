@@ -56,6 +56,22 @@ jobs:
         if: runner.os == 'Windows'
         run: choco install -y jags
 
+      - name: Install OpenBUGS (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openbugs
+
+      - name: Install OpenBUGS (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install openbugs
+
+      - name: Install OpenBUGS (Windows)
+        if: runner.os == 'Windows'
+        run: choco install -y openbugs
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck

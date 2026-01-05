@@ -47,6 +47,11 @@
 LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
                    n.iter = 15000, n.burnin = 5000, n.thin = 10,
                    debug = FALSE) {
+  # Check if R2OpenBUGS is installed
+  if (!requireNamespace("R2OpenBUGS", quietly = TRUE)) {
+    stop("Package 'R2OpenBUGS' is required but could not be found!")
+  }
+
   # Convert records into model format
   data <- list(y = records$certain, z = records$uncertain, T = nrow(records))
 
