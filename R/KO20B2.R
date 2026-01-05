@@ -30,9 +30,9 @@
 #' @seealso [KO20B1()]
 #'
 #' @examples
+#' \dontrun{
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
 #' KO20B2(woodpecker$ubin, init.time = 1897, test.time = 2010)
-#' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
 #' KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)
 #' }

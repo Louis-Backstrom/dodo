@@ -33,9 +33,9 @@
 #' 74(3), 962-964. \doi{10.2307/1940821}
 #'
 #' @examples
+#' \dontrun{
 #' # Run the bitterweed analysis from Rout et al. 2009
 #' RO09B1(bitterweed)
-#' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
 #' RO09B1(curlew$cbin)
 #' }

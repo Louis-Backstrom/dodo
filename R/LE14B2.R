@@ -35,9 +35,9 @@
 #' \doi{10.1111/1365-2664.12144}
 #'
 #' @examples
+#' \dontrun{
 #' # Run the example analysis from Lee et al. 2014
 #' LE14B2(lee_s1, init.time = 1)
-#' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
 #' LE14B2(curlew$ubin, init.time = 1817)
 #' }
