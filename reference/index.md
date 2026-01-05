@@ -1,0 +1,237 @@
+# Package index
+
+## All functions
+
+- [`AL14B1()`](https://louis-backstrom.github.io/dodo/reference/AL14B1.md)
+  : Alroy's (2014) "Creeping Shadow of a Doubt" model
+
+- [`AL15B1()`](https://louis-backstrom.github.io/dodo/reference/AL15B1.md)
+  : Alroy's (2015) "Agnostic" model
+
+- [`BR12F1()`](https://louis-backstrom.github.io/dodo/reference/BR12F1.md)
+  : Bradshaw et al.'s (2012) "Inverse-weighted McInerny" model
+
+- [`BR19F1()`](https://louis-backstrom.github.io/dodo/reference/BR19F1.md)
+  : Brook et al.'s (2019) "Solow" model
+
+- [`BR19F2()`](https://louis-backstrom.github.io/dodo/reference/BR19F2.md)
+  : Brook et al.'s (2019) "Solow & Roberts" model
+
+- [`BR19F3()`](https://louis-backstrom.github.io/dodo/reference/BR19F3.md)
+  : Brook et al.'s (2019) "Roberts & Solow" model
+
+- [`BR19F4()`](https://louis-backstrom.github.io/dodo/reference/BR19F4.md)
+  : Brook et al.'s (2019) "McInerny" model
+
+- [`BR19F5()`](https://louis-backstrom.github.io/dodo/reference/BR19F5.md)
+  : Brook et al.'s (2019) "Last Appearance Date" model
+
+- [`BU95F1()`](https://louis-backstrom.github.io/dodo/reference/BU95F1.md)
+  : Burgman et al.'s (1995) "Discrete-time" model
+
+- [`BU95F2()`](https://louis-backstrom.github.io/dodo/reference/BU95F2.md)
+  : Burgman et al.'s (1995) "Runs Test" model
+
+- [`BU95F3()`](https://louis-backstrom.github.io/dodo/reference/BU95F3.md)
+  : Burgman et al.'s (1995) "Empty Cells" model
+
+- [`CB14B1()`](https://louis-backstrom.github.io/dodo/reference/CB14B1.md)
+  : Caley & Barry's (2014) "Constant" model
+
+- [`CB14B2()`](https://louis-backstrom.github.io/dodo/reference/CB14B2.md)
+  : Caley & Barry's (2014) "Non-constant" model
+
+- [`JE10F1()`](https://louis-backstrom.github.io/dodo/reference/JE10F1.md)
+  : Jarić & Ebenhard's (2010) "Stationary" model
+
+- [`JE10F2()`](https://louis-backstrom.github.io/dodo/reference/JE10F2.md)
+  : Jarić & Ebenhard's (2010) "Non-stationary" model
+
+- [`JR14F1()`](https://louis-backstrom.github.io/dodo/reference/JR14F1.md)
+  : Jarić & Roberts' (2014) "Solow" model
+
+- [`KO20B1()`](https://louis-backstrom.github.io/dodo/reference/KO20B1.md)
+  : Kodikara et al.'s (2020) "Certain-only" model
+
+- [`KO20B2()`](https://louis-backstrom.github.io/dodo/reference/KO20B2.md)
+  : Kodikara et al.'s (2020) "Uncertain" model
+
+- [`KO21B1()`](https://louis-backstrom.github.io/dodo/reference/KO21B1.md)
+  : Kodikara et al.'s (2021) "Change-point" model
+
+- [`LE14B1()`](https://louis-backstrom.github.io/dodo/reference/LE14B1.md)
+  : Lee's (2014) "Simple" model
+
+- [`LE14B2()`](https://louis-backstrom.github.io/dodo/reference/LE14B2.md)
+  : Lee et al.'s (2014) "Variable reliability" model
+
+- [`MA94F1()`](https://louis-backstrom.github.io/dodo/reference/MA94F1.md)
+  : Marshall's (1994) "Distribution-free" model
+
+- [`MA97F1()`](https://louis-backstrom.github.io/dodo/reference/MA97F1.md)
+  : Marshall's (1997) "Non-random" model
+
+- [`MC06F1()`](https://louis-backstrom.github.io/dodo/reference/MC06F1.md)
+  : McInerny et al.'s (2006) "Sighting Rate" model
+
+- [`MC98F1()`](https://louis-backstrom.github.io/dodo/reference/MC98F1.md)
+  : McCarthy's (1998) "Partial Solow" model
+
+- [`MC99F1()`](https://louis-backstrom.github.io/dodo/reference/MC99F1.md)
+  : McFarlane's (1999) "Median Gap" model
+
+- [`RO09B1()`](https://louis-backstrom.github.io/dodo/reference/RO09B1.md)
+  : Rout et al.'s (2009) "Declining" model
+
+- [`RS03F1()`](https://louis-backstrom.github.io/dodo/reference/RS03F1.md)
+  : Roberts & Solow's (2003) "Optimal Linear Estimation" model
+
+- [`SB14B1()`](https://louis-backstrom.github.io/dodo/reference/SB14B1.md)
+  : Solow & Beet's (2014) "Model 1" model
+
+- [`SB14B2()`](https://louis-backstrom.github.io/dodo/reference/SB14B2.md)
+  : Solow & Beet's (2014) "Model 2" model
+
+- [`SL88F1()`](https://louis-backstrom.github.io/dodo/reference/SL88F1.md)
+  : Springer & Lilje's (1988) "Broken Stick" model
+
+- [`SO12B1()`](https://louis-backstrom.github.io/dodo/reference/SO12B1.md)
+  : Solow et al.'s (2012) "Uncertain" model
+
+- [`SO16B1()`](https://louis-backstrom.github.io/dodo/reference/SO16B1.md)
+  : Solow's (2016) "Retrospective" model
+
+- [`SO16B2()`](https://louis-backstrom.github.io/dodo/reference/SO16B2.md)
+  : Solow's (2016) "Sequential" model
+
+- [`SO93B1()`](https://louis-backstrom.github.io/dodo/reference/SO93B1.md)
+  : Solow's (1993) "Bayesian" model
+
+- [`SO93F1()`](https://louis-backstrom.github.io/dodo/reference/SO93F1.md)
+  : Solow's (1993) "Classical" model
+
+- [`SO93F2()`](https://louis-backstrom.github.io/dodo/reference/SO93F2.md)
+  : Solow's (1993) "Declining" model
+
+- [`SR03F1()`](https://louis-backstrom.github.io/dodo/reference/SR03F1.md)
+  : Solow & Roberts' (2003) "Non-parametric" model
+
+- [`SS89B1()`](https://louis-backstrom.github.io/dodo/reference/SS89B1.md)
+  : Strauss & Sadler's (1989) "Bayesian" model
+
+- [`SS89F1()`](https://louis-backstrom.github.io/dodo/reference/SS89F1.md)
+  : Strauss & Sadler's (1989) "Classical" model
+
+- [`TH13B1()`](https://louis-backstrom.github.io/dodo/reference/TH13B1.md)
+  : Thompson et al.'s (2013) "Deterministic" model
+
+- [`TH13B2()`](https://louis-backstrom.github.io/dodo/reference/TH13B2.md)
+  : Thompson et al.'s (2013) "Quenched" model
+
+- [`TH13B3()`](https://louis-backstrom.github.io/dodo/reference/TH13B3.md)
+  : Thompson et al.'s (2013) "Annealed" model
+
+- [`TH17I1()`](https://louis-backstrom.github.io/dodo/reference/TH17I1.md)
+  : Thompson et al.'s (2017) "Iterative" model
+
+- [`TH19B1()`](https://louis-backstrom.github.io/dodo/reference/TH19B1.md)
+  : Thompson et al.'s (2019) "Bayesian Updating" model
+
+- [`WA16B1()`](https://louis-backstrom.github.io/dodo/reference/WA16B1.md)
+  : Wang et al.'s (2016) "Adaptive" model
+
+- [`WM99B1()`](https://louis-backstrom.github.io/dodo/reference/WM99B1.md)
+  : Weiss & Marshall's (1999) "Discrete-time" model
+
+- [`anabarella`](https://louis-backstrom.github.io/dodo/reference/anabarella.md)
+  :
+
+  *Anabarella* fossil record
+
+- [`bitterweed`](https://louis-backstrom.github.io/dodo/reference/bitterweed.md)
+  : Bitterweed sightings
+
+- [`burgman_figure1b`](https://louis-backstrom.github.io/dodo/reference/burgman_figure1b.md)
+  : Example sightings from Burgman et al.
+
+- [`convert_dodo()`](https://louis-backstrom.github.io/dodo/reference/convert_dodo.md)
+  :
+
+  Convert basic sightings spreadsheet into all `dodo` formats
+
+- [`curlew`](https://louis-backstrom.github.io/dodo/reference/curlew.md)
+  : Slender-billed Curlew sightings (processed)
+
+- [`curlew_effort`](https://louis-backstrom.github.io/dodo/reference/curlew_effort.md)
+  : Slender-billed Curlew effort
+
+- [`curlew_raw`](https://louis-backstrom.github.io/dodo/reference/curlew_raw.md)
+  : Slender-billed Curlew sightings (raw)
+
+- [`curlew_surveys`](https://louis-backstrom.github.io/dodo/reference/curlew_surveys.md)
+  : Slender-billed Curlew surveys
+
+- [`dodo`](https://louis-backstrom.github.io/dodo/reference/dodo.md) :
+  dodo: Extinction Models in R
+
+- [`dodos`](https://louis-backstrom.github.io/dodo/reference/dodos.md) :
+  Dodo sightings
+
+- [`eggerellina_brevis`](https://louis-backstrom.github.io/dodo/reference/eggerellina_brevis.md)
+  : Eggerellina brevis records
+
+- [`ferret`](https://louis-backstrom.github.io/dodo/reference/ferret.md)
+  : Black-footed Ferret sightings
+
+- [`fox`](https://louis-backstrom.github.io/dodo/reference/fox.md) :
+  Tasmanian Fox carcass recoveries
+
+- [`gerygone`](https://louis-backstrom.github.io/dodo/reference/gerygone.md)
+  : Lord Howe Gerygone sightings
+
+- [`gerygone_effort`](https://louis-backstrom.github.io/dodo/reference/gerygone_effort.md)
+  : Lord Howe Gerygone effort
+
+- [`grebe`](https://louis-backstrom.github.io/dodo/reference/grebe.md) :
+  Alaotra Grebe sightings
+
+- [`grebe_surveys`](https://louis-backstrom.github.io/dodo/reference/grebe_surveys.md)
+  : Alaotra Grebe surveys
+
+- [`ground_dove`](https://louis-backstrom.github.io/dodo/reference/ground_dove.md)
+  : Purple-winged Ground Dove sightings
+
+- [`lee_s1`](https://louis-backstrom.github.io/dodo/reference/lee_s1.md)
+  : Example sightings from Lee et al.
+
+- [`mammoth`](https://louis-backstrom.github.io/dodo/reference/mammoth.md)
+  : Alaskan Mammoth fossil record
+
+- [`metrarabdotos`](https://louis-backstrom.github.io/dodo/reference/metrarabdotos.md)
+  :
+
+  *Metrarabdotos* n. sp. 5 sightings
+
+- [`monk_seal`](https://louis-backstrom.github.io/dodo/reference/monk_seal.md)
+  : Caribbean Monk Seal sightings
+
+- [`orchid`](https://louis-backstrom.github.io/dodo/reference/orchid.md)
+  : Mauritian orchid sightings
+
+- [`starling`](https://louis-backstrom.github.io/dodo/reference/starling.md)
+  : Pohnpei Mountain Starling sightings
+
+- [`starling_surveys`](https://louis-backstrom.github.io/dodo/reference/starling_surveys.md)
+  : Pohnpei Mountain Starling surveys
+
+- [`thompson_table1`](https://louis-backstrom.github.io/dodo/reference/thompson_table1.md)
+  : Example sightings from Thompson et al.
+
+- [`verneuilinoides`](https://louis-backstrom.github.io/dodo/reference/verneuilinoides.md)
+  : Verneuilinoides sp. A records
+
+- [`weissmarshall_surveys`](https://louis-backstrom.github.io/dodo/reference/weissmarshall_surveys.md)
+  : Weiss & Marshall surveys
+
+- [`woodpecker`](https://louis-backstrom.github.io/dodo/reference/woodpecker.md)
+  : Ivory-billed Woodpecker sightings
