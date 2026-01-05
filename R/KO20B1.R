@@ -42,6 +42,11 @@
 
 KO20B1 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1) {
+  # Check if rjags is installed
+  if (!requireNamespace("rjags", quietly = TRUE)) {
+    stop("Package 'rjags' is required but could not be found!")
+  }
+
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 
@@ -97,6 +102,11 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
 #' @noRd
 
 posterior_cer_mcmc <- function(y_c) {
+  # Check if rjags is installed
+  if (!requireNamespace("rjags", quietly = TRUE)) {
+    stop("Package 'rjags' is required but could not be found!")
+  }
+
   set.seed(1234)
 
   Tt <- length(y_c)

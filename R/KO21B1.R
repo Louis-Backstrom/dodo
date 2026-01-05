@@ -39,6 +39,11 @@
 
 KO21B1 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1) {
+  # Check if rjags is installed
+  if (!requireNamespace("rjags", quietly = TRUE)) {
+    stop("Package 'rjags' is required but could not be found!")
+  }
+
   # Create date and certainty vectors
   sighting <- c(which(records$certain == 1), which(records$uncertain == 1))
   cat <- c(

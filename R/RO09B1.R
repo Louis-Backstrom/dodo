@@ -43,6 +43,11 @@
 #' @export
 
 RO09B1 <- function(records, pi = 0.5) {
+  # Check if rjags is installed
+  if (!requireNamespace("rjags", quietly = TRUE)) {
+    stop("Package 'rjags' is required but could not be found!")
+  }
+
   # Set up JAGS model
   data <- list(
     records = records,
