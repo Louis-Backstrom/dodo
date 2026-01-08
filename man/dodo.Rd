@@ -68,6 +68,13 @@ formats.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://louis-backstrom.github.io/dodo/}
+}
+
+}
 \author{
 \strong{Maintainer}: Louis Backstrom \email{ljb38@st-andrews.ac.uk}
 

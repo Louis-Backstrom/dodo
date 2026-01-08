@@ -3,7 +3,7 @@
 \docType{data}
 \name{verneuilinoides}
 \alias{verneuilinoides}
-\title{Verneuilinoides sp. A records}
+\title{\emph{Verneuilinoides} sp. A records}
 \format{
 a \code{numeric} vector with 36 values.
 }
@@ -11,7 +11,7 @@ a \code{numeric} vector with 36 values.
 verneuilinoides
 }
 \description{
-Verneuilinoides sp. A (species 25) sighting record from Weiss & Marshall
+\emph{Verneuilinoides} sp. A (species 25) sighting record from Weiss & Marshall
 (2014). Format: \code{cbin}.
 }
 \references{

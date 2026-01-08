@@ -38,9 +38,9 @@ All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 }
 \examples{
+\dontrun{
 # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
 KO20B1(woodpecker$cbin, init.time = 1897, test.time = 2010)
-\dontrun{
 # Run an example analysis using the Slender-billed Curlew data
 KO20B1(curlew$cbin, init.time = 1817, test.time = 2022)
 }

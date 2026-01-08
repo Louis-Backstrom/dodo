@@ -3,7 +3,7 @@
 \docType{data}
 \name{eggerellina_brevis}
 \alias{eggerellina_brevis}
-\title{Eggerellina brevis records}
+\title{\emph{Eggerellina brevis} records}
 \format{
 a \code{numeric} vector with 36 values.
 }
@@ -11,7 +11,7 @@ a \code{numeric} vector with 36 values.
 eggerellina_brevis
 }
 \description{
-Eggerellina brevis (species 43) sighting record from Weiss & Marshall
+\emph{Eggerellina brevis} (species 43) sighting record from Weiss & Marshall
 (2014). Format: \code{cbin}.
 }
 \references{

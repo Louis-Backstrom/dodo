@@ -243,7 +243,7 @@
 #' @title Mauritian orchid sightings
 #'
 #' @description
-#' Mauritian orchid (*Angraecum aff. rutenbergianum*) sighting record from
+#' Mauritian orchid (*Angraecum* aff. *rutenbergianum*) sighting record from
 #' Solow & Roberts (2003). The temporal range (`init.time` to `test.time`) of
 #' these data is 1933 to 1996. Format: `ccon`.
 #'
@@ -473,10 +473,10 @@
 #' \doi{10.1023/A:1007542725180}
 "weissmarshall_surveys"
 
-#' @title Verneuilinoides sp. A records
+#' @title *Verneuilinoides* sp. A records
 #'
 #' @description
-#' Verneuilinoides sp. A (species 25) sighting record from Weiss & Marshall
+#' *Verneuilinoides* sp. A (species 25) sighting record from Weiss & Marshall
 #' (2014). Format: `cbin`.
 #'
 #' @format a `numeric` vector with 36 values.
@@ -490,10 +490,10 @@
 #' \doi{10.1023/A:1007542725180}
 "verneuilinoides"
 
-#' @title Eggerellina brevis records
+#' @title *Eggerellina brevis* records
 #'
 #' @description
-#' Eggerellina brevis (species 43) sighting record from Weiss & Marshall
+#' *Eggerellina brevis* (species 43) sighting record from Weiss & Marshall
 #' (2014). Format: `cbin`.
 #'
 #' @format a `numeric` vector with 36 values.

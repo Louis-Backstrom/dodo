@@ -30,9 +30,9 @@ Factor as presented in the original paper, to allow for comparability with
 other models in this package (values > 1 imply extinction).
 }
 \examples{
+\dontrun{
 # Run the bitterweed analysis from Rout et al. 2009
 RO09B1(bitterweed)
-\dontrun{
 # Run an example analysis using the Slender-billed Curlew data
 RO09B1(curlew$cbin)
 }

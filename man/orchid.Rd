@@ -11,7 +11,7 @@ A \code{numeric} vector with 11 values.
 orchid
 }
 \description{
-Mauritian orchid (\emph{Angraecum aff. rutenbergianum}) sighting record from
+Mauritian orchid (\emph{Angraecum} aff. \emph{rutenbergianum}) sighting record from
 Solow & Roberts (2003). The temporal range (\code{init.time} to \code{test.time}) of
 these data is 1933 to 1996. Format: \code{ccon}.
 }
