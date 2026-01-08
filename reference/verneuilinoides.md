@@ -1,7 +1,7 @@
-# Verneuilinoides sp. A records
+# *Verneuilinoides* sp. A records
 
-Verneuilinoides sp. A (species 25) sighting record from Weiss & Marshall
-(2014). Format: `cbin`.
+*Verneuilinoides* sp. A (species 25) sighting record from Weiss &
+Marshall (2014). Format: `cbin`.
 
 ## Usage
 

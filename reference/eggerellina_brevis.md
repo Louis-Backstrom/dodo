@@ -1,6 +1,6 @@
-# Eggerellina brevis records
+# *Eggerellina brevis* records
 
-Eggerellina brevis (species 43) sighting record from Weiss & Marshall
+*Eggerellina brevis* (species 43) sighting record from Weiss & Marshall
 (2014). Format: `cbin`.
 
 ## Usage

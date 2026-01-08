@@ -1,8 +1,8 @@
 # Mauritian orchid sightings
 
-Mauritian orchid (*Angraecum aff. rutenbergianum*) sighting record from
-Solow & Roberts (2003). The temporal range (`init.time` to `test.time`)
-of these data is 1933 to 1996. Format: `ccon`.
+Mauritian orchid (*Angraecum* aff. *rutenbergianum*) sighting record
+from Solow & Roberts (2003). The temporal range (`init.time` to
+`test.time`) of these data is 1933 to 1996. Format: `ccon`.
 
 ## Usage
 

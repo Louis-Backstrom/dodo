@@ -178,7 +178,9 @@
   Dodo sightings
 
 - [`eggerellina_brevis`](https://louis-backstrom.github.io/dodo/reference/eggerellina_brevis.md)
-  : Eggerellina brevis records
+  :
+
+  *Eggerellina brevis* records
 
 - [`ferret`](https://louis-backstrom.github.io/dodo/reference/ferret.md)
   : Black-footed Ferret sightings
@@ -228,7 +230,9 @@
   : Example sightings from Thompson et al.
 
 - [`verneuilinoides`](https://louis-backstrom.github.io/dodo/reference/verneuilinoides.md)
-  : Verneuilinoides sp. A records
+  :
+
+  *Verneuilinoides* sp. A records
 
 - [`weissmarshall_surveys`](https://louis-backstrom.github.io/dodo/reference/weissmarshall_surveys.md)
   : Weiss & Marshall surveys

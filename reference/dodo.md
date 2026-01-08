@@ -150,6 +150,12 @@ dodo implements a selection of published extinction models.
 - [`convert_dodo()`](https://louis-backstrom.github.io/dodo/reference/convert_dodo.md)
   Convert basic sightings spreadsheet into all `dodo` formats.
 
+## See also
+
+Useful links:
+
+- <https://louis-backstrom.github.io/dodo/>
+
 ## Author
 
 **Maintainer**: Louis Backstrom <ljb38@st-andrews.ac.uk>
