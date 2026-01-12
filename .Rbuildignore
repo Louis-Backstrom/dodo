@@ -3,7 +3,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-^trash/
+^trash$
 ^\.Rhistory$
 ^\.RData$
 ^\.Ruserdata$
@@ -14,7 +14,6 @@
 ^.*\.pdf$
 ^.*\.docx$
 ^.*\.xlsx$
-^trash/
 ^\.github$
 ^_pkgdown\.yml$
 ^pkgdown$

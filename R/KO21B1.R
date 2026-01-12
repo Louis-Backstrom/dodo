@@ -117,14 +117,15 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
 
                         ")
 
-  writeLines(modelpois, con = "model_pois.txt")
+  model_file <- tempfile(fileext = ".txt")
+  writeLines(modelpois, con = model_file)
 
   # Sink (to suppress hyper-verbose console outputs)
   sink(file = tempfile())
 
   # Run the chains
   jagsmodelpois <- rjags::jags.model(
-    file = "model_pois.txt", data = dataList,
+    file = model_file, data = dataList,
     n.chains = 4, n.adapt = 10000
   )
   update(jagsmodelpois, n.iter = 10000)
@@ -137,7 +138,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
 
   sink()
 
-  unlink("model_pois.txt")
+  unlink(model_file)
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(codaSamplespois))

@@ -164,17 +164,19 @@ posterior_cer_mcmc <- function(y_c) {
     "
   )
 
-  writeLines(modelStringm1, con = "model_m1.txt")
+  model_file <- tempfile(fileext = ".txt")
+  writeLines(modelStringm1, con = model_file)
 
   jagsModelm1 <- rjags::jags.model(
-    file = "model_m1.txt", data = dataList,
+    file = model_file, data = dataList,
     n.chains = 4, n.adapt = 60000
   )
   update(jagsModelm1, n.iter = 60000)
   codaSamplesm1 <- rjags::coda.samples(jagsModelm1, variable.names = c(
     "tau", "p", "theta"
   ), n.iter = 130000, thin = 13)
-  unlink("model_m1.txt")
+
+  unlink(model_file)
 
   return(coda::mcmc(codaSamplesm1))
 }
