@@ -24,6 +24,17 @@ and palaeontology literature. It is still in active development.
     ## fit the monk seal model from Solow 1993a
     SO93F1(monk_seal, alpha = 0.05, init.time = 1915, test.time = 1992)
 
+## Dependencies
+
+Certain functions in this package require
+[JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`) or
+[BUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs-project) (via
+`R2OpenBUGS`). These should be installed prior to running any of the
+functions which incorporate Gibbs sampling.
+
 ## Contact
 
 Louis Backstrom (<ljb38@st-andrews.ac.uk>)
+
+Package website (work in progress):
+[louis-backstrom.github.io/dodo/](https://louis-backstrom.github.io/dodo/louis-backstrom.github.io/dodo/)
