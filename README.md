@@ -4,7 +4,7 @@ This package includes many extinction models published in the ecology and palaeo
 
 ## Installing
 
-```
+```         
 ## install and load devtools (if needed)
 install.packages("devtools") # if not already installed
 library(devtools)
@@ -16,7 +16,7 @@ library(dodo)
 
 ## Getting Started
 
-```
+```         
 ## access list of package functions
 ?dodo
 
@@ -27,5 +27,12 @@ monk_seal
 SO93F1(monk_seal, alpha = 0.05, init.time = 1915, test.time = 1992)
 ```
 
+## Dependencies
+
+Certain functions in this package require [JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`) or [BUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs-project) (via `R2OpenBUGS`). These should be installed prior to running any of the functions which incorporate Gibbs sampling.
+
 ## Contact
-Louis Backstrom (ljb38@st-andrews.ac.uk)
+
+Louis Backstrom ([ljb38\@st-andrews.ac.uk](mailto:ljb38@st-andrews.ac.uk){.email})
+
+Package website (work in progress): [louis-backstrom.github.io/dodo/](louis-backstrom.github.io/dodo/)
