@@ -81,6 +81,11 @@ convert_dodo <- function(x, init.time,
                          test.time = as.numeric(format(Sys.Date(), "%Y")),
                          threshold = 0.9, unique = TRUE, aggregate = "pci_prod",
                          time, certainty, certainty_lower, certainty_upper) {
+  # Check if x is a data.frame
+  if (class(x) != "data.frame") {
+    stop("Sightings spreadsheet must be a data.frame object!")
+  }
+
   # Remove any sightings before init.time or after test.time
   x <- x[x[[time]] >= init.time, ]
   x <- x[x[[time]] <= test.time, ]
