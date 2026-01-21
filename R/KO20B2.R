@@ -57,8 +57,9 @@ KO20B2 <- function(records, alpha = 0.05, init.time,
 
   # Run MCMC function from Kodikara et al. 2020
   posterior <- coda::mcmc.list(coda::mcmc.list(
-    posterior_cer_uncer_mcmc(records[, 1], records[, 2])
-  ))
+    posterior_cer_uncer_mcmc(records[, 1], records[, 2], n.chains = n.chains,
+                             n.iter = n.iter, n.burnin = n.burnin,
+                             n.thin = n.thin)))
 
   on.exit(sink(), add = TRUE)
 
@@ -112,7 +113,8 @@ utils::globalVariables("certain")
 #'
 #' @noRd
 
-posterior_cer_uncer_mcmc <- function(y_c, y_u) {
+posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
+                                     n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("Package 'rjags' is required but could not be found!")
