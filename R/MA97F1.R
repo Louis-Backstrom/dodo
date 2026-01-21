@@ -61,6 +61,9 @@ MA97F1 <- function(records, effort, alpha = 0.05, init.time) {
     (cumsum(effort)[upper] - cumsum(effort)[lower])
   conf.int.upper <- init.time + lower + fraction - 1
 
+  # If upper CI bound is NA (i.e. beyond end of observation period), return Inf
+  conf.int.upper <- ifelse(is.na(conf.int.upper), Inf, conf.int.upper)
+
   # Output
   output <- list(
     records = records,
