@@ -12,7 +12,7 @@
 #' \eqn{\pi = 0.5}).
 #'
 #' @returns a `list` object with the original parameters and the rate of
-#' decline (\eqn{a}) and Bayes factor included as elements.
+#' decline (\eqn{a}), the Bayes factor, and p(extant) included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed

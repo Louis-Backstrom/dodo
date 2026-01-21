@@ -15,7 +15,7 @@ RO09B1(records, pi = 0.5)
 }
 \value{
 a \code{list} object with the original parameters and the rate of
-decline (\eqn{a}) and Bayes factor included as elements.
+decline (\eqn{a}), the Bayes factor, and p(extant) included as elements.
 }
 \description{
 Equation 6 and others from Rout et al. 2009. Estimates a pre-extinction rate
