@@ -4,7 +4,7 @@
 \alias{RO09B1}
 \title{Rout et al.'s (2009) "Declining" model}
 \usage{
-RO09B1(records, pi = 0.5)
+RO09B1(records, pi = 0.5, n.chains = 4, n.iter = 110000, n.burnin = 10000)
 }
 \arguments{
 \item{records}{sighting records in \code{cbin} format (see
@@ -12,6 +12,13 @@ RO09B1(records, pi = 0.5)
 
 \item{pi}{prior probability that \eqn{H_0} is true (defaults to
 \eqn{\pi = 0.5}).}
+
+\item{n.chains}{number of MCMC chains to run. Defaults to 4.}
+
+\item{n.iter}{number of iterations in each chain. Defaults to 110,000.}
+
+\item{n.burnin}{number of iterations to discard as burn-in. Defaults to
+10,000.}
 }
 \value{
 a \code{list} object with the original parameters and the rate of

@@ -10,6 +10,10 @@
 #' \code{\link{convert_dodo}} for details).
 #' @param pi prior probability that \eqn{H_0} is true (defaults to
 #' \eqn{\pi = 0.5}).
+#' @param n.chains number of MCMC chains to run. Defaults to 4.
+#' @param n.iter number of iterations in each chain. Defaults to 110,000.
+#' @param n.burnin number of iterations to discard as burn-in. Defaults to
+#' 10,000.
 #'
 #' @returns a `list` object with the original parameters and the rate of
 #' decline (\eqn{a}), the Bayes factor, and p(extant) included as elements.
@@ -42,7 +46,8 @@
 #'
 #' @export
 
-RO09B1 <- function(records, pi = 0.5) {
+RO09B1 <- function(records, pi = 0.5, n.chains = 4, n.iter = 11e4,
+                   n.burnin = 1e4) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("Package 'rjags' is required but could not be found!")
@@ -67,30 +72,28 @@ RO09B1 <- function(records, pi = 0.5) {
     }
     "
 
-  inits <- list(
-    list(a = 0.5, m = 0.5, prec = 100),
-    list(a = 0.5, m = 0.5, prec = 100),
-    list(a = 0.5, m = 0.5, prec = 100),
-    list(a = 0.5, m = 0.5, prec = 100)
-  )
+  inits <- rep(list(list(a = 0.5, m = 0.5, prec = 100)), n.chains)
 
   # Run the JAGS model
   model <- rjags::jags.model(textConnection(model_string),
     data = data,
     inits = inits,
-    n.chains = 4,
-    n.adapt = 1000,
+    n.chains = n.chains,
+    n.adapt = n.burnin,
     quiet = TRUE
   )
 
-  sink("NUL")
-  update(model, 1000)
+  # Sink (to suppress hyper-verbose console outputs)
+  sink(file = tempfile())
+
+  update(model, n.burnin)
 
   samples <- rjags::coda.samples(model,
     variable.names = c("a", "m", "prec"),
-    n.iter = 5000
+    n.iter = n.iter
   )
-  sink()
+
+  on.exit(sink(), add = TRUE)
 
   a_mean <- summary(samples)$statistics["a", "Mean"]
   S <- length(records)
