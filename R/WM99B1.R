@@ -162,6 +162,7 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
     alpha = alpha,
     test.time = test.time,
     priors = priors,
+    increment = increment,
     p.extant = 1 - p.extinct,
     estimate = mean + t0,
     cred.int = c(tm + t0, qupper + t0)

@@ -88,7 +88,7 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
   p.value <- exp(-k * ((test.time - sights[1]) / (test.time - sights[k]))^
     (1 / v))
 
-  if (conf.int.lower > conf.int.upper) {
+  if (conf.int.lower >= conf.int.upper) {
     warning("Confidence Interval estimation produced an invalid interval!")
   }
 

@@ -28,7 +28,7 @@ and upper bounds of a uniform prior for the rate \eqn{p_i^\alpha} or
 \code{c(1)} (i.e. only the first sighting class is certain).}
 
 \item{PXT}{estimate of \eqn{P(X_T)}. Defaults to \code{NULL}, in which case
-\eqn{P(X_T) = TN / T}.}
+\eqn{P(X_T) = T_N / T}.}
 
 \item{PE}{estimate of \eqn{P_E}. Defaults to \code{NULL}, in which case
 \eqn{P_E = 1 / T}.}

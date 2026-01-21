@@ -15,7 +15,7 @@
 #' @param certain which sighting types are considered certain. Defaults to
 #' `c(1)` (i.e. only the first sighting class is certain).
 #' @param PXT estimate of \eqn{P(X_T)}. Defaults to `NULL`, in which case
-#' \eqn{P(X_T) = TN / T}.
+#' \eqn{P(X_T) = T_N / T}.
 #' @param PE estimate of \eqn{P_E}. Defaults to `NULL`, in which case
 #' \eqn{P_E = 1 / T}.
 #' @param n.iter number of iterations to calculate averages over. Defaults to
@@ -101,7 +101,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   values <- c()
 
   if (pb == TRUE) {
-    pb <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
+    pbar <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
   }
 
   for (run in 1:n.iter) {
@@ -153,12 +153,12 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     values[run] <- as.numeric(numerator / denominator)
 
     if (pb == TRUE) {
-      setTxtProgressBar(pb, run)
+      setTxtProgressBar(pbar, run)
     }
   }
 
   if (pb == TRUE) {
-    close(pb)
+    close(pbar)
   }
 
   # Calculate quenched average
