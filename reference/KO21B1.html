@@ -11,7 +11,7 @@ the species is extant at the test time, and a point estimate and one-sided
 
     <a class="navbar-brand me-2" href="../index.html">dodo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,7 +47,11 @@ the species is extant at the test time, and a point estimate and one-sided
 <span>  <span class="va">records</span>,</span>
 <span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  <span class="va">init.time</span>,</span>
-<span>  test.time <span class="op">=</span> <span class="va">init.time</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">records</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span></span>
+<span>  test.time <span class="op">=</span> <span class="va">init.time</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">records</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span>,</span>
+<span>  n.chains <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  n.iter <span class="op">=</span> <span class="fl">110000</span>,</span>
+<span>  n.burnin <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>  n.thin <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -72,6 +76,23 @@ the \(1 - \alpha\) credible interval.</p></dd>
 <dt id="arg-test-time">test.time<a class="anchor" aria-label="anchor" href="#arg-test-time"></a></dt>
 <dd><p>time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.</p></dd>
+
+
+<dt id="arg-n-chains">n.chains<a class="anchor" aria-label="anchor" href="#arg-n-chains"></a></dt>
+<dd><p>number of MCMC chains to run. Defaults to 4.</p></dd>
+
+
+<dt id="arg-n-iter">n.iter<a class="anchor" aria-label="anchor" href="#arg-n-iter"></a></dt>
+<dd><p>number of iterations in each chain. Defaults to 110,000.</p></dd>
+
+
+<dt id="arg-n-burnin">n.burnin<a class="anchor" aria-label="anchor" href="#arg-n-burnin"></a></dt>
+<dd><p>number of iterations to discard as burn-in. Defaults to
+10,000.</p></dd>
+
+
+<dt id="arg-n-thin">n.thin<a class="anchor" aria-label="anchor" href="#arg-n-thin"></a></dt>
+<dd><p>thinning rate. Defaults to 10.</p></dd>
 
 </dl></div>
     <div class="section level2">
