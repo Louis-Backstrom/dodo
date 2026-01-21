@@ -12,6 +12,11 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
+#' @param n.chains number of MCMC chains to run. Defaults to 4.
+#' @param n.iter number of iterations in each chain. Defaults to 110,000.
+#' @param n.burnin number of iterations to discard as burn-in. Defaults to
+#' 10,000.
+#' @param n.thin thinning rate. Defaults to 10.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -38,7 +43,8 @@
 #' @export
 
 KO21B1 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + nrow(records) - 1) {
+                   test.time = init.time + nrow(records) - 1, n.chains = 4,
+                   n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("Package 'rjags' is required but could not be found!")
@@ -126,17 +132,17 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
   # Run the chains
   jagsmodelpois <- rjags::jags.model(
     file = model_file, data = dataList,
-    n.chains = 4, n.adapt = 10000
+    n.chains = n.chains, n.adapt = n.burnin
   )
-  update(jagsmodelpois, n.iter = 10000)
+  update(jagsmodelpois, n.iter = n.burnin)
   codaSamplespois <- rjags::coda.samples(jagsmodelpois,
     variable.names = c(
       "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"
     ),
-    n.iter = 130000, thin = 13
+    n.iter = n.iter, thin = n.thin
   )
 
-  sink()
+  on.exit(sink(), add = TRUE)
 
   unlink(model_file)
 

@@ -12,6 +12,11 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
+#' @param n.chains number of MCMC chains to run. Defaults to 4.
+#' @param n.iter number of iterations in each chain. Defaults to 110,000.
+#' @param n.burnin number of iterations to discard as burn-in. Defaults to
+#' 10,000.
+#' @param n.thin thinning rate. Defaults to 10.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
@@ -41,7 +46,8 @@
 #' @export
 
 KO20B1 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + length(records) - 1) {
+                   test.time = init.time + length(records) - 1, n.chains = 4,
+                   n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("Package 'rjags' is required but could not be found!")
@@ -53,7 +59,7 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
   # Run MCMC function from Kodikara et al. 2020
   posterior <- coda::mcmc.list(coda::mcmc.list(posterior_cer_mcmc(records)))
 
-  sink()
+  on.exit(sink(), add = TRUE)
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(posterior))
@@ -169,12 +175,12 @@ posterior_cer_mcmc <- function(y_c) {
 
   jagsModelm1 <- rjags::jags.model(
     file = model_file, data = dataList,
-    n.chains = 4, n.adapt = 60000
+    n.chains = n.chains, n.adapt = n.burnin
   )
-  update(jagsModelm1, n.iter = 60000)
+  update(jagsModelm1, n.iter = n.burnin)
   codaSamplesm1 <- rjags::coda.samples(jagsModelm1, variable.names = c(
     "tau", "p", "theta"
-  ), n.iter = 130000, thin = 13)
+  ), n.iter = n.iter, thin = n.thin)
 
   unlink(model_file)
 

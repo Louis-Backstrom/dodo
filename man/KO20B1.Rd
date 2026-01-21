@@ -8,7 +8,11 @@ KO20B1(
   records,
   alpha = 0.05,
   init.time,
-  test.time = init.time + length(records) - 1
+  test.time = init.time + length(records) - 1,
+  n.chains = 4,
+  n.iter = 110000,
+  n.burnin = 10000,
+  n.thin = 10
 )
 }
 \arguments{
@@ -22,6 +26,15 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
+
+\item{n.chains}{number of MCMC chains to run. Defaults to 4.}
+
+\item{n.iter}{number of iterations in each chain. Defaults to 110,000.}
+
+\item{n.burnin}{number of iterations to discard as burn-in. Defaults to
+10,000.}
+
+\item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),

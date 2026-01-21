@@ -26,9 +26,10 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
-\item{n.iter}{number of iterations in each chain. Defaults to 11000.}
+\item{n.iter}{number of iterations in each chain. Defaults to 15,000.}
 
-\item{n.burnin}{number of iterations to discard as burn-in. Defaults to 1000.}
+\item{n.burnin}{number of iterations to discard as burn-in. Defaults to
+5,000.}
 
 \item{n.thin}{thinning rate. Defaults to 10.}
 
