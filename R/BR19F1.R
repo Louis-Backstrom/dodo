@@ -62,7 +62,7 @@ BR19F1 <- function(records, alpha = 0.05, init.time = min(records$time),
   samples <- replicate(
     n = n.iter,
     expr = records[
-      runif(nrow(records)) < records$certainty,
+      runif(nrow(records)) <= records$certainty,
       "time"
     ]
   )
