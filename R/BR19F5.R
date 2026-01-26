@@ -59,7 +59,8 @@ BR19F5 <- function(records, alpha = 0.05, init.time = min(records$time),
     expr = records[
       runif(nrow(records)) <= records$certainty,
       "time"
-    ]
+    ],
+    simplify = FALSE
   )
 
   # Run LAD estimation on samples

@@ -64,7 +64,8 @@ BR19F3 <- function(records, alpha = 0.05, init.time = min(records$time),
     expr = records[
       runif(nrow(records)) <= records$certainty,
       "time"
-    ]
+    ],
+    simplify = FALSE
   )
 
   # Run RS03F1 on samples
