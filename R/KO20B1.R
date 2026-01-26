@@ -58,8 +58,11 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
 
   # Run MCMC function from Kodikara et al. 2020
   posterior <- coda::mcmc.list(coda::mcmc.list(
-    posterior_cer_mcmc(records, n.chains = n.chains, n.iter = n.iter,
-                       n.burnin = n.burnin, n.thin = n.thin)))
+    posterior_cer_mcmc(records,
+      n.chains = n.chains, n.iter = n.iter,
+      n.burnin = n.burnin, n.thin = n.thin
+    )
+  ))
 
   on.exit(sink(), add = TRUE)
 

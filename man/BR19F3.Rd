@@ -7,8 +7,8 @@
 BR19F3(
   records,
   alpha = 0.05,
+  init.time = min(records$time),
   test.time = as.numeric(format(Sys.Date(), "\%Y")),
-  cores = NULL,
   n.iter = 10000
 )
 }
@@ -19,11 +19,11 @@ BR19F3(
 \item{alpha}{desired significance level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} confidence interval.}
 
+\item{init.time}{start of the observation period. Defaults to the time of
+the first sighting, in which case this sighting is removed from the record.}
+
 \item{test.time}{end of the observation period, typically the present day
 (defaults to the current year).}
-
-\item{cores}{number of cores to use (defaults to \code{NULL}, in which case
-\code{parallel::detectCores()} is run).}
 
 \item{n.iter}{number of iterations to run (defaults to 10,000).}
 }
@@ -43,17 +43,10 @@ Sampling effort is assumed to be constant.
 }
 \examples{
 # Run the "Extreme" Ivory-billed Woodpecker analysis from Brook et al. 2019
-BR19F3(woodpecker$ucon,
-  test.time = 2010, alpha = 0.1, cores = 2,
-  n.iter = 1e3
-)
-# NB: alpha = 0.1 as this package presents two-sided confidence intervals
-# vs. one-sided confidence intervals in the original paper; the upper bound
-# of the one-sided alpha = 0.05 CI in Brook et al. is equivalent to the
-# upper bound of the two-sided alpha = 0.1 CI in this example.
+BR19F3(woodpecker$ucon, alpha = 0.1, test.time = 2010, n.iter = 1e3)
 \dontrun{
 # Run an example analysis using the Slender-billed Curlew data
-BR19F3(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)
+BR19F3(curlew$ucon, test.time = 2022, n.iter = 1e3)
 }
 
 }

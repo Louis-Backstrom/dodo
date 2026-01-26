@@ -10,10 +10,10 @@
 #' \code{\link{convert_dodo}} for details).
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
+#' @param init.time start of the observation period. Defaults to the time of
+#' the first sighting, in which case this sighting is removed from the record.
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
-#' @param cores number of cores to use (defaults to `NULL`, in which case
-#' `parallel::detectCores()` is run).
 #' @param n.iter number of iterations to run (defaults to 10,000).
 #'
 #' @returns a `list` object with the original parameters and the probability,
@@ -39,51 +39,51 @@
 #'
 #' @examples
 #' # Run the "Extreme" Ivory-billed Woodpecker analysis from Brook et al. 2019
-#' BR19F1(woodpecker$ucon,
-#'   test.time = 2010, alpha = 0.1, cores = 2,
-#'   n.iter = 1e3
-#' )
-#' # NB: alpha = 0.1 as this package presents two-sided confidence intervals
-#' # vs. one-sided confidence intervals in the original paper; the upper bound
-#' # of the one-sided alpha = 0.05 CI in Brook et al. is equivalent to the
-#' # upper bound of the two-sided alpha = 0.1 CI in this example.
+#' BR19F1(woodpecker$ucon, alpha = 0.1, test.time = 2010, n.iter = 1e3)
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-#' BR19F1(curlew$ucon, test.time = 2022, cores = 2, n.iter = 1e3)
+#' BR19F1(curlew$ucon, test.time = 2022, n.iter = 1e3)
 #' }
 #'
 #' @export
 
-BR19F1 <- function(records, alpha = 0.05,
+BR19F1 <- function(records, alpha = 0.05, init.time = min(records$time),
                    test.time = as.numeric(format(Sys.Date(), "%Y")),
-                   cores = NULL, n.iter = 1e4) {
+                   n.iter = 1e4) {
   # Sort records
   records <- sort_by(records, ~time)
 
-  # Rename columns to fit model function
-  names(records) <- c("year", "prob")
+  # If using first record as init.time, remove this from the record sequence
+  if (init.time == min(records$time)) {
+    records <- records[-1, ]
+  }
 
-  # Fit the model function using the adapted code from Brook et al. 2019
-  model_output <- bbj.2018(
-    dd = records,
-    iter = n.iter,
-    ey = test.time,
-    m = "so93",
-    plot = FALSE,
-    alpha = alpha,
-    cores = cores
+  # Sample using sighting certainty as inclusion probability
+  samples <- replicate(
+    n = n.iter,
+    expr = records[
+      runif(nrow(records)) < records$certainty,
+      "time"
+    ]
   )
 
-  # Rename columns back to original
-  names(records) <- c("time", "certainty")
+  # Run SO93F1 on samples
+  estimates <- sapply(samples, function(x) {
+    SO93F1(
+      records = x, alpha = alpha, init.time = init.time,
+      test.time = test.time
+    )$estimate
+  })
 
   output <- list(
     records = records,
     alpha = alpha,
+    init.time = init.time,
     test.time = test.time,
-    p.extant = as.numeric(model_output$end_year),
-    estimate = model_output$MTE,
-    conf.int = c(model_output$LCI, model_output$UCI)
+    n.iter = n.iter,
+    p.extant = mean(estimates > test.time),
+    estimate = median(estimates),
+    conf.int = as.numeric(quantile(estimates, c(0, 1 - alpha)))
   )
 
   return(output)

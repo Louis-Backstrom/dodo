@@ -151,16 +151,16 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
           SS[[paste0("qS", i, "U")]]
         )
         SS[[paste0("pS", i)]] <- ifelse(is.na(SS[[paste0("S", i)]]), 1,
-                                        ifelse(SS[[paste0("S", i)]] == 0,
-                                               1 - SS[[paste0("pS", i, "k")]],
-                                               SS[[paste0("pS", i, "k")]]
-                                        )
+          ifelse(SS[[paste0("S", i)]] == 0,
+            1 - SS[[paste0("pS", i, "k")]],
+            SS[[paste0("pS", i, "k")]]
+          )
         )
         SS[[paste0("qS", i)]] <- ifelse(is.na(SS[[paste0("S", i)]]), 1,
-                                        ifelse(SS[[paste0("S", i)]] == 0,
-                                               1 - SS[[paste0("qS", i, "k")]],
-                                               SS[[paste0("qS", i, "k")]]
-                                        )
+          ifelse(SS[[paste0("S", i)]] == 0,
+            1 - SS[[paste0("qS", i, "k")]],
+            SS[[paste0("qS", i, "k")]]
+          )
         )
       }
     }
@@ -177,12 +177,12 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
         )
         if (US[[paste0("SumU", h)]] > 0) {
           US[[paste0("pU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-                                          1 - US[[paste0("pU", h, "k")]],
-                                          US[[paste0("pU", h, "k")]]
+            1 - US[[paste0("pU", h, "k")]],
+            US[[paste0("pU", h, "k")]]
           )
           US[[paste0("qU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-                                          1 - US[[paste0("qU", h, "k")]],
-                                          US[[paste0("qU", h, "k")]]
+            1 - US[[paste0("qU", h, "k")]],
+            US[[paste0("qU", h, "k")]]
           )
         } else {
           US[[paste0("pU", h)]] <- rep(1, bigT)

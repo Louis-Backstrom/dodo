@@ -175,6 +175,7 @@ thompson_table1 <- data.frame(
 usethis::use_data(thompson_table1, overwrite = TRUE)
 
 curlew_raw <- readxl::read_xlsx("data-raw/ibi13368-sup-0001-tables1.xlsx")
+curlew_raw <- as.data.frame(curlew_raw)
 usethis::use_data(curlew_raw, overwrite = TRUE)
 
 curlew <- convert_dodo(
