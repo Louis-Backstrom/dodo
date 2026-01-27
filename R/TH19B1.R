@@ -49,6 +49,21 @@ TH19B1 <- function(records, surveys, init.time, test.time, pi = 0.5) {
   data$CBF <- NA
   data$PXt <- NA
 
+  # If test.time is before init.time, return p.extant = 1
+  if (test.time < init.time) {
+    output <- list(
+      records = records,
+      surveys = surveys,
+      init.time = init.time,
+      test.time = test.time,
+      pi = pi,
+      Bayes.factor = 0,
+      p.extant = 1
+    )
+
+    return(output)
+  }
+
   # Filter to init.time to test.time
   data <- data[data$time >= init.time, ]
   data <- data[data$time <= test.time, ]
