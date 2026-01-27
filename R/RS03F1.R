@@ -89,6 +89,10 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
     (1 / v))
 
   if (conf.int.lower >= conf.int.upper) {
+    if (conf.int.lower == conf.int.upper & is.na(estimate)) {
+      estimate <- conf.int.lower
+      warning("Point Estimate was NA and CI width is 0, replacing with CI!")
+    }
     warning("Confidence Interval estimation produced an invalid interval!")
   }
 
