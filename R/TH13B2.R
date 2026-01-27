@@ -98,10 +98,16 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   }
 
   # Run quenched loop
-  values <- c()
+  values <- numeric(n.iter)
 
   if (pb == TRUE) {
     pbar <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
+  }
+
+  # log-sum-exp function
+  logsumexp <- function(x) {
+    m <- max(x)
+    m + log(sum(exp(x - m)))
   }
 
   for (run in 1:n.iter) {
@@ -135,22 +141,27 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
 
     q_vector <- apply(q_matrix, 1, prod)
 
-    # Turn into mpfr objects
-    p_vector <- Rmpfr::mpfr(p_vector, precBits = 64)
-    q_vector <- Rmpfr::mpfr(q_vector, precBits = 64)
+    # Convert to log-space
+    log_p_vector <- log(p_vector)
+    log_q_vector <- log(q_vector)
+    log_PXT <- log(PXT)
+    log_PE <- log(PE)
 
-    # Calculate components of Equation 9
-    numerator <- prod(p_vector) * PXT
+    # Calculate numerator in log-space
+    log_numerator <- sum(log_p_vector) + log_PXT
 
-    sums <- list()
-    for (j in (TN + 1):bigT) {
-      sums[[j]] <- prod(p_vector[1:(j - 1)]) * prod(q_vector[j:bigT]) * PE
+    # Calculate denominator in log-space
+    if (TN + 1 > bigT) {
+      log_denominator <- log_numerator # means p.extant = 1
+    } else {
+      log_terms <- sapply((TN + 1):bigT, function(j) {
+        sum(log_p_vector[1:(j - 1)]) + sum(log_q_vector[j:bigT]) + log_PE
+      })
+      log_denominator <- logsumexp(c(log_numerator, log_terms))
     }
-    sums <- Filter(Negate(is.null), sums)
-    denominator <- numerator + sum(do.call(c, sums))
 
     # Calculate P_Q(X_T|s) from Equation 9
-    values[run] <- as.numeric(numerator / denominator)
+    values[run] <- exp(log_numerator - log_denominator)
 
     if (pb == TRUE) {
       setTxtProgressBar(pbar, run)
