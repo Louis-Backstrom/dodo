@@ -29,7 +29,7 @@ SO93F1(monk_seal, alpha = 0.05, init.time = 1915, test.time = 1992)
 
 ## Dependencies
 
-Certain functions in this package require [JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`) or [BUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs-project) (via `R2OpenBUGS`). These should be installed prior to running any of the functions which incorporate Gibbs sampling.
+Certain functions in this package require [JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`). This should be installed prior to running any of the functions which incorporate Gibbs sampling.
 
 ## Contact
 

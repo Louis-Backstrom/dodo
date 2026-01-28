@@ -11,8 +11,7 @@ LE14B2(
   n.chains = 4,
   n.iter = 15000,
   n.burnin = 5000,
-  n.thin = 10,
-  debug = FALSE
+  n.thin = 10
 )
 }
 \arguments{
@@ -32,9 +31,6 @@ the \eqn{1 - \alpha} credible interval.}
 5,000.}
 
 \item{n.thin}{thinning rate. Defaults to 10.}
-
-\item{debug}{whether to open the OpenBUGS interface during execution.
-Defaults to \code{FALSE}.}
 }
 \value{
 a \code{list} object with the original parameters and the p(extant),
@@ -49,7 +45,7 @@ credible interval on the time of extinction, conditional on extinction
 occurring before the end of the observation period.
 }
 \note{
-Sampling effort is assumed to be constant.
+Sampling effort is assumed to be constant. Uses JAGS instead of BUGS.
 }
 \examples{
 \dontrun{

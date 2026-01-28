@@ -17,15 +17,13 @@
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 5,000.
 #' @param n.thin thinning rate. Defaults to 10.
-#' @param debug whether to open the OpenBUGS interface during execution.
-#' Defaults to `FALSE`.
 #'
 #' @returns a `list` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
 #' interval is a two-element numeric vector called `cred.int`.
 #'
 #' @note
-#' Sampling effort is assumed to be constant.
+#' Sampling effort is assumed to be constant. Uses JAGS instead of BUGS.
 #'
 #' @references
 #' **Key Reference**
@@ -46,17 +44,20 @@
 #' @export
 
 LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
-                   n.iter = 15000, n.burnin = 5000, n.thin = 10,
-                   debug = FALSE) {
-  # Check if R2OpenBUGS is installed
-  if (!requireNamespace("R2OpenBUGS", quietly = TRUE)) {
-    stop("Package 'R2OpenBUGS' is required but could not be found!")
+                   n.iter = 15000, n.burnin = 5000, n.thin = 10) {
+
+  # Check if rjags is installed
+  if (!requireNamespace("rjags", quietly = TRUE)) {
+    stop("Package 'rjags' is required but could not be found!")
+  }
+  if (!requireNamespace("coda", quietly = TRUE)) {
+    stop("Package 'coda' is required but could not be found!")
   }
 
   # Convert records into model format
   data <- list(y = records$certain, z = records$uncertain, T = nrow(records))
 
-  # Define model
+  # JAGS model
   model <- "
   model {
     te ~ dunif(0, T)
@@ -67,42 +68,45 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
     Extant ~ dbern(0.5)
 
     for (i in 1:T) {
-      mm1[i] <- Extant * m[1] + (1-Extant) * step(te - i) * m[1] + f[1]
-      p1[i] <- 1 - exp(-mm1[i])
+      mm1[i] <- Extant * m[1] + (1 - Extant) * step(te - i) * m[1] + f[1]
+      p1[i]  <- max(1.0E-6, min(1 - 1.0E-6, 1 - exp(-mm1[i])))
       y[i] ~ dbern(p1[i])
 
-      mm2[i] <- Extant * m[2] + (1-Extant) * step(te - i) * m[2] + f[2]
-      p2[i] <- 1 - exp(-mm2[i])
+      mm2[i] <- Extant * m[2] + (1 - Extant) * step(te - i) * m[2] + f[2]
+      p2[i]  <- max(1.0E-6, min(1 - 1.0E-6, 1 - exp(-mm2[i])))
       z[i] ~ dbern(p2[i])
     }
   }
   "
 
-  model_file <- tempfile(fileext = ".txt")
-  writeLines(model, model_file)
+  # Initialize and compile model
+  jags_model <- rjags::jags.model(
+    textConnection(model),
+    data = data,
+    n.chains = n.chains,
+    quiet = TRUE
+  )
+
+  # Burn-in
+  update(jags_model, n.iter = n.burnin)
 
   # Specify parameters
   parameters <- c("te", "m", "f", "Extant")
 
-  # Run the chains
-  bugs_model <- R2OpenBUGS::bugs(
-    data = data,
-    inits = NULL,
-    parameters.to.save = parameters,
-    model.file = model_file,
-    n.chains = n.chains,
-    n.iter = n.iter,
-    n.burnin = n.burnin,
-    n.thin = n.thin,
-    debug = debug
+  # Sample from posterior
+  samples <- rjags::coda.samples(
+    model = jags_model,
+    variable.names = parameters,
+    n.iter = n.iter - n.burnin,
+    thin = n.thin
   )
 
-  unlink(model_file)
+  # Convert to matrix
+  sims <- as.matrix(samples)
 
   # Extract posteriors (only keep te estimates for samples where Extant == 0)
-  p.extant <- mean(bugs_model$sims.list$Extant)
-  te <- bugs_model$sims.list$te[bugs_model$sims.list$Extant == 0]
-
+  p.extant <- mean(sims[, "Extant"])
+  te <- sims[sims[, "Extant"] == 0, "te"]
   estimate <- mean(te) + init.time - 1
   cred.int <- as.numeric(quantile(te, c(0, 0.95)) + init.time - 1)
 
