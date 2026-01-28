@@ -15,7 +15,7 @@ occurring before the end of the observation period."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">dodo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,8 +56,7 @@ occurring before the end of the observation period.</p>
 <span>  n.chains <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  n.iter <span class="op">=</span> <span class="fl">15000</span>,</span>
 <span>  n.burnin <span class="op">=</span> <span class="fl">5000</span>,</span>
-<span>  n.thin <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  debug <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  n.thin <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,11 +94,6 @@ the \(1 - \alpha\) credible interval.</p></dd>
 <dt id="arg-n-thin">n.thin<a class="anchor" aria-label="anchor" href="#arg-n-thin"></a></dt>
 <dd><p>thinning rate. Defaults to 10.</p></dd>
 
-
-<dt id="arg-debug">debug<a class="anchor" aria-label="anchor" href="#arg-debug"></a></dt>
-<dd><p>whether to open the OpenBUGS interface during execution.
-Defaults to <code>FALSE</code>.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -109,7 +103,7 @@ interval is a two-element numeric vector called <code>cred.int</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>Sampling effort is assumed to be constant.</p>
+    <p>Sampling effort is assumed to be constant. Uses JAGS instead of BUGS.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

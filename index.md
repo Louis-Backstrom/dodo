@@ -27,10 +27,9 @@ and palaeontology literature. It is still in active development.
 ## Dependencies
 
 Certain functions in this package require
-[JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`) or
-[BUGS](https://www.mrc-bsu.cam.ac.uk/software/bugs-project) (via
-`R2OpenBUGS`). These should be installed prior to running any of the
-functions which incorporate Gibbs sampling.
+[JAGS](https://mcmc-jags.sourceforge.io/) (accessed via `rjags`). This
+should be installed prior to running any of the functions which
+incorporate Gibbs sampling.
 
 ## Contact
 
