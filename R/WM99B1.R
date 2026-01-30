@@ -49,8 +49,9 @@
 #' # 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-#' WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e6, c = 1, d = 1))
-#' }
+# WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e3, c = 1, d = 1),
+#  increment = 0.01)
+# }
 #'
 #' @export
 
@@ -77,38 +78,34 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   # Helper functions
   bS <- function(S, y, t) {
-    return(sum(1 - y[which(t <= S)]))
+    return(sum(1 - y[t <= S]))
   }
 
   gj <- function(am, bj, c, d, lambda, tj, tj1) {
     gj <- exp(lgamma(am + c) + lgamma(bj + d) - lgamma(am + bj + c + d) +
-      log(exp(-lambda^(-1) * tj) - exp(-lambda^(-1) * tj1)))
+                log(exp(-lambda^(-1) * tj) - exp(-lambda^(-1) * tj1)))
     return(gj)
   }
 
+  # Precompute cumulative failures
+  cum_surveys <- seq_len(J)
+  cum_detections <- cumsum(y)
+  cum_failures <- cum_surveys - cum_detections
+
   # Calculate constant of proportionality
-  K0 <- c()
+  K0 <- numeric(J)
   for (j in m:J) {
     K0[j] <- gj(
-      am, bS(t[j], y, t), priors$c, priors$d, priors$lambda, t[j],
+      am, cum_failures[j], priors$c, priors$d, priors$lambda, t[j],
       ifelse(is.na(t[j + 1]), Inf, t[j + 1])
     )
   }
-  K0 <- sum(K0, na.rm = TRUE)
+  K0_sum <- sum(K0, na.rm = TRUE)
 
   # Posterior quantiles
-  q <- c()
+  q <- numeric(J + 1)
   for (l in m:J) {
-    sums <- c()
-    for (j in m:l) {
-      sums[j] <- K0^(-1) * gj(
-        am, bS(t[j], y, t), priors$c, priors$d,
-        priors$lambda, t[j], ifelse(is.na(t[j + 1]),
-          Inf, t[j + 1]
-        )
-      )
-    }
-    q[l + 1] <- sum(sums, na.rm = TRUE)
+    q[l + 1] <- sum(K0[m:l]) / K0_sum
   }
 
   pq <- function(t, q, epsilon, lambda) {
@@ -123,7 +120,6 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
   }
 
   # Get quantiles
-  # median <- pq(t, q, 0.5, priors$lambda)
   qupper <- pq(t, q, 1 - alpha, priors$lambda)
 
   # Get p(extinct)
@@ -140,20 +136,22 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
   S <- seq(min(t), max(t) + 10 * priors$lambda, by = increment) # estimate
   # shape of the posterior out to 10 prior half-lives beyond the final survey
 
-  S_posterior <- numeric(length = length(S))
-  for (i in 1:length(S_posterior)) {
-    S_posterior[i] <- exp(
-      log(K0^(-1)) +
-        lgamma(am + priors$c) +
-        lgamma(bS(S[i], y, t) + priors$d) -
-        lgamma(am + bS(S[i], y, t) + priors$c + priors$d) +
-        log(priors$lambda^(-1)) +
-        (-priors$lambda^(-1) * S[i])
-    ) *
-      (S[i] >= tm)
-  }
+  idx <- findInterval(S, t)
+  bS_S <- ifelse(idx > 0, cum_failures[idx], 0)
 
-  mean <- weighted.mean(S, S_posterior)
+  S_posterior <- numeric(length = length(S))
+  valid <- S >= tm
+
+  S_posterior[valid] <- exp(
+    -log(K0_sum) +
+      lgamma(am + priors$c) +
+      lgamma(bS_S[valid] + priors$d) -
+      lgamma(am + bS_S[valid] + priors$c + priors$d) +
+      log(priors$lambda^(-1)) +
+      (-priors$lambda^(-1) * S[valid])
+  )
+
+  mean <- sum(S * S_posterior) / sum(S_posterior)
 
   # Output
   output <- list(
@@ -170,3 +168,4 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   return(output)
 }
+
