@@ -15,6 +15,7 @@
 #' @importFrom stats integrate
 #' @importFrom stats median
 #' @importFrom stats na.omit
+#' @importFrom stats plogis
 #' @importFrom stats quantile
 #' @importFrom stats rbeta
 #' @importFrom stats rbinom

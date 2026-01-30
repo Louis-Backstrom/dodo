@@ -85,19 +85,10 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
 #' @noRd
 
 impute <- function(phi, lambda, periods) {
-  result <- 1:(periods + 1)
-
-  for (i in 1:periods) {
-    result[i] <- phi * ((1 - phi) * (1 - lambda))^(i - 1)
-  }
-
-  result[periods + 1] <- exp(periods * log((1 - phi) * (1 - lambda)))
-
-  result <- result / sum(result)
-
-  answer <- rmultinom(1, 1, result)
-
-  return(answer)
+  probs <- phi * ((1 - phi) * (1 - lambda))^(0:(periods - 1))
+  probs <- c(probs, ((1 - phi) * (1 - lambda))^periods)
+  probs <- probs / sum(probs)
+  return(as.vector(rmultinom(1, 1, probs)))
 }
 
 #' @title sim.N function from Caley & Barry 2014
@@ -121,16 +112,7 @@ impute <- function(phi, lambda, periods) {
 #' @noRd
 
 sim.N <- function(pgr, time, N0) {
-  ans <- numeric(time)
-  ans[1] <- N0
-
-  if (time > 1) {
-    for (t in 2:time) {
-      ans[t] <- ans[t - 1] * exp(pgr)
-    }
-  }
-
-  return(ans)
+  return(exp(log(N0) + cumsum(c(0, rep(pgr, time - 1)))))
 }
 
 #' @title Logit function from Caley & Barry 2014
@@ -155,82 +137,6 @@ logit <- function(x) {
   return(log(x / (1 - x)))
 }
 
-#' @title Inverse logit function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns the inverse logit of the provided number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
-ilogit <- function(x) {
-  return(1 / (1 + exp(-x)))
-}
-
-#' @title lam.gen function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param delta per capita detection rate
-#' @param N population size
-#'
-#' @returns a vector of yearly detection probability based on population size
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
-lam.gen <- function(delta, N) {
-  return(1 - exp(-delta * N))
-}
-
-#' @title phi.gen function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param eps0 intercept for logit of extinction probability
-#' @param eps1 population coefficient for logit of extinction probability
-#' @param population size
-#'
-#' @returns a vector of extinction probability based on population size
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
-phi.gen <- function(eps0, eps1, N) {
-  lp <- eps0 - eps1 * log(N)
-  if (lp > 50) {
-    ans <- 1
-  } else {
-    ans <- ilogit(lp)
-  }
-
-  return(ans)
-}
-
 #' @title correct.negative function from Caley & Barry 2014
 #'
 #' @description
@@ -250,9 +156,7 @@ phi.gen <- function(eps0, eps1, N) {
 #' @noRd
 
 correct.negative <- function(x) {
-  x[sign(x) < 0] <- 0
-
-  return(x)
+  return(pmax(x, 0))
 }
 
 #' @title impute.TE function from Caley & Barry 2014
@@ -324,19 +228,27 @@ calc.pars <- function(p, y) {
   final <- tail(pos, 1)
   zero.count <- obs - final
   N.traj <- sim.N(N0 = N0, pgr = pgr, time = obs)
-  lambdas <- sapply(N.traj, function(x) lam.gen(delta = delta, N = x))
-  phis <- sapply(N.traj, function(x) phi.gen(eps0 = eps0, eps1 = eps1, N = x))
+  lambdas <- 1 - exp(-delta * N.traj)
+  lp <- eps0 - eps1 * log(N.traj)
+  phis <- ifelse(lp > 50, 1, plogis(lp))
 
   p.cease <- numeric(obs + 1)
   p.cease[1:final] <- 0
 
-  p.cease[final + 1] <- phis[final + 1]
-  if (zero.count > 1) {
-    for (d in (final + 2):obs) {
-      log.ans <- sum(log(1 - phis[(final + 1):(d - 1)])) +
-        sum(log(1 - lambdas[(final + 1):(d - 1)])) + log(phis[d])
-      p.cease[d] <- exp(log.ans)
+  if (zero.count >= 1) {
+    phis_sub <- phis[(final + 1):(final + zero.count)]
+    lambdas_sub <- lambdas[(final + 1):(final + zero.count)]
+
+    if (zero.count == 1) {
+      p_cease_vec <- phis_sub
+    } else {
+      cp <- cumprod((1 - phis_sub[-zero.count]) * (1 - lambdas_sub[-zero.count]))
+      p_cease_vec <- numeric(zero.count)
+      p_cease_vec[1] <- phis_sub[1]
+      p_cease_vec[2:zero.count] <- phis_sub[2:zero.count] * cp
     }
+
+    p.cease[(final + 1):(final + zero.count)] <- p_cease_vec
   }
   p.cease <- correct.negative(p.cease)
 
@@ -409,9 +321,9 @@ calc.pars.given.TE <- function(p, TE, y) {
   } else {
     N.traj <- sim.N(N0 = N0, pgr = pgr, time = length(y))
   }
-
-  lambdas <- sapply(N.traj, function(x) lam.gen(delta = delta, N = x))
-  phis <- sapply(N.traj, function(x) phi.gen(eps0 = eps0, eps1 = eps1, N = x))
+  lambdas <- 1 - exp(-delta * N.traj)
+  lp <- eps0 - eps1 * log(N.traj)
+  phis <- ifelse(lp > 50, 1, plogis(lp))
 
   return(
     list(

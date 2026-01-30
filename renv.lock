@@ -196,30 +196,6 @@
       "Author": "Kevin Ushey [aut, cre] (ORCID: <https://orcid.org/0000-0003-2880-7407>), Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
       "Repository": "CRAN"
-    },
-    "rjags": {
-      "Package": "rjags",
-      "Version": "4-17",
-      "Source": "Repository",
-      "Date": "2025-03-24",
-      "Title": "Bayesian Graphical Models using MCMC",
-      "Authors@R": "c(person(\"Martyn\", \"Plummer\", role=c(\"aut\",\"cre\"), email=\"martyn.plummer@gmail.com\"), person(\"Alexey\", \"Stukalov\", role=\"ctb\"), person(\"Matt\", \"Denwood\", role=\"ctb\"))",
-      "Depends": [
-        "R (>= 2.14.0)",
-        "coda (>= 0.13)"
-      ],
-      "SystemRequirements": "JAGS 4.x.y",
-      "URL": "https://mcmc-jags.sourceforge.io",
-      "Suggests": [
-        "tcltk"
-      ],
-      "Description": "Interface to the JAGS MCMC library.",
-      "License": "GPL (== 2)",
-      "NeedsCompilation": "yes",
-      "Author": "Martyn Plummer [aut, cre], Alexey Stukalov [ctb], Matt Denwood [ctb]",
-      "Maintainer": "Martyn Plummer <martyn.plummer@gmail.com>",
-      "Repository": "CRAN",
-      "Encoding": "UTF-8"
     }
   }
 }

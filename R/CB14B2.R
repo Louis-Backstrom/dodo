@@ -72,9 +72,9 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
-    p.extant = p.extant,
     burn.in = burn.in,
     n.iter = n.iter,
+    p.extant = p.extant,
     estimate = estimate,
     cred.int = cred.int
   )
