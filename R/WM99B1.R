@@ -49,9 +49,9 @@
 #' # 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-# WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e3, c = 1, d = 1),
-#  increment = 0.01)
-# }
+#' WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e3, c = 1, d = 1),
+#'  increment = 0.01)
+#' }
 #'
 #' @export
 
@@ -127,28 +127,36 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
     return(pq(t, q, epsilon, lambda) - test.time + t0)
   }
 
-  p.extinct <- uniroot(
-    f = pqe, interval = c(0, 1 - 1e-9), t = t, q = q,
-    lambda = priors$lambda
-  )$root
+  # Compute pq_min and pq_max
+  pq_min <- pq(t, q, 0, priors$lambda)
+  pq_max <- pq(t, q, 1 - 1e-9, priors$lambda)
+
+  # Check edge cases and calculate p(extinct)
+  if (test.time > pq_max) {
+    # Too close to 1
+    p.extinct <- 1
+  } else if (test.time < pq_min) {
+    # Too close to 0
+    p.extinct <- 0
+  } else {
+    # In meaningful [0, 1] range
+    p.extinct <- uniroot(
+      f = pqe, interval = c(0, 1 - 1e-9), t = t, q = q,
+      lambda = priors$lambda
+    )$root
+  }
 
   # Get posterior mean
-  S <- seq(min(t), max(t) + 10 * priors$lambda, by = increment) # estimate
-  # shape of the posterior out to 10 prior half-lives beyond the final survey
+  S <- seq(tm, t[J] + 10 * priors$lambda, by = increment) # estimate
+  bS_S <- cum_failures[pmin(findInterval(S, t), J)]
 
-  idx <- findInterval(S, t)
-  bS_S <- ifelse(idx > 0, cum_failures[idx], 0)
-
-  S_posterior <- numeric(length = length(S))
-  valid <- S >= tm
-
-  S_posterior[valid] <- exp(
+  S_posterior <- exp(
     -log(K0_sum) +
       lgamma(am + priors$c) +
-      lgamma(bS_S[valid] + priors$d) -
-      lgamma(am + bS_S[valid] + priors$c + priors$d) +
+      lgamma(bS_S + priors$d) -
+      lgamma(am + bS_S + priors$c + priors$d) +
       log(priors$lambda^(-1)) +
-      (-priors$lambda^(-1) * S[valid])
+      (-priors$lambda^(-1) * S)
   )
 
   mean <- sum(S * S_posterior) / sum(S_posterior)
@@ -168,4 +176,5 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   return(output)
 }
+
 
