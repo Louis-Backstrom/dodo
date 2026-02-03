@@ -11,7 +11,7 @@ the species is extant at the test time, and a point estimate and one-sided
 
     <a class="navbar-brand me-2" href="../index.html">dodo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -189,7 +189,7 @@ Sampled Discretely. <em>Mathematical Geology</em>, 31(4), 435-453.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0001217568</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.18193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.18133</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cred.int</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 11.70000 13.70667</span>
@@ -197,7 +197,8 @@ Sampled Discretely. <em>Mathematical Geology</em>, 31(4), 435-453.
 <span class="r-in"><span><span class="co"># 12.18193 - 11.7 = 0.48193 ≈ .482 from paper</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Run an example analysis using the Slender-billed Curlew data</span></span></span>
-<span class="r-in"><span><span class="fu">WM99B1</span><span class="op">(</span><span class="va">curlew</span><span class="op">$</span><span class="va">cbin</span>, <span class="fl">1817</span><span class="op">:</span><span class="fl">2022</span>, priors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">1e6</span>, c <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">WM99B1</span><span class="op">(</span><span class="va">curlew</span><span class="op">$</span><span class="va">cbin</span>, <span class="fl">1817</span><span class="op">:</span><span class="fl">2022</span>, priors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lambda <span class="op">=</span> <span class="fl">1e3</span>, c <span class="op">=</span> <span class="fl">1</span>, d <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span> increment <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
