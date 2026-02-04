@@ -14,7 +14,7 @@
 #' All sighting records are assumed to be certain and sampling effort is assumed
 #' to be constant.
 #'
-#' Uses code from the `sExtinct` package
+#' Adapts code from the `sExtinct` package
 #' (\href{https://github.com/ExperimentalConservation/sExtinct}{GitHub})
 #'
 #' @references
@@ -48,7 +48,7 @@
 #' @export
 
 BU95F3 <- function(records) {
-  # Adapted from sExtinct (by Christopher Clements) package code!
+  # Heavily adapted from sExtinct (by Christopher Clements) package code!
 
   # Determine number of records
   N <- sum(records)
@@ -57,40 +57,41 @@ BU95F3 <- function(records) {
   CT <- length(records)
 
   # Determine the length of the longest run of empty cells
-  r <- max(rle(records == 0)$lengths[which(
-    rle(records == 0)$values == TRUE
-  )])
+  r <- max(rle(records == 0)$lengths[which(rle(records == 0)$values == TRUE)])
+
+  mp1 <- Rmpfr::mpfr(1, precBits = 64)
+  mp0 <- Rmpfr::mpfr(0, precBits = 64)
 
   # Calculate sum in for loop (from sExtinct code)
-  full_sum <- 0
+  full_sum <- mp0
 
   for (j in 1:N) {
-    TT <- seq(1, j)
-    KK <- seq(1, j + 1)
+    TT <- 0:(j - 1)
+    KK <- 0:j
+
+    dummy <- mp0
+    for (indexi in 1:length(KK)) {
+      i <- indexi - 1
+      dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
+                          ((j - Rmpfr::mpfr(i, precBits = 64))^N))
+    }
+    Sn <- dummy / factorial(j)
 
     for (k in 1:(j + 1)) {
       if (k <= (CT / r)) {
-        ff <- Rmpfr::mpfr(1, precBits = 64)
-
-        for (indexn in 1:length(TT)) {
-          n <- indexn - 1
-          ff <- ff * (CT - (r * k) - n)
+        ff <- mp1
+        for (tt in TT) {
+          term <- CT - (r * k) - tt
+          if (term <= 0) {
+            ff <- mp0
+            break
+          }
+          ff <- ff * term
         }
-
-        dummy <- Rmpfr::mpfr(0, precBits = 64)
-
-        for (indexi in 1:length(KK)) {
-          i <- indexi - 1
-          dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
-            ((j - Rmpfr::mpfr(i, precBits = 64))^N))
-        }
-
-        Sn <- (1 / factorial(j)) * dummy
         calc <- ((-1)^(k + 1)) * choose(j + 1, k) * ff * Sn
       } else {
-        calc <- 0
+        calc <- mp0
       }
-
       full_sum <- full_sum + calc
     }
   }
