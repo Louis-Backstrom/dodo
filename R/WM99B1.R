@@ -49,8 +49,10 @@
 #' # 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-#' WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e3, c = 1, d = 1),
-#'  increment = 0.01)
+#' WM99B1(curlew$cbin, 1817:2022,
+#'   priors = list(lambda = 1e3, c = 1, d = 1),
+#'   increment = 0.01
+#' )
 #' }
 #'
 #' @export
@@ -83,7 +85,7 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   gj <- function(am, bj, c, d, lambda, tj, tj1) {
     gj <- exp(lgamma(am + c) + lgamma(bj + d) - lgamma(am + bj + c + d) +
-                log(exp(-lambda^(-1) * tj) - exp(-lambda^(-1) * tj1)))
+      log(exp(-lambda^(-1) * tj) - exp(-lambda^(-1) * tj1)))
     return(gj)
   }
 
@@ -176,5 +178,3 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   return(output)
 }
-
-

@@ -61,6 +61,7 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   DATA$tMin <- tMin
   n <- nrow(data)
   DATA$N <- n
+  DATA$logfact <- c(0, cumsum(log(seq_len(n))))
 
   tL <- (tCert - tMin) / (inputs$T - tMin)
   tL <- round((1 / increment2) * tL) * increment2
@@ -77,7 +78,7 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
     p_t_tau_E <- likelihood.all(
       tLV = tLV, indmc = indmc, tL = tL,
       increment = increment, n = n, dVec = dVec, modelnumber = modelnumber,
-      SO12 = SO12
+      SO12 = SO12, logfact = DATA$logfact
     )
   }
 
@@ -222,25 +223,27 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
 #'
 #' @noRd
 
-likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber,
-                           SO12 = FALSE) {
-  integrand <- list()
+likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
+                           modelnumber, SO12 = FALSE, logfact) {
+  integrand <- numeric(length(tLV))
 
-  for (iy in 1:length(tLV)) {
+  for (iy in seq_along(tLV)) {
     TE <- tLV[iy]
     indm <- (dVec <= TE)
     m <- sum(indm)
     mc <- sum(indmc * indm)
 
     if (TE > tL) {
-      integrand[[iy]] <- likelihood.integrated(
+      integrand[iy] <- likelihood.integrated(
         TE = TE, n = n, m = m, mc = mc,
-        modelnumber = modelnumber, increment = increment, tL = tL, SO12 = SO12
+        modelnumber = modelnumber,
+        increment = increment, tL = tL,
+        SO12 = SO12, logfact = logfact
       )
     }
   }
 
-  return(do.call(c, integrand))
+  return(integrand)
 }
 
 #' @title likelihood.integrated function from Solow & Beet 2014
@@ -291,8 +294,8 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec, modelnumber,
 #'
 #' @noRd
 
-likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment, tL,
-                                  SO12 = FALSE) {
+likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment,
+                                  tL, SO12 = FALSE, logfact) {
   omega <- seq(
     from = (increment / 2),
     to = (1 - (increment / 2)),
@@ -301,10 +304,11 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment, tL,
 
   out <- 0
 
-  for (i in 1:length(omega)) {
+  for (i in seq_along(omega)) {
     out <- out + increment * likelihood.each(
       omega = omega[i], TE = TE, n = n,
-      m = m, mc = mc, modelnumber = modelnumber, tL = tL, SO12 = SO12
+      m = m, mc = mc, modelnumber = modelnumber,
+      tL = tL, SO12 = SO12, logfact = logfact
     )
   }
 
@@ -360,129 +364,36 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment, tL,
 #' @noRd
 
 likelihood.each <- function(omega, TE, n, m, mc, modelnumber, tL,
-                            SO12 = FALSE) {
-  out <- 0
+                            SO12 = FALSE, logfact) {
   z <- (1 - omega) / omega
 
-  term01 <- logfact(mc - 1)
-  term02 <- logfact(n - mc - 1)
-  term03 <- mc * log(1 / TE)
-  term04 <- mc * log(TE + z)
-  part0 <- (modelnumber == 2) * (term01 + term02 + term03 + term04)
-
-  for (j in mc:m) {
-    termj1 <- logcomb(j - mc, m - mc)
-    termj2 <- (n - j) * log(z)
-    if (SO12 == TRUE) {
-      if (modelnumber == 1) {
-        termj3 <- -n * log(TE + z * (1 - tL))
-      } else {
-        stop("SO12 is TRUE but modelnumber is not 1")
-      }
-    } else {
-      termj3 <- -n * log(TE + z)
-    }
-
-    partj <- termj1 + termj2 + termj3
-    new <- exp(
-      Rmpfr::mpfr(part0, precBits = 64) +
-        Rmpfr::mpfr(partj, precBits = 64)
-    )
-    out <- out + new
+  if (modelnumber == 2) {
+    part0 <- logfact[mc + 1] +
+      logfact[n - mc + 1] +
+      mc * log(1 / TE) +
+      mc * log(TE + z)
+  } else {
+    part0 <- 0
   }
+
+  j <- mc:m
+
+  termj1 <- logfact[m - mc + 1] -
+    logfact[j - mc + 1] -
+    logfact[m - j + 1]
+
+  termj2 <- (n - j) * log(z)
+
+  if (SO12 == TRUE) {
+    termj3 <- -n * log(TE + z * (1 - tL))
+  } else {
+    termj3 <- -n * log(TE + z)
+  }
+
+  log_terms <- part0 + termj1 + termj2 + termj3
+
+  maxlt <- max(log_terms)
+  out <- exp(maxlt) * sum(exp(log_terms - maxlt))
 
   return(out)
-}
-
-#' @title logcomb function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param a a non-negative integer.
-#' @param b a non-negative integer.
-#'
-#' @returns a `numeric`.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
-
-logcomb <- function(a, b) {
-  if (a > b) {
-    stop("Error! a > b")
-  } else {
-    return(logfact(b) - logfact(a) - logfact(b - a))
-  }
-}
-
-#' @title logfact function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param x a non-negative integer.
-#'
-#' @returns a `numeric`.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
-
-logfact <- function(x) {
-  return((x > 0) * sum(log(seq(1:x))))
 }

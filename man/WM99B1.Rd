@@ -61,8 +61,10 @@ WM99B1(eggerellina_brevis, weissmarshall_surveys,
 # 12.18193 - 11.7 = 0.48193 ≈ .482 from paper
 \dontrun{
 # Run an example analysis using the Slender-billed Curlew data
-WM99B1(curlew$cbin, 1817:2022, priors = list(lambda = 1e3, c = 1, d = 1),
- increment = 0.01)
+WM99B1(curlew$cbin, 1817:2022,
+  priors = list(lambda = 1e3, c = 1, d = 1),
+  increment = 0.01
+)
 }
 
 }

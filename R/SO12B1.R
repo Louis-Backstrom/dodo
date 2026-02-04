@@ -8,7 +8,7 @@
 #' \code{\link{convert_dodo}} for details). Note that all uncertain sightings
 #' must follow the final certain sighting. If any uncertain sightings occur
 #' prior to the final certain sighting, these are handled as specified by
-#' `record check`.
+#' `record.check`.
 #' @param init.time start of the observation period.
 #' @param increment step size used for integration. Defaults to 0.01, following
 #' the original code from Solow & Beet 2014.
