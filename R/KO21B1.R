@@ -126,23 +126,27 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
   model_file <- tempfile(fileext = ".txt")
   writeLines(modelpois, con = model_file)
 
-  # Sink (to suppress hyper-verbose console outputs)
-  sink(file = tempfile())
-
   # Run the chains
-  jagsmodelpois <- rjags::jags.model(
-    file = model_file, data = dataList,
-    n.chains = n.chains, n.adapt = n.burnin
-  )
-  update(jagsmodelpois, n.iter = n.burnin)
-  codaSamplespois <- rjags::coda.samples(jagsmodelpois,
-    variable.names = c(
-      "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"
-    ),
-    n.iter = n.iter, thin = n.thin
-  )
+  invisible(capture.output({
+    jagsmodelpois <- rjags::jags.model(
+      file = model_file,
+      data = dataList,
+      n.chains = n.chains,
+      n.adapt = n.burnin,
+      quiet = TRUE
+    )
 
-  on.exit(sink(), add = TRUE)
+    update(jagsmodelpois, n.iter = n.burnin)
+
+    codaSamplespois <- rjags::coda.samples(
+      model = jagsmodelpois,
+      variable.names = c(
+        "tau", "a", "sigma", "a_U1", "sigma_U1", "a_U2", "sigma_U2"
+      ),
+      n.iter = n.iter,
+      thin = n.thin
+    )
+  }))
 
   unlink(model_file)
 

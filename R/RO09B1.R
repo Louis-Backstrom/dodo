@@ -75,25 +75,22 @@ RO09B1 <- function(records, pi = 0.5, n.chains = 4, n.iter = 11e4,
   inits <- rep(list(list(a = 0.5, m = 0.5, prec = 100)), n.chains)
 
   # Run the JAGS model
-  model <- rjags::jags.model(textConnection(model_string),
-    data = data,
-    inits = inits,
-    n.chains = n.chains,
-    n.adapt = n.burnin,
-    quiet = TRUE
-  )
+  invisible(capture.output({
+    model <- rjags::jags.model(textConnection(model_string),
+      data = data,
+      inits = inits,
+      n.chains = n.chains,
+      n.adapt = n.burnin,
+      quiet = TRUE
+    )
 
-  # Sink (to suppress hyper-verbose console outputs)
-  sink(file = tempfile())
+    update(model, n.burnin)
 
-  update(model, n.burnin)
-
-  samples <- rjags::coda.samples(model,
-    variable.names = c("a", "m", "prec"),
-    n.iter = n.iter
-  )
-
-  on.exit(sink(), add = TRUE)
+    samples <- rjags::coda.samples(model,
+      variable.names = c("a", "m", "prec"),
+      n.iter = n.iter
+    )
+  }))
 
   a_mean <- summary(samples)$statistics["a", "Mean"]
   S <- length(records)

@@ -73,7 +73,7 @@ BU95F3 <- function(records) {
     for (indexi in 1:length(KK)) {
       i <- indexi - 1
       dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
-                          ((j - Rmpfr::mpfr(i, precBits = 64))^N))
+        ((j - Rmpfr::mpfr(i, precBits = 64))^N))
     }
     Sn <- dummy / factorial(j)
 

@@ -53,18 +53,15 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
     stop("Package 'rjags' is required but could not be found!")
   }
 
-  # Sink (to suppress hyper-verbose console outputs)
-  sink(file = tempfile())
-
   # Run MCMC function from Kodikara et al. 2020
-  posterior <- coda::mcmc.list(coda::mcmc.list(
-    posterior_cer_mcmc(records,
-      n.chains = n.chains, n.iter = n.iter,
-      n.burnin = n.burnin, n.thin = n.thin
-    )
-  ))
-
-  on.exit(sink(), add = TRUE)
+  invisible(capture.output({
+    posterior <- coda::mcmc.list(coda::mcmc.list(
+      posterior_cer_mcmc(records,
+        n.chains = n.chains, n.iter = n.iter,
+        n.burnin = n.burnin, n.thin = n.thin
+      )
+    ))
+  }))
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(posterior))
