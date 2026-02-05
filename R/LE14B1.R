@@ -88,17 +88,27 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
   ])
 
   if (nrow(UQ_unique) > 0) {
+    # Precompute names
+    pU_L_names <- sprintf("pU%dL", 1:nrow(UQ_unique))
+    pU_U_names <- sprintf("pU%dU", 1:nrow(UQ_unique))
+    qU_L_names <- sprintf("qU%dL", 1:nrow(UQ_unique))
+    qU_U_names <- sprintf("qU%dU", 1:nrow(UQ_unique))
+    U_names <- sprintf("U%d", 1:nrow(UQ_unique))
+    SumU_names <- sprintf("SumU%d", 1:nrow(UQ_unique))
+    pU_k_names <- sprintf("pU%dk", 1:nrow(UQ_unique))
+    qU_k_names <- sprintf("qU%dk", 1:nrow(UQ_unique))
+
     # Create uncertain sighting quality list; NB: pU and qU can exceed 1!
     US <- list()
     for (h in 1:nrow(UQ_unique)) {
-      US[[paste0("U", h)]] <- ifelse(UQ$time %in% merge(
+      US[[U_names[h]]] <- ifelse(UQ$time %in% merge(
         UQ_unique[h, ], UQ
       )$time, 1, 0)
-      US[[paste0("SumU", h)]] <- sum(US[[paste0("U", h)]])
-      US[[paste0("pU", h, "L")]] <- (S / tn) / UQ_unique[h, ]$certainty_upper
-      US[[paste0("pU", h, "U")]] <- (S / tn) / UQ_unique[h, ]$certainty_lower
-      US[[paste0("qU", h, "L")]] <- US[[paste0("pU", h, "L")]] - (S / tn)
-      US[[paste0("qU", h, "U")]] <- US[[paste0("pU", h, "U")]] - (S / tn)
+      US[[SumU_names[h]]] <- sum(US[[U_names[h]]])
+      US[[pU_L_names[h]]] <- (S / tn) / UQ_unique[h, ]$certainty_upper
+      US[[pU_U_names[h]]] <- (S / tn) / UQ_unique[h, ]$certainty_lower
+      US[[qU_L_names[h]]] <- US[[pU_L_names[h]]] - (S / tn)
+      US[[qU_U_names[h]]] <- US[[pU_U_names[h]]] - (S / tn)
     }
 
     if (any(US[grepl("pU|qU", names(US))] > 1) == TRUE) {
@@ -117,16 +127,25 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
   SQ_unique <- unique(SQ[SQ$survey == TRUE, c("pSL", "pSU", "qSL", "qSU")])
 
   if (nrow(SQ_unique) > 0) {
+    # Precompute names
+    S_names <- sprintf("S%d", 1:nrow(SQ_unique))
+    pS_L_names <- sprintf("pS%dL", 1:nrow(SQ_unique))
+    pS_U_names <- sprintf("pS%dU", 1:nrow(SQ_unique))
+    qS_L_names <- sprintf("qS%dL", 1:nrow(SQ_unique))
+    qS_U_names <- sprintf("qS%dU", 1:nrow(SQ_unique))
+    pS_k_names <- sprintf("pS%dk", 1:nrow(SQ_unique))
+    qS_k_names <- sprintf("qS%dk", 1:nrow(SQ_unique))
+
     # Create survey quality list
     SS <- list()
     for (i in 1:nrow(SQ_unique)) {
-      SS[[paste0("S", i)]] <- ifelse(SQ$time %in% merge(
+      SS[[S_names[i]]] <- ifelse(SQ$time %in% merge(
         SQ_unique[i, ], SQ
       )$time, 0, NA)
-      SS[[paste0("pS", i, "L")]] <- SQ_unique$pSL[i]
-      SS[[paste0("pS", i, "U")]] <- SQ_unique$pSU[i]
-      SS[[paste0("qS", i, "L")]] <- SQ_unique$qSL[i]
-      SS[[paste0("qS", i, "U")]] <- SQ_unique$qSU[i]
+      SS[[pS_L_names[i]]] <- SQ_unique$pSL[i]
+      SS[[pS_U_names[i]]] <- SQ_unique$pSU[i]
+      SS[[qS_L_names[i]]] <- SQ_unique$qSL[i]
+      SS[[qS_U_names[i]]] <- SQ_unique$qSU[i]
     }
   }
 
@@ -142,24 +161,24 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
     if (nrow(SQ_unique) > 0) {
       for (i in 1:nrow(SQ_unique)) {
-        SS[[paste0("pS", i, "k")]] <- runif(
-          1, SS[[paste0("pS", i, "L")]],
-          SS[[paste0("pS", i, "U")]]
+        SS[[pS_k_names[i]]] <- runif(
+          1, SS[[pS_L_names[i]]],
+          SS[[pS_U_names[i]]]
         )
-        SS[[paste0("qS", i, "k")]] <- runif(
-          1, SS[[paste0("qS", i, "L")]],
-          SS[[paste0("qS", i, "U")]]
+        SS[[qS_k_names[i]]] <- runif(
+          1, SS[[qS_L_names[i]]],
+          SS[[qS_U_names[i]]]
         )
-        SS[[paste0("pS", i)]] <- ifelse(is.na(SS[[paste0("S", i)]]), 1,
-          ifelse(SS[[paste0("S", i)]] == 0,
-            1 - SS[[paste0("pS", i, "k")]],
-            SS[[paste0("pS", i, "k")]]
+        SS[[sprintf("pS%d", i)]] <- ifelse(is.na(SS[[S_names[i]]]), 1,
+          ifelse(SS[[S_names[i]]] == 0,
+            1 - SS[[pS_k_names[i]]],
+            SS[[pS_k_names[i]]]
           )
         )
-        SS[[paste0("qS", i)]] <- ifelse(is.na(SS[[paste0("S", i)]]), 1,
-          ifelse(SS[[paste0("S", i)]] == 0,
-            1 - SS[[paste0("qS", i, "k")]],
-            SS[[paste0("qS", i, "k")]]
+        SS[[sprintf("qS%d", i)]] <- ifelse(is.na(SS[[S_names[i]]]), 1,
+          ifelse(SS[[S_names[i]]] == 0,
+            1 - SS[[qS_k_names[i]]],
+            SS[[qS_k_names[i]]]
           )
         )
       }
@@ -167,26 +186,26 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
     if (nrow(UQ_unique) > 0) {
       for (h in 1:nrow(UQ_unique)) {
-        US[[paste0("pU", h, "k")]] <- runif(
-          1, US[[paste0("pU", h, "L")]],
-          US[[paste0("pU", h, "U")]]
+        US[[pU_k_names[h]]] <- runif(
+          1, US[[pU_L_names[h]]],
+          US[[pU_U_names[h]]]
         )
-        US[[paste0("qU", h, "k")]] <- runif(
-          1, US[[paste0("qU", h, "L")]],
-          US[[paste0("qU", h, "U")]]
+        US[[qU_k_names[h]]] <- runif(
+          1, US[[qU_L_names[h]]],
+          US[[qU_U_names[h]]]
         )
-        if (US[[paste0("SumU", h)]] > 0) {
-          US[[paste0("pU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-            1 - US[[paste0("pU", h, "k")]],
-            US[[paste0("pU", h, "k")]]
+        if (US[[SumU_names[h]]] > 0) {
+          US[[sprintf("pU%d", h)]] <- ifelse(US[[U_names[h]]] == 0,
+            1 - US[[pU_k_names[h]]],
+            US[[pU_k_names[h]]]
           )
-          US[[paste0("qU", h)]] <- ifelse(US[[paste0("U", h)]] == 0,
-            1 - US[[paste0("qU", h, "k")]],
-            US[[paste0("qU", h, "k")]]
+          US[[sprintf("qU%d", h)]] <- ifelse(US[[U_names[h]]] == 0,
+            1 - US[[qU_k_names[h]]],
+            US[[qU_k_names[h]]]
           )
         } else {
-          US[[paste0("pU", h)]] <- rep(1, bigT)
-          US[[paste0("qU", h)]] <- rep(1, bigT)
+          US[[sprintf("pU%d", h)]] <- rep(1, bigT)
+          US[[sprintf("qU%d", h)]] <- rep(1, bigT)
         }
       }
     }
@@ -197,25 +216,36 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
     if (nrow(UQ_unique) > 0) {
       for (h in 1:nrow(UQ_unique)) {
-        pvec <- pvec * US[[paste0("pU", h)]]
-        qvec <- qvec * US[[paste0("qU", h)]]
+        pvec <- pvec * US[[sprintf("pU%d", h)]]
+        qvec <- qvec * US[[sprintf("qU%d", h)]]
       }
     }
 
     if (nrow(SQ_unique) > 0) {
       for (i in 1:nrow(SQ_unique)) {
-        pvec <- pvec * SS[[paste0("pS", i)]]
-        qvec <- qvec * SS[[paste0("qS", i)]]
+        pvec <- pvec * SS[[sprintf("pS%d", i)]]
+        qvec <- qvec * SS[[sprintf("qS%d", i)]]
       }
     }
 
     PX <- prod(pvec) * pie
 
     # PEj calculation
+    cum_pvec <- cumprod(pvec)
+    cum_qvec <- rev(cumprod(rev(qvec)))
+
     PEj <- 0
     for (j in (tn + 1):bigT) {
-      partpPEj <- prod(pvec[1:(j - 1)], na.rm = TRUE)
-      partqPEj <- prod(qvec[j:bigT], na.rm = TRUE)
+      partpPEj <- if (j > 1) {
+        cum_pvec[j - 1]
+      } else {
+        1
+      }
+      partqPEj <- if (j <= bigT) {
+        cum_qvec[j]
+      } else {
+        1
+      }
       PEj <- PEj + (partpPEj * partqPEj * PEE)
     }
 
