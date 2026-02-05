@@ -59,6 +59,15 @@ BU95F3 <- function(records) {
   # Determine the length of the longest run of empty cells
   r <- max(rle(records == 0)$lengths[which(rle(records == 0)$values == TRUE)])
 
+  # Check if longest run of empty cells occurs at the end, and warn if not
+  z <- rle(records == 0)
+
+  z_check <- tail(z$values, 1) && tail(z$lengths, 1) == r
+
+  if (z_check == FALSE) {
+    warning("Longest run of empty cells does not occur at the end!")
+  }
+
   mp1 <- Rmpfr::mpfr(1, precBits = 64)
   mp0 <- Rmpfr::mpfr(0, precBits = 64)
 

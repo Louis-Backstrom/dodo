@@ -22,7 +22,7 @@ testing competing hypotheses of extinction/non-extinction.
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 
-Uses code from the \code{sExtinct} package
+Adapts code from the \code{sExtinct} package
 (\href{https://github.com/ExperimentalConservation/sExtinct}{GitHub})
 }
 \examples{

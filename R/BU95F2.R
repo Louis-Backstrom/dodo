@@ -48,6 +48,15 @@ BU95F2 <- function(records) {
     rle(records == 0)$values == TRUE
   )])
 
+  # Check if longest run of empty cells occurs at the end, and warn if not
+  z <- rle(records == 0)
+
+  z_check <- tail(z$values, 1) && tail(z$lengths, 1) == r
+
+  if (z_check == FALSE) {
+    warning("Longest run of empty cells does not occur at the end!")
+  }
+
   # Determine values of k to sum over
   k <- 1:floor(n0 / r)
 

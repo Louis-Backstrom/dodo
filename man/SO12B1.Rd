@@ -11,7 +11,7 @@ SO12B1(records, init.time, increment = 0.01, gamma = 1, record.check = "error")
 \code{\link{convert_dodo}} for details). Note that all uncertain sightings
 must follow the final certain sighting. If any uncertain sightings occur
 prior to the final certain sighting, these are handled as specified by
-\verb{record check}.}
+\code{record.check}.}
 
 \item{init.time}{start of the observation period.}
 
