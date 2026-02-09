@@ -71,6 +71,7 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   t0 <- min(t)
   t <- t - t0
+  tt <- test.time - t0
 
   # Calculate key values
   m <- max(which(y == 1))
@@ -126,7 +127,7 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
 
   # Get p(extinct)
   pqe <- function(t, q, epsilon, lambda) {
-    return(pq(t, q, epsilon, lambda) - test.time + t0)
+    return(pq(t, q, epsilon, lambda) - tt)
   }
 
   # Compute pq_min and pq_max
@@ -134,10 +135,10 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
   pq_max <- pq(t, q, 1 - 1e-9, priors$lambda)
 
   # Check edge cases and calculate p(extinct)
-  if (test.time > pq_max) {
+  if (tt > pq_max) {
     # Too close to 1
     p.extinct <- 1
-  } else if (test.time < pq_min) {
+  } else if (tt < pq_min) {
     # Too close to 0
     p.extinct <- 0
   } else {
