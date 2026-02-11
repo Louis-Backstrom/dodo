@@ -33,6 +33,6 @@ Certain functions in this package require [JAGS](https://mcmc-jags.sourceforge.i
 
 ## Contact
 
-Louis Backstrom ([ljb38\@st-andrews.ac.uk](mailto:ljb38@st-andrews.ac.uk){.email})
+Louis Backstrom ([ljb38\@st-andrews.ac.uk](mailto:ljb38@st-andrews.ac.uk))
 
 Package website (work in progress): [louis-backstrom.github.io/dodo/](louis-backstrom.github.io/dodo/)
