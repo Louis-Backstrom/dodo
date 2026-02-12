@@ -78,15 +78,16 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   # Remove time column and format as matrix
   records_matrix <- as.matrix(subset(records, select = -time))
 
+  # Determine bigT and nA (number of record classes)
+  bigT <- nrow(records_matrix)
+  nA <- ncol(records_matrix)
+
   # Determine TN
   if (length(certain) == 1) {
-    TN <- max(which(as.numeric(records_matrix[, certain]) == 1))
+    TN <- max(which(records_matrix[, certain] == 1))
   } else {
-    TN <- max(which(as.numeric(apply(records_matrix[, certain], 1, max)) == 1))
+    TN <- max(which(rowMaxs(records_matrix[, certain, drop = FALSE]) == 1))
   }
-
-  # Determine bigT
-  bigT <- nrow(records_matrix)
 
   # Calculate P(X_T) and P(E)
   if (is.null(PXT)) {
@@ -97,6 +98,22 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     PE <- 1 / bigT
   }
 
+  log_PXT <- log(PXT)
+  log_PE <- log(PE)
+
+  # Precompute prior bounds
+  p_lower <- numeric(nA)
+  p_range <- numeric(nA)
+  q_lower <- numeric(nA)
+  q_range <- numeric(nA)
+
+  for (a in seq_len(nA)) {
+    p_lower[a] <- priors$p[[a]][1]
+    p_range[a] <- priors$p[[a]][2] - p_lower[a]
+    q_lower[a] <- priors$q[[a]][1]
+    q_range[a] <- priors$q[[a]][2] - q_lower[a]
+  }
+
   # Run quenched loop
   values <- numeric(n.iter)
 
@@ -104,60 +121,55 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     pbar <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
   }
 
-  # log-sum-exp function
-  logsumexp <- function(x) {
-    m <- max(x)
-    m + log(sum(exp(x - m)))
-  }
+  for (run in seq_len(n.iter)) {
+    log_p_vector <- numeric(bigT)
+    log_q_vector <- numeric(bigT)
 
-  for (run in 1:n.iter) {
-    # Create p matrix and vector
-    p_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
+    # Loop over attributes
+    for (a in seq_len(nA)) {
+      col_vals <- records_matrix[, a]
 
-    for (i in 1:nrow(p_matrix)) {
-      for (a in 1:ncol(p_matrix)) {
-        if (records_matrix[i, a] == 1) {
-          p_matrix[i, a] <- 1 - runif(n = 1, priors$p[[a]][1], priors$p[[a]][2])
-        } else {
-          p_matrix[i, a] <- runif(n = 1, priors$p[[a]][1], priors$p[[a]][2])
-        }
+      # Create p vector
+      u <- runif(bigT)
+      vals <- p_lower[a] + p_range[a] * u
+
+      idx <- (col_vals == 1)
+      if (any(idx)) {
+        vals[idx] <- 1 - vals[idx]
       }
+
+      log_p_vector <- log_p_vector + log(vals)
+
+      # Create q vector
+      u <- runif(bigT)
+      vals <- q_lower[a] + q_range[a] * u
+
+      if (any(idx)) {
+        vals[idx] <- 1 - vals[idx]
+      }
+
+      log_q_vector <- log_q_vector + log(vals)
     }
 
-    p_vector <- apply(p_matrix, 1, prod)
-
-    # Create q matrix and vector
-    q_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
-
-    for (i in 1:nrow(q_matrix)) {
-      for (a in 1:ncol(q_matrix)) {
-        if (records_matrix[i, a] == 1) {
-          q_matrix[i, a] <- 1 - runif(n = 1, priors$q[[a]][1], priors$q[[a]][2])
-        } else {
-          q_matrix[i, a] <- runif(n = 1, priors$q[[a]][1], priors$q[[a]][2])
-        }
-      }
-    }
-
-    q_vector <- apply(q_matrix, 1, prod)
-
-    # Convert to log-space
-    log_p_vector <- log(p_vector)
-    log_q_vector <- log(q_vector)
-    log_PXT <- log(PXT)
-    log_PE <- log(PE)
+    # Calculate cumulative sums
+    cumsum_p <- cumsum(log_p_vector)
+    rev_cumsum_q <- rev(cumsum(rev(log_q_vector)))
 
     # Calculate numerator in log-space
-    log_numerator <- sum(log_p_vector) + log_PXT
+    log_numerator <- cumsum_p[bigT] + log_PXT
 
     # Calculate denominator in log-space
-    if (TN + 1 > bigT) {
-      log_denominator <- log_numerator # means p.extant = 1
+    if (TN >= bigT) {
+      log_denominator <- log_numerator
     } else {
-      log_terms <- sapply((TN + 1):bigT, function(j) {
-        sum(log_p_vector[1:(j - 1)]) + sum(log_q_vector[j:bigT]) + log_PE
-      })
-      log_denominator <- logsumexp(c(log_numerator, log_terms))
+      js <- (TN + 1):bigT
+
+      log_terms <- cumsum_p[js - 1] + rev_cumsum_q[js] + log_PE
+
+      m <- max(log_numerator, log_terms)
+
+      log_denominator <- m + log(exp(log_numerator - m) +
+        sum(exp(log_terms - m)))
     }
 
     # Calculate P_Q(X_T|s) from Equation 9

@@ -79,26 +79,28 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   "
 
   # Initialize and compile model
-  jags_model <- rjags::jags.model(
-    textConnection(model),
-    data = data,
-    n.chains = n.chains,
-    quiet = TRUE
-  )
+  invisible(capture.output({
+    jags_model <- rjags::jags.model(
+      textConnection(model),
+      data = data,
+      n.chains = n.chains,
+      quiet = TRUE
+    )
 
-  # Burn-in
-  update(jags_model, n.iter = n.burnin)
+    # Burn-in
+    update(jags_model, n.iter = n.burnin)
 
-  # Specify parameters
-  parameters <- c("te", "m", "f", "Extant")
+    # Specify parameters
+    parameters <- c("te", "m", "f", "Extant")
 
-  # Sample from posterior
-  samples <- rjags::coda.samples(
-    model = jags_model,
-    variable.names = parameters,
-    n.iter = n.iter - n.burnin,
-    thin = n.thin
-  )
+    # Sample from posterior
+    samples <- rjags::coda.samples(
+      model = jags_model,
+      variable.names = parameters,
+      n.iter = n.iter - n.burnin,
+      thin = n.thin
+    )
+  }))
 
   # Convert to matrix
   sims <- as.matrix(samples)
@@ -107,7 +109,7 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   p.extant <- mean(sims[, "Extant"])
   te <- sims[sims[, "Extant"] == 0, "te"]
   estimate <- mean(te) + init.time - 1
-  cred.int <- as.numeric(quantile(te, c(0, 0.95)) + init.time - 1)
+  cred.int <- as.numeric(quantile(te, c(0, 1 - alpha)) + init.time - 1)
 
   # Output
   output <- list(
