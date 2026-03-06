@@ -75,7 +75,10 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
     SL <- (-log(1 - 0) / length(sights))^-v
     SU <- (-log(alpha) / length(sights))^-v
   } else {
-    stop("invalid value for conf.int, should be either one-sided or two-sided")
+    stop(
+      "invalid value for `conf.int`, should be either one-sided or",
+      "two-sided"
+    )
   }
   lambda <- outer(1:k, 1:k, myfun, v = v)
   lambda <- ifelse(lower.tri(lambda), lambda, t(lambda))
@@ -91,9 +94,9 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
   if (conf.int.lower >= conf.int.upper) {
     if (conf.int.lower == conf.int.upper & is.na(estimate)) {
       estimate <- conf.int.lower
-      warning("Point Estimate was NA and CI width is 0, replacing with CI!")
+      warning("point estimate was NA and CI width is 0: replacing with CI")
     }
-    warning("Confidence Interval estimation produced an invalid interval!")
+    warning("confidence interval estimation produced an invalid interval")
   }
 
   # Output

@@ -50,7 +50,7 @@ integrand.neglambdas.mpfr <- function(L, th, x, prmean, prSD,
   # NB: original abm code "[does] not check for xmax < th; if xmax > th, an
   # error will not be generated" - this code warns instead.
   if (any(x >= th)) {
-    warning("x must be smaller than th for negative lambda model")
+    warning("`x` must be smaller than `th` for negative lambda model")
   }
 
   safe_log <- function(x, precBits = 64) {
@@ -388,7 +388,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
       (distance & !ext) & (base < max(x)) |
       (!distance & ext) & (base < max(x)) |
       (!distance & !ext) & (base > min(x))) {
-      stop("Invalid value for base")
+      stop("invalid value for base")
     }
   }
 

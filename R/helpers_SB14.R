@@ -73,7 +73,7 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   rateV <- tmp$rateV
 
   if ((modelnumber != 1) & (modelnumber != 2)) {
-    stop("modelnumber not defined")
+    stop("`modelnumber` not defined")
   } else {
     p_t_tau_E <- likelihood.all(
       tLV = tLV, indmc = indmc, tL = tL,
@@ -94,7 +94,7 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   k <- match(inputs$posteriorPrior, names(prior))
   {
     if (is.na(k)) {
-      stop("No such prior!")
+      stop("no such prior")
     } else {
       p_tau_E <- prior[[k]]
     }

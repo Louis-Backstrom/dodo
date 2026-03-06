@@ -151,7 +151,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
 Fx <- function(x, s, n) {
   if (as.integer(floor(s / x)) == 0) {
-    warning("floor(s / x) is zero - NA produced")
+    warning("floor(s / x) is zero: NA produced")
     return(NA)
   }
 

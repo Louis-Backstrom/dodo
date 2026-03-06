@@ -50,7 +50,7 @@ RO09B1 <- function(records, pi = 0.5, n.chains = 4, n.iter = 11e4,
                    n.burnin = 1e4) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
-    stop("Package 'rjags' is required but could not be found!")
+    stop("package 'rjags' is required but could not be found")
   }
 
   # Set up JAGS model

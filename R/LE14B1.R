@@ -64,7 +64,7 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
   pWL <- 0
   pWU <- 2 * S / tn # can exceed 1!
   if (pWU > 1) {
-    warning("S / tn > 0.5, setting upper detectability bound at 1")
+    warning("S / tn > 0.5: setting upper detectability bound at 1")
     pWU <- 1
   }
 
@@ -112,7 +112,7 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     }
 
     if (any(US[grepl("pU|qU", names(US))] > 1) == TRUE) {
-      stop("At least one uncertain sighting detectability bound > 1!")
+      stop("at least one uncertain sighting detectability bound is > 1")
     }
   }
 

@@ -54,7 +54,7 @@ BU95F2 <- function(records) {
   z_check <- tail(z$values, 1) && tail(z$lengths, 1) == r
 
   if (z_check == FALSE) {
-    warning("Longest run of empty cells does not occur at the end!")
+    warning("longest run of empty cells does not occur at the end")
   }
 
   # Determine values of k to sum over

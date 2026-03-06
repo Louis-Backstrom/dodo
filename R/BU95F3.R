@@ -65,7 +65,7 @@ BU95F3 <- function(records) {
   z_check <- tail(z$values, 1) && tail(z$lengths, 1) == r
 
   if (z_check == FALSE) {
-    warning("Longest run of empty cells does not occur at the end!")
+    warning("longest run of empty cells does not occur at the end")
   }
 
   mp1 <- Rmpfr::mpfr(1, precBits = 64)

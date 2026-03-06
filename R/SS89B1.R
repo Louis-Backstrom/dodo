@@ -75,7 +75,7 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
   # Check if close to scale limit
   if (max(posterior) > 0.9) {
     warning(paste0(
-      "Scale factor may be too large - try setting lower (e.g. ",
+      "scale factor may be too large: try setting lower (e.g. ",
       scale * 0.1, ")"
     ))
   }

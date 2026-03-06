@@ -64,26 +64,26 @@ SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1,
   if (format_valid == FALSE) {
     if (record.check == "error") {
       # If record.check = "error", throw an error
-      stop("First uncertain sighting comes before the final certain sighting.")
+      stop("first uncertain sighting comes before the final certain sighting")
     } else if (record.check == "remove") {
       # If record.check = "remove", remove all early uncertain sightings
       warning(paste0(
         sum(records$uncertain[1:max_c]),
-        " uncertain sightings have been removed!"
+        " uncertain sightings have been removed"
       ))
       records$uncertain[1:max_c] <- 0
     } else if (record.check == "coerce") {
       # If record.check = "coerce", make all early uncertain sightings certain
       warning(paste0(
         sum(records$uncertain[1:max_c]),
-        " uncertain sightings have been made certain!"
+        " uncertain sightings have been made certain"
       ))
       records$certain[which(records$uncertain[1:max_c] == 1)] <- 1
       records$uncertain[1:max_c] <- 0
     } else {
       stop(
-        "First uncertain sighting comes before the final certain sighting!",
-        "Specify a valid solution using the record.check argument"
+        "first uncertain sighting comes before the final certain sighting:",
+        "specify a valid solution using the record.check argument"
       )
     }
   }

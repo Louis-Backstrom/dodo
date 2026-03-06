@@ -83,7 +83,7 @@ convert_dodo <- function(x, init.time,
                          time, certainty, certainty_lower, certainty_upper) {
   # Check if x is a data.frame
   if (!identical(class(x), "data.frame")) {
-    stop("Sightings spreadsheet must be a data.frame object!")
+    stop("sightings spreadsheet must be a `data.frame` object")
   }
 
   # Remove any sightings before init.time or after test.time

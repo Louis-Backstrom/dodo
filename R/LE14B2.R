@@ -47,10 +47,10 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
                    n.iter = 15000, n.burnin = 5000, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
-    stop("Package 'rjags' is required but could not be found!")
+    stop("package 'rjags' is required but could not be found")
   }
   if (!requireNamespace("coda", quietly = TRUE)) {
-    stop("Package 'coda' is required but could not be found!")
+    stop("package 'coda' is required but could not be found")
   }
 
   # Convert records into model format

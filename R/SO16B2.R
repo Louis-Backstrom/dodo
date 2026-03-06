@@ -66,7 +66,7 @@ SO16B2 <- function(records, init.time = NULL, test.time = NULL,
   # If init.time, test.time, and curr.time are specified, check they are valid
   if (!is.null(init.time) | !is.null(test.time) | !is.null(curr.time)) {
     if (curr.time - init.time != length(records)) {
-      stop("curr.time - init.time != length(records)")
+      stop("`curr.time` - `init.time` != length(`records`)")
     }
   }
 
@@ -87,7 +87,7 @@ SO16B2 <- function(records, init.time = NULL, test.time = NULL,
   }
 
   if (j > bigT | j < 0) {
-    stop("Invalid test.time!")
+    stop("invalid `test.time`")
   }
 
   # Calculate p(extinct)

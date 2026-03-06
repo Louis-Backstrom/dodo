@@ -49,7 +49,7 @@ KO20B2 <- function(records, alpha = 0.05, init.time,
                    n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
-    stop("Package 'rjags' is required but could not be found!")
+    stop("package 'rjags' is required but could not be found")
   }
 
   # Run MCMC function from Kodikara et al. 2020
@@ -117,7 +117,7 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
                                      n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
-    stop("Package 'rjags' is required but could not be found!")
+    stop("package 'rjags' is required but could not be found")
   }
 
   set.seed(1234)
