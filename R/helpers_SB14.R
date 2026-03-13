@@ -63,14 +63,28 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   DATA$N <- n
   DATA$logfact <- c(0, cumsum(log(seq_len(n))))
 
-  tL <- (tCert - tMin) / (inputs$T - tMin)
-  tL <- round((1 / increment2) * tL) * increment2
-  tLV <- seq(from = (tL + increment), to = 1 - (increment / 2), by = increment2)
-  dVec <- (data[, 1] - tMin) / (inputs$T - tMin)
-
   tmp <- sub.estimate.rate(DATA, increment, inputs)
   rate <- tmp$rate
   rateV <- tmp$rateV
+
+  if (tCert == inputs$T) {
+    BayesFactor <- 0
+    warning(paste(
+      "last certain sighting is at the end of the sighting period:",
+      "setting Bayes Factor to 0"
+    ))
+    return(list(DATA = DATA, Results = BayesFactor, rate = rate))
+  }
+
+  tL <- (tCert - tMin) / (inputs$T - tMin)
+  tL <- round((1 / increment2) * tL) * increment2
+
+  if (tL + increment > 1 - (increment / 2)) {
+    stop("tL is too close to 1: try making increment smaller")
+  }
+
+  tLV <- seq(from = (tL + increment), to = 1 - (increment / 2), by = increment2)
+  dVec <- (data[, 1] - tMin) / (inputs$T - tMin)
 
   if ((modelnumber != 1) & (modelnumber != 2)) {
     stop("`modelnumber` not defined")
