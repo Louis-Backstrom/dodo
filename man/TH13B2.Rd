@@ -15,7 +15,7 @@ TH13B2(
 )
 }
 \arguments{
-\item{records}{sighting records in \code{umcd} format (see
+\item{records}{sighting records in \code{umcb} format (see
 \code{\link{convert_dodo}} for details).}
 
 \item{priors}{nested \code{list} with two elements: \code{p} and \code{q}, each of which is
@@ -64,7 +64,7 @@ TH13B2(
 \dontrun{
 # Run an example analysis using the Slender-billed Curlew data
 TH13B2(
-  records = curlew$umcd,
+  records = curlew$umcb,
   priors = list(
     p = list(
       p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),

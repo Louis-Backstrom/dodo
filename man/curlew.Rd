@@ -14,7 +14,7 @@ curlew
 Slender-billed Curlew (\emph{Numenius tenuirostris}) sighting record from
 Buchanan et al. (2025), processed into various \code{dodo} formats. The temporal
 range (\code{init.time} to \code{test.time}) of these data is 1817 to 2022. Formats:
-\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcd}, \code{iucn}. An additional
+\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcb}, \code{iucn}. An additional
 "format", \code{buchanan}, contains the data in the exact \code{iucn} format as used
 in Buchanan et al. (2025).
 }

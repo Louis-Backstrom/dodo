@@ -210,7 +210,7 @@
 #' Ivory-billed Woodpecker (*Campephilus principalis*) sighting record from
 #' Roberts et al. (2010), processed into various `dodo` formats. The temporal
 #' range (`init.time` to `test.time`) of these data is 1897 to 2010. Formats:
-#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`.
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcb`.
 #'
 #' @format a `list` with 6 elements.
 #'
@@ -288,7 +288,7 @@
 #' @description
 #' Example multi-class sighting record from Table 1 in Thompson et al. (2013).
 #' The temporal range (`init.time` to `test.time`) of these data is 0 to 7.
-#' Format: `umcd`.
+#' Format: `umcb`.
 #'
 #' @format a `data.frame` with 4 columns and 7 rows.
 #'
@@ -325,7 +325,7 @@
 #' Slender-billed Curlew (*Numenius tenuirostris*) sighting record from
 #' Buchanan et al. (2025), processed into various `dodo` formats. The temporal
 #' range (`init.time` to `test.time`) of these data is 1817 to 2022. Formats:
-#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`, `iucn`. An additional
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcb`, `iucn`. An additional
 #' "format", `buchanan`, contains the data in the exact `iucn` format as used
 #' in Buchanan et al. (2025).
 #'

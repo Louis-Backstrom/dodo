@@ -54,8 +54,8 @@
 #' of interest, and the second being the equivalent vector for uncertain
 #' sightings. See e.g. \code{\link{KO20B2}}.
 #'
-#' **`umcd`**: *multi-class discrete uncertain sightings*. A `data.frame` of
-#' sighting counts at all discrete (integer) time intervals between `init.time`
+#' **`umcb`**: *multi-class binary uncertain sightings*. A `data.frame` of 0/1
+#' sighting states at all discrete (integer) time intervals between `init.time`
 #' and `test.time` for the taxon of interest. Sightings are split up into
 #' classes based on their `certainty` score. See e.g. \code{\link{TH13B1}}.
 #'
@@ -120,13 +120,14 @@ convert_dodo <- function(x, init.time,
     ))
   )
 
-  # Multi-class discrete uncertain sightings from init.time to test.time
-  x_umcd <- data.frame(time = init.time:test.time)
+  # Multi-class binary uncertain sightings from init.time to test.time
+  x_umcb <- data.frame(time = init.time:test.time)
   for (certainty_class in sort(unique(x[[certainty]]), decreasing = TRUE)) {
-    x_umcd[paste0("records_", certainty_class)] <- as.integer(table(factor(
+    counts <- table(factor(
       x[x[[certainty]] == certainty_class, time],
       levels = init.time:test.time
-    )))
+    ))
+    x_umcb[paste0("records_", certainty_class)] <- as.integer(counts > 0)
   }
 
   # Helper function for IUCN records
@@ -160,7 +161,7 @@ convert_dodo <- function(x, init.time,
     cdis = x_cdis,
     ucon = x_ucon,
     ubin = x_ubin,
-    umcd = x_umcd,
+    umcb = x_umcb,
     iucn = x_iucn
   )
 

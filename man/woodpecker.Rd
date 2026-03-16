@@ -14,7 +14,7 @@ woodpecker
 Ivory-billed Woodpecker (\emph{Campephilus principalis}) sighting record from
 Roberts et al. (2010), processed into various \code{dodo} formats. The temporal
 range (\code{init.time} to \code{test.time}) of these data is 1897 to 2010. Formats:
-\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcd}.
+\code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{umcb}.
 }
 \references{
 \strong{Key Reference}

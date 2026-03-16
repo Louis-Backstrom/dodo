@@ -13,7 +13,7 @@ thompson_table1
 \description{
 Example multi-class sighting record from Table 1 in Thompson et al. (2013).
 The temporal range (\code{init.time} to \code{test.time}) of these data is 0 to 7.
-Format: \code{umcd}.
+Format: \code{umcb}.
 }
 \references{
 \strong{Key Reference}

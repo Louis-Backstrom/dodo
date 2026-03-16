@@ -83,8 +83,8 @@ the first being the vector of 0/1 certain sighting states at all discrete
 of interest, and the second being the equivalent vector for uncertain
 sightings. See e.g. \code{\link{KO20B2}}.
 
-\strong{\code{umcd}}: \emph{multi-class discrete uncertain sightings}. A \code{data.frame} of
-sighting counts at all discrete (integer) time intervals between \code{init.time}
+\strong{\code{umcb}}: \emph{multi-class binary uncertain sightings}. A \code{data.frame} of 0/1
+sighting states at all discrete (integer) time intervals between \code{init.time}
 and \code{test.time} for the taxon of interest. Sightings are split up into
 classes based on their \code{certainty} score. See e.g. \code{\link{TH13B1}}.
 

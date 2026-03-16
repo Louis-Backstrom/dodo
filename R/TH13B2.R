@@ -5,7 +5,7 @@
 #' al. 2013. Estimates a posterior probability that the species is extant at
 #' the end of the observation period.
 #'
-#' @param records sighting records in `umcd` format (see
+#' @param records sighting records in `umcb` format (see
 #' \code{\link{convert_dodo}} for details).
 #' @param priors nested `list` with two elements: `p` and `q`, each of which is
 #' a `list` with the same number of elements as there are sighting classes. For
@@ -52,7 +52,7 @@
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
 #' TH13B2(
-#'   records = curlew$umcd,
+#'   records = curlew$umcb,
 #'   priors = list(
 #'     p = list(
 #'       p1 = c(0, 1), p2 = c(0, 1), p3 = c(0, 1),

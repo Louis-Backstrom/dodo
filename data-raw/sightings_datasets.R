@@ -83,7 +83,7 @@ woodpecker <- list(
       0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0
     )
   ),
-  umcd = data.frame(
+  umcb = data.frame(
     time = 1897:2010,
     class_1 = c(
       1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1,
