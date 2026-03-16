@@ -2,7 +2,7 @@
 
 Example multi-class sighting record from Table 1 in Thompson et al.
 (2013). The temporal range (`init.time` to `test.time`) of these data is
-0 to 7. Format: `umcd`.
+0 to 7. Format: `umcb`.
 
 ## Usage
 

@@ -3,7 +3,7 @@
 Ivory-billed Woodpecker (*Campephilus principalis*) sighting record from
 Roberts et al. (2010), processed into various `dodo` formats. The
 temporal range (`init.time` to `test.time`) of these data is 1897 to
-2010. Formats: `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcd`.
+2010. Formats: `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcb`.
 
 ## Usage
 
