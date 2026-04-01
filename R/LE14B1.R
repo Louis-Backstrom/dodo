@@ -228,28 +228,44 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
       }
     }
 
-    PX <- prod(pvec) * pie
-
-    # PEj calculation
-    cum_pvec <- cumprod(pvec)
-    cum_qvec <- rev(cumprod(rev(qvec)))
-
-    PEj <- 0
-    for (j in (tn + 1):bigT) {
-      partpPEj <- if (j > 1) {
-        cum_pvec[j - 1]
-      } else {
-        1
-      }
-      partqPEj <- if (j <= bigT) {
-        cum_qvec[j]
-      } else {
-        1
-      }
-      PEj <- PEj + (partpPEj * partqPEj * PEE)
+    # Check if pvec or qvec contain negative values for log-space transformation
+    if (any(pvec < 0) || any(qvec < 0)) {
+      stop("pvec or qvec contains negative values")
     }
 
-    Q[k] <- PX / (PX + PEj)
+    # Transform into log-space to avoid underflow issues
+    log_pvec <- log(pvec)
+    log_qvec <- log(qvec)
+
+    log_PX <- sum(log_pvec) + log(pie)
+
+    # PEj calculation
+    log_cum_pvec <- cumsum(log_pvec)
+    log_cum_qvec <- rev(cumsum(rev(log_qvec)))
+
+    log_PEj_terms <- numeric(bigT - tn)
+
+    for (j in (tn + 1):bigT) {
+      log_partpPEj <- if (j > 1) log_cum_pvec[j - 1] else 0
+      log_partqPEj <- if (j <= bigT) log_cum_qvec[j] else 0
+
+      log_PEj_terms[j - tn] <- log_partpPEj + log_partqPEj + log(PEE)
+    }
+
+    if (all(is.infinite(log_PEj_terms))) {
+      log_PEj <- -Inf
+    } else {
+      m <- max(log_PEj_terms)
+      log_PEj <- m + log(sum(exp(log_PEj_terms - m)))
+    }
+
+    if (is.infinite(log_PX) && is.infinite(log_PEj)) {
+      Q[k] <- NA_real_
+    } else {
+      m2 <- max(log_PX, log_PEj)
+      log_denom <- m2 + log(exp(log_PX - m2) + exp(log_PEj - m2))
+      Q[k] <- exp(log_PX - log_denom)
+    }
   }
 
   # Output
