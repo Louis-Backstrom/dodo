@@ -63,9 +63,15 @@ SR03F1 <- function(records, alpha = 0.05,
 
   # Calculate p-value
   p.value <- (records[n] - records[n - 1]) / (test.time - records[n - 1])
+  if (length(p.value) == 0) {
+    p.value <- NA
+  }
 
   # Calculate point estimate
   estimate <- records[n] + (records[n] - records[n - 1])
+  if (length(estimate) == 0) {
+    estimate <- NA
+  }
 
   # Calculate width of confidence interval
   x <- ((1 - alpha) / alpha) * (records[n] - records[n - 1])
