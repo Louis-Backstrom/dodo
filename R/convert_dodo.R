@@ -111,6 +111,7 @@ convert_dodo <- function(x, init.time,
   x_ucon <- x[, c(time, certainty)]
   names(x_ucon) <- c("time", "certainty")
   x_ucon <- sort_by(x_ucon, ~time)
+  row.names(x_ucon) <- NULL
 
   # Binary uncertain sightings from init.time to test.time
   x_ubin <- data.frame(
