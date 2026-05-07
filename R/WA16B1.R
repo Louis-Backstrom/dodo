@@ -11,13 +11,6 @@
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period. Defaults to the time of
 #' the first sighting, in which case this sighting is removed from the record.
-#' @param use.mpfr whether or not to use multiple-precision floating-point
-#' computation via the `Rmpfr` package. Defaults to `FALSE`, but is necessary
-#' for larger datasets (N > 50). Note that this is very slow, and experimental!
-#' @param cores number of cores to use if using `Rmpfr` calculation (defaults
-#' to `NULL`, in which case `parallel::detectCores()` is run).
-#' @param pb whether to show a progress bar if using `Rmpfr` calculation.
-#' Defaults to `FALSE`.
 #'
 #' @returns a `list` object with the original parameters and the point estimate
 #' and credible interval included as elements. The credible interval is a
@@ -37,19 +30,15 @@
 #'
 #' @examples
 #' # Run the Anabarella analysis from Wang et al. 2016
-#' WA16B1(-anabarella, alpha = 0.1, use.mpfr = FALSE)
-#' \dontrun{
-#' WA16B1(-anabarella, alpha = 0.1, use.mpfr = TRUE) # Slow!
-#' }
+#' WA16B1(-anabarella, alpha = 0.1)
+#'
 #' \dontrun{
 #' # Run an example analysis using the Slender-billed Curlew data
-#' WA16B1(curlew$ccon, init.time = 1817, use.mpfr = FALSE) # Fails!
-#' WA16B1(curlew$ccon, init.time = 1817, use.mpfr = TRUE) # Slow!
+#' WA16B1(curlew$ccon, init.time = 1817)
 #' }
 #' @export
 
-WA16B1 <- function(records, alpha = 0.05, init.time = min(records),
-                   use.mpfr = FALSE, cores = NULL, pb = FALSE) {
+WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
   # Sort records
   records <- sort(records)
 
@@ -63,8 +52,7 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records),
   # Run the ABM model
   abm_results <- abm(
     x = records, distance = FALSE, ext = FALSE, base = base,
-    prmean = 0, prSD = 2, alpha = alpha, PLOT = 0,
-    use.mpfr = use.mpfr, cores = cores, pb = pb
+    prmean = 0, prSD = 2, alpha = alpha
   )
 
   # Output

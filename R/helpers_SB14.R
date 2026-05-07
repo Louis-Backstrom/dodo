@@ -1,51 +1,3 @@
-#' @title sb14.extended.model function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param DATA a `list` containing all the model data.
-#' @param inputs a `list` of parameters.
-#' @param modelnumber which model (1 or 2) to run.
-#' @param gamma a `numeric` specifying the rate parameter for the exponential
-#' prior, if it is used.
-#' @param increment a `numeric`.
-#' @param increment2 a `numeric`.
-#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
-#' version of the model (only for model 1). Defaults to `FALSE`.
-#'
-#' @returns a `list` with the model outputs.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
-
 sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
                                 increment = 0.01, increment2 = 0.01,
                                 SO12 = FALSE) {
@@ -124,48 +76,6 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   return(list(DATA = DATA, Results = BayesFactor, rate = rate))
 }
 
-#' @title sub.estimate.rate function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param DATA a `list` containing all the model data.
-#' @param increment a `numeric`.
-#' @param inputs a `list` of parameters.
-#'
-#' @returns a `list` with the two rates included as elements.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
-
 sub.estimate.rate <- function(DATA, increment, inputs) {
   icc <- 0
   rateV <- (DATA$tMin):(inputs$T)
@@ -187,55 +97,6 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
   out <- list(rate = rate, rateV = rateV)
   return(out)
 }
-
-#' @title likelihood.all function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param tLV a `numeric` vector.
-#' @param indmc a `logical` vector.
-#' @param tL a `numeric`.
-#' @param increment a `numeric`.
-#' @param n an `integer`.
-#' @param dVec a `numeric` vector.
-#' @param modelnumber which model (1 or 2) to run.
-#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
-#' version of the model (only for model 1). Defaults to `FALSE`.
-#'
-#' @returns A `numeric` representing the likelihood integrand evaluated at each
-#' possible extinction time.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
 
 likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
                            modelnumber, SO12 = FALSE, logfact) {
@@ -260,54 +121,6 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
   return(integrand)
 }
 
-#' @title likelihood.integrated function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param TE a `numeric`.
-#' @param n an integer.
-#' @param m an integer.
-#' @param mc an integer.
-#' @param modelnumber which model (1 or 2) to run.
-#' @param increment a `numeric`.
-#' @param tL a `numeric`.
-#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
-#' version of the model (only for model 1). Defaults to `FALSE`.
-#'
-#' @returns a value representing the integrated likelihood.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
-
 likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment,
                                   tL, SO12 = FALSE, logfact) {
   omega <- seq(
@@ -328,54 +141,6 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment,
 
   return(out)
 }
-
-#' @title likelihood.each function from Solow & Beet 2014
-#'
-#' @description
-#' Helper function. Adapted from code (woodpecker-functions-version2.r)
-#' provided by Adam Butler.
-#'
-#' @param omega a `numeric` between 0 and 1.
-#' @param TE a `numeric`.
-#' @param n an integer.
-#' @param m an integer.
-#' @param mc an integer.
-#' @param modelnumber which model (1 or 2) to run.
-#' @param tL a `numeric`.
-#' @param S012 a `logical` specifying whether to use the Solow et al. 2012
-#' version of the model (only for model 1). Defaults to `FALSE`.
-#'
-#' @returns A `numeric` representing the computed likelihood.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Solow, A. R., & Beet, A. R. (2014). On uncertain sightings and inference
-#' about extinction. *Conservation Biology*, 28(4), 1119-1123.
-#' \doi{10.1111/cobi.12309}
-#'
-#' **Other References**
-#'
-#' Carlson, C. J., Bond, A. L., & Burgio, K. R. (2018). Estimating the
-#' extinction date of the thylacine with mixed certainty data.
-#' *Conservation Biology*, 32(2), 477-483. \doi{10.1111/cobi.13037}
-#'
-#' Carlson, C. J., Burgio, K. R., Dallas, T. A., & Bond, A. L. (2018). Spatial
-#' extinction date estimation: a novel method for reconstructing spatiotemporal
-#' patterns of extinction and identifying potential zones of rediscovery.
-#' *bioRxiv preprint*. \doi{10.1101/279679}
-#'
-#' Kodikara, S., Demirhan, H., & Stone, L. (2018). Inferring about the
-#' extinction of a species using certain and uncertain sightings.
-#' *Journal of Theoretical Biology*, 442, 98-109.
-#' \doi{10.1016/j.jtbi.2018.01.015}
-#'
-#' Burgio, K. R., Carlson, C. J., Bond, A. L., Rubega, M. A., & Tingley, M. W.
-#' (2021). The two extinctions of the Carolina Parakeet
-#' *Conuropsis carolinensis*. *Bird Conservation International*, 1-8.
-#' \doi{10.1017/s0959270921000241}
-#'
-#' @noRd
 
 likelihood.each <- function(omega, TE, n, m, mc, modelnumber, tL,
                             SO12 = FALSE, logfact) {

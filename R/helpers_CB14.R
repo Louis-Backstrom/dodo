@@ -1,32 +1,3 @@
-#' @title Constant population function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S1.R).
-#'
-#' @param y observation data vector; 1 = observed that time period, 0 = not
-#' observed
-#' @param phi1 beta parameter for extinction probablity prior
-#' @param phi2 beta parameter for extinction probablity prior
-#' @param lambda1 beta parameter for detection probability prior
-#' @param lambda2 beta parameter for detection probability prior
-#' @param iter number of sampling iterations (defaults to 100,000)
-#' @param initphi initial value for yearly survival probability (defaults to
-#' 0.5)
-#' @param initlambda initial value for yearly detection probability (given
-#' extant; defaults to 0.5)
-#'
-#' @returns a `matrix` object containing Gibbs samples for phi, lambda and
-#' z (extinction year)
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
                       initphi = 0.5, initlambda = 0.5) {
   pos <- (1:length(y))[y == 1]
@@ -63,27 +34,6 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
   return(result)
 }
 
-#' @title Impute population function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S1.R).
-#'
-#' @param phi extinction probability
-#' @param lambda detection probability (given extant)
-#' @param periods observations since last detection
-#'
-#' @returns a vector giving "position" of extinction since last sighting.
-#' The last position is right-censored.
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 impute <- function(phi, lambda, periods) {
   probs <- phi * ((1 - phi) * (1 - lambda))^(0:(periods - 1))
   probs <- c(probs, ((1 - phi) * (1 - lambda))^periods)
@@ -91,93 +41,17 @@ impute <- function(phi, lambda, periods) {
   return(as.vector(rmultinom(1, 1, probs)))
 }
 
-#' @title sim.N function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param pgr exponential population growth rate per year
-#' @param time time to end of observation period
-#' @param N0 initial population size
-#'
-#' @returns the population trajectory from start of observation period
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 sim.N <- function(pgr, time, N0) {
   return(exp(log(N0) + cumsum(c(0, rep(pgr, time - 1)))))
 }
-
-#' @title Logit function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns the logit of the provided number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 logit <- function(x) {
   return(log(x / (1 - x)))
 }
 
-#' @title correct.negative function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a numeric vector
-#'
-#' @returns a numeric vector
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 correct.negative <- function(x) {
   return(pmax(x, 0))
 }
-
-#' @title impute.TE function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param p.cease a vector of yearly estimates of extinction during the
-#' observation window
-#'
-#' @returns the estimated time to extinction (TE) within the observation
-#' window, or otherwise returns NA if right-censored
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 impute.TE <- function(p.cease) {
   p.cease <- correct.negative(p.cease)
@@ -195,26 +69,6 @@ impute.TE <- function(p.cease) {
     return(NA)
   }
 }
-
-#' @title calc.pars function (non-constant population) from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param p a vector of parameters `c(pgr, delta, eps0, eps1, N0)`
-#' @param y observation data vector; 1 = observed that time period, 0 = not
-#' observed
-#'
-#' @returns a `list` object with various output parameters included
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 calc.pars <- function(p, y) {
   pgr <- p[1]
@@ -287,28 +141,6 @@ calc.pars <- function(p, y) {
   )
 }
 
-#' @title calc.pars.given.TE function (non-constant population) from Caley &
-#' Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param p a vector of parameters `c(pgr, delta, eps0, eps1, N0)`
-#' @param TE a number
-#' @param y observation data vector; 1 = observed that time period, 0 = not
-#' observed
-#'
-#' @returns a `list` object with various output parameters included
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 calc.pars.given.TE <- function(p, TE, y) {
   pgr <- p[1]
   delta <- p[2]
@@ -335,47 +167,9 @@ calc.pars.given.TE <- function(p, TE, y) {
   )
 }
 
-#' @title Log-likelihood function for lambda from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param lams a numeric vector
-#' @param ys a numeric vector
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.lam <- function(lams, ys) {
   return(sum(log(lams[ys != 0])) + sum(log(1 - lams[ys != 1])))
 }
-
-#' @title Log-likelihood function for phi from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param phis a numeric vector
-#' @param TE a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 lnL.phi <- function(phis, TE) {
   if (!is.na(TE)) {
@@ -391,407 +185,69 @@ N0.prior <- function(x) {
   return(dunif(x, 5, 50, log = FALSE))
 }
 
-#' @title Log N0 prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.N0.prior <- function(x) {
   return(dunif(x, 5, 50, log = TRUE))
 }
-
-#' @title pgr prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 pgr.prior <- function(x) {
   return(dunif(x, min = -2.3, max = 0.69, log = F))
 }
 
-#' @title Log pgr prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.pgr.prior <- function(x) {
   return(dunif(x, min = -2.3, max = 0.69, log = TRUE))
 }
-
-#' @title delta prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 delta.prior <- function(x) {
   return(dunif(x, 0.01, 4.6, log = FALSE))
 }
 
-#' @title Log delta prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.delta.prior <- function(x) {
   return(dunif(x, 0.01, 4.6, log = TRUE))
 }
-
-#' @title eps0 prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 eps0.prior <- function(x) {
   return(dunif(x, -20, 20, log = FALSE))
 }
 
-#' @title Log eps0 prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.eps0.prior <- function(x) {
   return(dunif(x, -20, 20, log = TRUE))
 }
-
-#' @title eps1 prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 eps1.prior <- function(x) {
   return(dunif(x, 0, 20, log = FALSE))
 }
 
-#' @title Log eps1 prior function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 lnL.eps1.prior <- function(x) {
   return(dunif(x, 0, 20, log = TRUE))
 }
-
-#' @title propose.N0 function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
-#' @title propose.N0 function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 propose.N0 <- function(x) {
   return(x)
 }
 
-#' @title propose.pgr function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#' @param sd a number (defaults to 0.05)
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 propose.pgr <- function(x, sd = 0.05) {
   return(rnorm(1, x, sd = sd))
 }
-
-#' @title propose.delta function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#' @param sd a number (defaults to 0.05)
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 propose.delta <- function(x, sd = 0.5) {
   return(rlnorm(1, log(x), sd))
 }
 
-#' @title q.delta function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x1 a number
-#' @param x2 a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 q.delta <- function(x1, x2) {
   return(dlnorm(x1, log(x2), sdlog = 0.5, log = TRUE))
 }
-
-#' @title propose.eps0 function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#' @param sd a number (defaults to 1.5)
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 propose.eps0 <- function(x, sd = 1.5) {
   return(rnorm(1, x, sd = sd))
 }
 
-#' @title propose.eps1 function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x a number
-#' @param sd a number (defaults to 0.15)
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 propose.eps1 <- function(x, sd = 0.15) {
   return(rlnorm(1, log(x), sdlog = sd))
 }
 
-#' @title q.eps1 function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param x1 a number
-#' @param x2 a number
-#'
-#' @returns a number
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
-
 q.eps1 <- function(x1, x2) {
   return(dlnorm(x1, log(x2), sdlog = 0.15, log = TRUE))
 }
-
-#' @title Non-constant population function from Caley & Barry 2014
-#'
-#' @description
-#' Helper function. From provided code (Code S2.R).
-#'
-#' @param N0.init starting value for N0
-#' @param y observation data vector; 1 = observed that time period, 0 = not
-#' observed
-#' @param iter number of iterations
-#' @param pgr.init starting value for pgr
-#' @param delta.init starting value for delta
-#' @param eps0.init starting value for eps0
-#' @param eps1.init starting value for eps1
-#'
-#' @returns a `matrix` object containing samples for pgr, delta, eps0, eps1,
-#' N0, TE, and acceptance indicators (x4)
-#'
-#' @references
-#' **Key Reference**
-#'
-#' Caley, P., & Barry, S. C. (2014). Quantifying extinction probabilities from
-#' sighting records: inference and uncertainties. *PLoS One*, 9(4), e95857.
-#' \doi{10.1371/journal.pone.0095857}
-#'
-#' @noRd
 
 fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
                       delta.init = NA, eps0.init = 0.0, eps1.init = -0.1) {
