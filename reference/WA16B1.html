@@ -11,7 +11,7 @@ one-sided \(1 - \alpha\) credible interval."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">dodo</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.14.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.15.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -112,23 +112,7 @@ potential is unknown. <em>Paleobiology</em>, 42(2), 240-256.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Run the Anabarella analysis from Wang et al. 2016</span></span></span>
 <span class="r-in"><span><span class="fu">WA16B1</span><span class="op">(</span><span class="op">-</span><span class="va">anabarella</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, use.mpfr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $records</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 522.1997 522.9523 523.6782 523.7662 523.8070 524.6788 525.0029 525.6291</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] 527.6288 527.6870 527.7242 527.8407 528.1165 529.4718 529.7832 530.0295</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] 530.0521 531.0703 533.0658</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $alpha</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $init.time</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 522.1997</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $estimate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 535.1131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $cred.int</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 533.0658 542.3716</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in WA16B1(-anabarella, alpha = 0.1, use.mpfr = FALSE):</span> unused argument (use.mpfr = FALSE)</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu">WA16B1</span><span class="op">(</span><span class="op">-</span><span class="va">anabarella</span>, alpha <span class="op">=</span> <span class="fl">0.1</span>, use.mpfr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># Slow!</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
