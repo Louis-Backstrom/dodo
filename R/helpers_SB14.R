@@ -71,6 +71,12 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   p_tauE_t <- f / p_t_E
   p_t_notE <- p_t_tau_E[length(p_t_tau_E)]
 
+  if (p_t_notE == 0) {
+    BayesFactor <- if (p_t_E == 0) NA_real_ else Inf
+  } else {
+    BayesFactor <- as.numeric(p_t_E / p_t_notE)
+  }
+
   BayesFactor <- as.numeric(p_t_E / p_t_notE)
 
   return(list(DATA = DATA, Results = BayesFactor, rate = rate))
@@ -100,7 +106,7 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
 
 likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
                            modelnumber, SO12 = FALSE, logfact) {
-  integrand <- numeric(length(tLV))
+  log_integrand <- rep(-Inf, length(tLV))
 
   for (iy in seq_along(tLV)) {
     TE <- tLV[iy]
@@ -109,7 +115,7 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
     mc <- sum(indmc * indm)
 
     if (TE > tL) {
-      integrand[iy] <- likelihood.integrated(
+      log_integrand[iy] <- likelihood.integrated(
         TE = TE, n = n, m = m, mc = mc,
         modelnumber = modelnumber,
         increment = increment, tL = tL,
@@ -117,6 +123,17 @@ likelihood.all <- function(tLV, indmc, tL, increment, n, dVec,
       )
     }
   }
+
+  # numerically safe exponentiation by shifting
+  finite <- is.finite(log_integrand)
+  if (!any(finite)) {
+    return(rep(0, length(tLV)))
+  }
+
+  M <- max(log_integrand[finite])
+  integrand <- numeric(length(tLV))
+  integrand[finite] <- exp(log_integrand[finite] - M)
+  integrand[!finite] <- 0
 
   return(integrand)
 }
@@ -129,17 +146,19 @@ likelihood.integrated <- function(TE, n, m, mc, modelnumber, increment,
     by = increment
   )
 
-  out <- 0
+  log_vals <- numeric(length(omega))
 
   for (i in seq_along(omega)) {
-    out <- out + increment * likelihood.each(
+    log_vals[i] <- likelihood.each(
       omega = omega[i], TE = TE, n = n,
       m = m, mc = mc, modelnumber = modelnumber,
       tL = tL, SO12 = SO12, logfact = logfact
     )
   }
 
-  return(out)
+  maxlv <- max(log_vals)
+  log_out <- maxlv + log(sum(exp(log_vals - maxlv))) + log(increment)
+  return(log_out)
 }
 
 likelihood.each <- function(omega, TE, n, m, mc, modelnumber, tL,
@@ -172,7 +191,7 @@ likelihood.each <- function(omega, TE, n, m, mc, modelnumber, tL,
   log_terms <- part0 + termj1 + termj2 + termj3
 
   maxlt <- max(log_terms)
-  out <- exp(maxlt) * sum(exp(log_terms - maxlt))
+  log_out <- maxlt + log(sum(exp(log_terms - maxlt)))
 
-  return(out)
+  return(log_out)
 }
