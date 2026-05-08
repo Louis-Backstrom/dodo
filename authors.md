@@ -7,12 +7,12 @@
 ## Citation
 
 Backstrom L (2026). *dodo: Extinction Models in R*. R package version
-1.15.1, <https://louis-backstrom.github.io/dodo/>.
+1.15.2, <https://louis-backstrom.github.io/dodo/>.
 
     @Manual{,
       title = {dodo: Extinction Models in R},
       author = {Louis Backstrom},
       year = {2026},
-      note = {R package version 1.15.1},
+      note = {R package version 1.15.2},
       url = {https://louis-backstrom.github.io/dodo/},
     }
