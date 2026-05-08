@@ -1,14 +1,9 @@
-logsumexp <- function(x) {
-  m <- max(x)
-  return(m + log(sum(exp(x - m))))
-}
-
 logsumexp2 <- function(a, b) {
   m <- max(a, b)
   return(m + log(exp(a - m) + exp(b - m)))
 }
 
-log.integrate.stable <- function(logf, lower, upper, ..., grid.n = 100,
+log_integrate_stable <- function(logf, lower, upper, ..., grid.n = 100,
                                  rel.tol = 1e-8, subdivisions = 2000) {
   grid <- seq(lower, upper, length.out = grid.n)
   lg <- logf(grid, ...)
@@ -31,7 +26,7 @@ log.integrate.stable <- function(logf, lower, upper, ..., grid.n = 100,
   return(log(val) + c)
 }
 
-log.integrand.neglambdas <- function(L, th, x, prmean, prSD) {
+log_integrand_neglambdas <- function(L, th, x, prmean, prSD) {
   log_prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   s_log1m <- sum(log1p(-x / th))
@@ -47,7 +42,7 @@ log.integrand.neglambdas <- function(L, th, x, prmean, prSD) {
   return(log_prior + ll)
 }
 
-log.integrand.poslambdas <- function(L, th, x, prmean, prSD) {
+log_integrand_poslambdas <- function(L, th, x, prmean, prSD) {
   log_prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   s_logx <- sum(log(x / th))
@@ -126,14 +121,14 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   Lpos_high <- Lmax
 
   for (i in 1:numstepsth) {
-    logI_neg <- log.integrate.stable(
-      logf = log.integrand.neglambdas,
+    logI_neg <- log_integrate_stable(
+      logf = log_integrand_neglambdas,
       lower = Lneg_low, upper = 0,
       th = thetavals[i], x = x, prmean = prmean, prSD = prSD
     )
 
-    logI_pos <- log.integrate.stable(
-      logf = log.integrand.poslambdas,
+    logI_pos <- log_integrate_stable(
+      logf = log_integrand_poslambdas,
       lower = 0, upper = Lpos_high,
       th = thetavals[i], x = x, prmean = prmean, prSD = prSD
     )
@@ -141,7 +136,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
     log_thdens[i] <- logsumexp2(logI_neg, logI_pos)
   }
 
-  logZ <- logsumexp(log_thdens)
+  logZ <- matrixStats::logSumExp(log_thdens)
   thdens <- exp(log_thdens - logZ)
 
   # Calculate posterior quantities

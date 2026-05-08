@@ -67,9 +67,13 @@ TH13B1 <- function(records, priors, certain = c(1), PXT = NULL, PE = NULL) {
 
   # Determine TN
   if (length(certain) == 1) {
-    TN <- max(which(as.numeric(records_matrix[, certain]) == 1))
+    TN <- max(which(
+      records_matrix[, certain] == 1
+    ))
   } else {
-    TN <- max(which(as.numeric(apply(records_matrix[, certain], 1, max)) == 1))
+    TN <- max(which(
+      matrixStats::rowMaxs(records_matrix[, certain, drop = FALSE]) == 1
+    ))
   }
 
   # Determine bigT
@@ -123,12 +127,6 @@ TH13B1 <- function(records, priors, certain = c(1), PXT = NULL, PE = NULL) {
   # Calculate numerator in log-space
   log_numerator <- sum(log_p_vector) + log_PXT
 
-  # log-sum-exp function
-  logsumexp <- function(x) {
-    m <- max(x)
-    m + log(sum(exp(x - m)))
-  }
-
   # Calculate denominator in log-space
   if (TN + 1 > bigT) {
     log_denominator <- log_numerator # means p.extant = 1
@@ -136,7 +134,7 @@ TH13B1 <- function(records, priors, certain = c(1), PXT = NULL, PE = NULL) {
     log_terms <- sapply((TN + 1):bigT, function(j) {
       sum(log_p_vector[1:(j - 1)]) + sum(log_q_vector[j:bigT]) + log_PE
     })
-    log_denominator <- logsumexp(c(log_numerator, log_terms))
+    log_denominator <- matrixStats::logSumExp(c(log_numerator, log_terms))
   }
 
   # Calculate P_D(X_T|s) from Equation 9

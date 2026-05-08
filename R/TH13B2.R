@@ -84,9 +84,13 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
 
   # Determine TN
   if (length(certain) == 1) {
-    TN <- max(which(records_matrix[, certain] == 1))
+    TN <- max(which(
+      records_matrix[, certain] == 1
+    ))
   } else {
-    TN <- max(which(rowMaxs(records_matrix[, certain, drop = FALSE]) == 1))
+    TN <- max(which(
+      matrixStats::rowMaxs(records_matrix[, certain, drop = FALSE]) == 1
+    ))
   }
 
   # Calculate P(X_T) and P(E)

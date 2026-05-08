@@ -84,9 +84,13 @@ TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
 
   # Determine TN
   if (length(certain) == 1) {
-    TN <- max(which(records_matrix[, certain] == 1))
+    TN <- max(which(
+      records_matrix[, certain] == 1
+    ))
   } else {
-    TN <- max(which(rowMaxs(records_matrix[, certain, drop = FALSE]) == 1))
+    TN <- max(which(
+      matrixStats::rowMaxs(records_matrix[, certain, drop = FALSE]) == 1
+    ))
   }
 
   # Calculate P(X_T) and P(E)
@@ -115,8 +119,8 @@ TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   }
 
   # Run annealed loop
-  numerator_values <- numeric(n.iter)
-  denominator_values <- numeric(n.iter)
+  log_numerator_values <- numeric(n.iter)
+  log_denominator_values <- numeric(n.iter)
 
   if (pb == TRUE) {
     pbar <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
@@ -174,8 +178,8 @@ TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     }
 
     # Store numerator and denominator values
-    numerator_values[run] <- exp(log_numerator)
-    denominator_values[run] <- exp(log_denominator)
+    log_numerator_values[run] <- log_numerator
+    log_denominator_values[run] <- log_denominator
 
     if (pb == TRUE) {
       setTxtProgressBar(pbar, run)
@@ -186,8 +190,11 @@ TH13B3 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     close(pbar)
   }
 
+  log_numerator_sum <- matrixStats::logSumExp(log_numerator_values)
+  log_denonimator_sum <- matrixStats::logSumExp(log_denominator_values)
+
   # Calculate annealed average
-  p.extant <- sum(numerator_values) / sum(denominator_values)
+  p.extant <- exp(log_numerator_sum - log_denonimator_sum)
 
   # Output
   output <- list(

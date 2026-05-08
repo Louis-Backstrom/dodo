@@ -1,7 +1,7 @@
 Type: Package
 Package: dodo
 Title: Extinction Models in R
-Version: 1.15.0
+Version: 1.15.1
 Authors@R: 
     person("Louis", "Backstrom", , "ljb38@st-andrews.ac.uk", role = c("aut", "cre"))
 Description: A selection of published extinction models.
@@ -12,7 +12,6 @@ Imports:
     coda,
     graphics,
     matrixStats,
-    parallel,
     Rmpfr,
     stats,
     utils
