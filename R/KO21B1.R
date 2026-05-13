@@ -85,19 +85,16 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
                         data {
                         C <- 10000000000000 # JAGS does not warn if too small!
 
-
                         for (i in 1:N) {
                           ones[i] <- 1
                         }
-
 
                         }
 
                         model {
 
-
                         for(i in 1:N){
-                          y[i]<- ifelse(cat[i]<1,
+                          y_temp[i]<- ifelse(cat[i]<1,
                           ifelse(tau<=t_n,(10^(-100)), ifelse(tau<=Tt,
                           ((a/(sigma^a))*d[i]^(a-1)*exp(-1*((tau/sigma)^a))),
                           ((a/(sigma^a))*d[i]^(a-1)*exp(-1*((Tt/sigma)^a))))),
@@ -107,7 +104,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
                           ((a_U2/(sigma_U2^a_U2))*d[i]^(a_U2-1)*
                           exp(-1*((Tt/sigma_U2)^a_U2-(tau/sigma_U2)^a_U2))))))/C
 
-
+                          y[i] <- y_temp[i] + 1e-300 # Avoid zero probabilities
 
                           ones[i]~ dbern( y[i] )
                         }
