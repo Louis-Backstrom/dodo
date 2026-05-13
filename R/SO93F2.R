@@ -77,8 +77,8 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   bigT <- Rmpfr::mpfr(bigT, precBits = precBits)
 
   # Calculate p-value
-  p.value <- as.numeric(Fx(x = tn, s = s, n = n) /
-    Fx(x = bigT, s = s, n = n))
+  p.value <- as.numeric(Fx(x = tn, s = s, n = n, precBits = precBits) /
+    Fx(x = bigT, s = s, n = n, precBits = precBits))
 
   # Calculate numerator for point estimate
   i <- 0:as.integer(floor(s / tn))
@@ -101,7 +101,8 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Set up Fopt to help find confidence interval
   Fopt <- function(x) {
-    value <- as.numeric(Fx(x = tn, s = s, n = n) / Fx(x = x, s = s, n = n)) -
+    value <- as.numeric(Fx(x = tn, s = s, n = n, precBits = precBits) /
+                          Fx(x = x, s = s, n = n, precBits = precBits)) -
       alpha
     return(value)
   }
@@ -149,10 +150,10 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 #'
 #' @noRd
 
-Fx <- function(x, s, n) {
+Fx <- function(x, s, n, precBits = 1024) {
   if (as.integer(floor(s / x)) == 0) {
-    warning("floor(s / x) is zero: NA produced")
-    return(NA)
+    warning("floor(s / x) is zero: setting Fx = 1")
+    return(Rmpfr::mpfr(1, precBits = precBits))
   }
 
   y <- x / s
