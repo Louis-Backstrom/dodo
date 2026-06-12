@@ -9,6 +9,7 @@ KO20B2(
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
+  record.check = "error",
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -26,6 +27,11 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
+
+\item{record.check}{what to do with uncertain sightings that occur in the
+same time interval as a certain sighting (a violation of an assumption of
+the model. Two options: \code{error} (default, throws an error) and \code{remove}
+(problematic uncertain sightings are removed from the data).}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -54,7 +60,12 @@ Sampling effort is assumed to be constant.
 # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
 KO20B2(woodpecker$ubin, init.time = 1897, test.time = 2010)
 # Run an example analysis using the Slender-billed Curlew data
-KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)
+KO20B2(
+  curlew$ubin,
+  init.time = 1817,
+  test.time = 2022,
+  record.check = "remove"
+)
 }
 
 }

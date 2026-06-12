@@ -12,6 +12,10 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
+#' @param record.check what to do with uncertain sightings that occur in the
+#' same time interval as a certain sighting (a violation of an assumption of
+#' the model. Two options: `error` (default, throws an error) and `remove`
+#' (problematic uncertain sightings are removed from the data).
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -39,17 +43,48 @@
 #' # Run the Ivory-billed Woodpecker analysis from Kodikara et al. 2020
 #' KO20B2(woodpecker$ubin, init.time = 1897, test.time = 2010)
 #' # Run an example analysis using the Slender-billed Curlew data
-#' KO20B2(curlew$ubin, init.time = 1817, test.time = 2022)
+#' KO20B2(
+#'   curlew$ubin,
+#'   init.time = 1817,
+#'   test.time = 2022,
+#'   record.check = "remove"
+#' )
 #' }
 #'
 #' @export
 
 KO20B2 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + nrow(records) - 1, n.chains = 4,
-                   n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
+                   test.time = init.time + nrow(records) - 1,
+                   record.check = "error", n.chains = 4, n.iter = 11e4,
+                   n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("package 'rjags' is required but could not be found")
+  }
+
+  # Check whether records are in valid format (uncertain sightings do not occur
+  # in the same interval as certain sightings)
+  format_valid <- all(records$certain * records$uncertain == 0)
+
+  # If record format is not valid, apply fix as specified in function call
+  if (format_valid == FALSE) {
+    if (record.check == "error") {
+      # If record.check = "error", throw an error
+      stop("at least one uncertain sighting co-occurs with a certain sighting")
+    } else if (record.check == "remove") {
+      # If record.check = "remove", remove all early uncertain sightings
+
+      warning(paste0(
+        sum(records$certain * records$uncertain),
+        " uncertain sightings have been removed"
+      ))
+      records$uncertain <- records$uncertain * !records$certain
+    } else {
+      stop(
+        "at least one uncertain sighting co-occurs with a certain sighting:",
+        "specify a valid solution using the record.check argument"
+      )
+    }
   }
 
   # Run MCMC function from Kodikara et al. 2020
@@ -151,17 +186,27 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
     lik = lik
   )
 
-  modelStringm2 <- paste0(
-    "
+  model_string <- "
     data {
-
+      # Ones trick setup
       C <- 1000000000
       ones <- 1
-
     }
 
     model {
+      # 1. Priors
+      ones ~ dbern(spy)
 
+      tau_0 ~ dnegbin(theta, 1)
+      tau <- tau_0 + 1
+      theta ~ dunif(0, 1)
+
+      pu <- puv * (1 - pui) + pui * (1 - puv) + puv * pui
+      pui ~ dunif(0, 1)
+      puv ~ dunif(0, 1)
+      pc ~ dunif(0, 1)
+
+      # 2. Likelihood
       for (t in 1:t_n) {
         lik[t] <- 1e-100
       }
@@ -184,23 +229,11 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
       likelihood <- lik[x]
 
       spy <- likelihood / C
-      ones ~ dbern(spy)
-
-      tau_0 ~ dnegbin(theta, 1)
-      tau <- tau_0 + 1
-      theta ~ dunif(0, 1)
-
-      pu <- puv * (1 - pui) + pui * (1 - puv) + puv * pui
-      pui ~ dunif(0, 1)
-      puv ~ dunif(0, 1)
-      pc ~ dunif(0, 1)
-
     }
-    "
-  )
+  "
 
   model_file <- tempfile(fileext = ".txt")
-  writeLines(modelStringm2, con = model_file)
+  writeLines(model_string, con = model_file)
 
   jagsModelm2 <- rjags::jags.model(
     file = model_file, data = dataList,

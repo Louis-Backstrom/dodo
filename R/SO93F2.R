@@ -102,7 +102,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
   # Set up Fopt to help find confidence interval
   Fopt <- function(x) {
     value <- as.numeric(Fx(x = tn, s = s, n = n, precBits = precBits) /
-                          Fx(x = x, s = s, n = n, precBits = precBits)) -
+      Fx(x = x, s = s, n = n, precBits = precBits)) -
       alpha
     return(value)
   }
