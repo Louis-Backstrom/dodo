@@ -57,6 +57,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=KO20B1]{KO20B1()}} Kodikara et al.'s (2020) "Certain-only" model.
 \item \code{\link[=KO20B2]{KO20B2()}} Kodikara et al.'s (2020) "Uncertain" model.
 \item \code{\link[=KO21B1]{KO21B1()}} Kodikara et al.'s (2021) "Change-point" model.
+\item \code{\link[=BA26B1]{BA26B1()}} Backstrom et al.'s (2026) "Certain-only No-effort" model.
 }
 }
 

@@ -64,9 +64,10 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta ~ dbeta(1, 5)
-      tau_e ~ dnegbin(theta, 1) T(t_m - 1, )
-      tau_e1 <- tau_e + 1
+      for (k in 1:(bigT + 1)) {
+        pr_tau[k] <- step(k - t_m) / (bigT - t_m + 2)
+      }
+      tau_e1 ~ dcat(pr_tau[])
 
       lambda ~ dgamma(a, b)
 
@@ -81,8 +82,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
 
   inits_list <- function() {
     list(
-      theta = runif(1, 0.001, 0.999),
-      tau_e = sample((t_m - 1):(bigT + 1), 1),
       lambda = rgamma(1, shape = a, rate = b)
     )
   }
@@ -97,19 +96,23 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_e1", "lambda", "theta"
+      "tau_e1", "lambda"
     ), n.iter = n.iter, thin = n.thin)
   }))
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
+  posterior$tau_e1[posterior$tau_e1 > length(records)] <- Inf
   posterior$year <- posterior$tau_e1 + init.time - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$year > test.time)
+  p.extant <- mean(is.infinite(posterior$year))
 
   # Calculate point estimate
   estimate <- median(posterior$year)
+  if (is.infinite(estimate)) {
+    estimate <- NA
+  }
 
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(quantile(posterior$year, 0))
