@@ -50,10 +50,10 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
 
   t_m <- max(which(records > 0))
   bigT <- length(records)
-  a <- 0.1
-  b <- 0.1
+  a <- 1
+  b <- 1
 
-  n_tau <- bigT - t_m + 2
+  n_tau <- 2 * (bigT - t_m) + 2
   pr_tau <- rep(1 / n_tau, n_tau)
 
   data_list <- list(
