@@ -28,7 +28,7 @@ for an example.}
 (defaults to the current year).}
 
 \item{threshold}{cutoff certainty value for which sightings to consider
-certain (for binary certain/uncertain models). Defaults to \code{0.9}.}
+certain (for binary/discrete certain/uncertain models). Defaults to \code{0.9}.}
 
 \item{unique}{whether to deduplicate the dataset (to mitigate nonidependence
 issues). Defaults to \code{TRUE}, in which case the dataset is grouped by every
@@ -37,7 +37,7 @@ column except \code{time}, with the most recent row kept for each group.}
 \item{aggregate}{what function to use when aggregating records into \code{iucn}
 format. Default is \code{"pci_prod"}, which returns \eqn{1 - \prod(1 - x)} where
 \eqn{x} is the vector of certainty values for each time step. Other sensible
-functions include \verb{"min}, \code{"mean"}, or \code{"max"}.}
+functions include \code{"min"}, \code{"mean"}, or \code{"max"}.}
 
 \item{time}{name of the column with time values.}
 
@@ -48,8 +48,8 @@ functions include \verb{"min}, \code{"mean"}, or \code{"max"}.}
 \item{certainty_upper}{name of the column with certainty upper bound values.}
 }
 \value{
-a \code{list} object with 11 elements: the original parameters
-\code{init.time}, \code{test.time}, \code{threshold}, and \code{unique}, and the 7 converted
+a \code{list} object with 12 elements: the original parameters
+\code{init.time}, \code{test.time}, \code{threshold}, and \code{unique}, and the 8 converted
 datasets.
 }
 \description{
@@ -82,6 +82,12 @@ the first being the vector of 0/1 certain sighting states at all discrete
 (integer) time intervals between \code{init.time} and \code{test.time} for the taxon
 of interest, and the second being the equivalent vector for uncertain
 sightings. See e.g. \code{\link{KO20B2}}.
+
+\strong{\code{udis}}: \emph{discrete uncertain sightings}. A \code{data.frame} with two columns,
+the first being the vector of counts of certain sightings at all discrete
+(integer) time intervals between \code{init.time} and \code{test.time} for the taxon
+of interest, and the second being the equivalent vector for uncertain
+sightings. See e.g. \code{\link{BA26B2}}.
 
 \strong{\code{umcb}}: \emph{multi-class binary uncertain sightings}. A \code{data.frame} of 0/1
 sighting states at all discrete (integer) time intervals between \code{init.time}

@@ -11,21 +11,21 @@
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #' @param threshold cutoff certainty value for which sightings to consider
-#' certain (for binary certain/uncertain models). Defaults to `0.9`.
+#' certain (for binary/discrete certain/uncertain models). Defaults to `0.9`.
 #' @param unique whether to deduplicate the dataset (to mitigate nonidependence
 #' issues). Defaults to `TRUE`, in which case the dataset is grouped by every
 #' column except `time`, with the most recent row kept for each group.
 #' @param aggregate what function to use when aggregating records into `iucn`
 #' format. Default is `"pci_prod"`, which returns \eqn{1 - \prod(1 - x)} where
 #' \eqn{x} is the vector of certainty values for each time step. Other sensible
-#' functions include `"min`, `"mean"`, or `"max"`.
+#' functions include `"min"`, `"mean"`, or `"max"`.
 #' @param time name of the column with time values.
 #' @param certainty name of the column with certainty values.
 #' @param certainty_lower name of the column with certainty lower bound values.
 #' @param certainty_upper name of the column with certainty upper bound values.
 #'
-#' @returns a `list` object with 11 elements: the original parameters
-#' `init.time`, `test.time`, `threshold`, and `unique`, and the 7 converted
+#' @returns a `list` object with 12 elements: the original parameters
+#' `init.time`, `test.time`, `threshold`, and `unique`, and the 8 converted
 #' datasets.
 #'
 #' @section Data Formats:
@@ -53,6 +53,12 @@
 #' (integer) time intervals between `init.time` and `test.time` for the taxon
 #' of interest, and the second being the equivalent vector for uncertain
 #' sightings. See e.g. \code{\link{KO20B2}}.
+#'
+#' **`udis`**: *discrete uncertain sightings*. A `data.frame` with two columns,
+#' the first being the vector of counts of certain sightings at all discrete
+#' (integer) time intervals between `init.time` and `test.time` for the taxon
+#' of interest, and the second being the equivalent vector for uncertain
+#' sightings. See e.g. \code{\link{BA26B2}}.
 #'
 #' **`umcb`**: *multi-class binary uncertain sightings*. A `data.frame` of 0/1
 #' sighting states at all discrete (integer) time intervals between `init.time`
@@ -121,6 +127,17 @@ convert_dodo <- function(x, init.time,
     ))
   )
 
+  # Discrete uncertain sightings from init.time to test.time
+  x_udis <- data.frame(
+    certain = x_cdis,
+    uncertain = as.integer(table(factor(
+      sort(
+        x[x[[certainty]] < threshold, time]
+      ),
+      levels = init.time:test.time
+    )))
+  )
+
   # Multi-class binary uncertain sightings from init.time to test.time
   x_umcb <- data.frame(time = init.time:test.time)
   for (certainty_class in sort(unique(x[[certainty]]), decreasing = TRUE)) {
@@ -162,6 +179,7 @@ convert_dodo <- function(x, init.time,
     cdis = x_cdis,
     ucon = x_ucon,
     ubin = x_ubin,
+    udis = x_udis,
     umcb = x_umcb,
     iucn = x_iucn
   )

@@ -2,6 +2,7 @@
 
 export(AL14B1)
 export(AL15B1)
+export(BA26B1)
 export(BR12F1)
 export(BR19F1)
 export(BR19F2)
