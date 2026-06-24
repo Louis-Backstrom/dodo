@@ -64,7 +64,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta ~ dunif(0, 1)
+      theta ~ dbeta(1, 5)
       tau_e ~ dnegbin(theta, 1) T(t_m - 1, )
       tau_e1 <- tau_e + 1
 
@@ -103,7 +103,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$year <- posterior$tau_e + init.time - 1
+  posterior$year <- posterior$tau_e1 + init.time - 1
 
   # Calculate p(extant)
   p.extant <- mean(posterior$year > test.time)
