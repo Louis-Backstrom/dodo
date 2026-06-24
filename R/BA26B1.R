@@ -53,21 +53,23 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   a <- 0.1
   b <- 0.1
 
+  n_tau <- bigT - t_m + 2
+  pr_tau <- rep(1 / n_tau, n_tau)
+
   data_list <- list(
     y = records,
     t_m = t_m,
     bigT = bigT,
     a = a,
-    b = b
+    b = b,
+    pr_tau = pr_tau
   )
 
   model_string <- "
     model {
       # 1. Priors
-      for (k in 1:(bigT + 1)) {
-        pr_tau[k] <- step(k - t_m) / (bigT - t_m + 2)
-      }
-      tau_e1 ~ dcat(pr_tau[])
+      idx ~ dcat(pr_tau[])
+      tau_e1 <- t_m + idx - 1
 
       lambda ~ dgamma(a, b)
 
