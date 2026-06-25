@@ -50,40 +50,54 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
 
   t_m <- max(which(records > 0))
   bigT <- length(records)
+  y_sum <- cumsum(records)
+  lfact_sum <- cumsum(lfactorial(records))
+  zero_ok <- integer(bigT)
+  for (t in 1:bigT) {
+    zero_ok[t] <- as.integer(if (t == bigT) TRUE else all(records[(t + 1):bigT] == 0))
+  }
+
   a <- 1
   b <- 1
 
-  n_tau <- 2 * (bigT - t_m) + 2
-  pr_tau <- rep(1 / n_tau, n_tau)
-
   data_list <- list(
-    y = records,
-    t_m = t_m,
     bigT = bigT,
+    y_sum = y_sum,
+    lfact_sum = lfact_sum,
+    zero_ok = zero_ok,
+    zeros = 0L,
     a = a,
-    b = b,
-    pr_tau = pr_tau
+    b = b
   )
 
   model_string <- "
     model {
       # 1. Priors
-      idx ~ dcat(pr_tau[])
-      tau_e1 <- t_m + idx - 1
+      theta ~ dunif(0, 1)
+      tau_e ~ dnegbin(theta, 1)
+      tau_e1 <- tau_e + 1
 
       lambda ~ dgamma(a, b)
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        extant[t] <- step(tau_e1 - t)
-        mu[t] <- extant[t] * lambda
-        y[t] ~ dpois(mu[t])
+        loglik_raw[t] <- -t * lambda + y_sum[t] * log(lambda) - lfact_sum[t]
+        loglik[t] <- zero_ok[t] * loglik_raw[t] + (1 - zero_ok[t]) * (-1.0E12)
       }
+
+      loglik[bigT + 1] <- -bigT * lambda + y_sum[bigT] * log(lambda) -
+        lfact_sum[bigT]
+      x <- step(bigT - tau_e1) * tau_e1 + step(tau_e1 - bigT - 1) * (bigT + 1)
+
+      phi <- -loglik[x]
+      zeros ~ dpois(phi)
     }
   "
 
   inits_list <- function() {
     list(
+      theta = runif(1, 0.01, 0.99),
+      tau_e = sample(0:(2 * bigT), 1),
       lambda = rgamma(1, shape = a, rate = b)
     )
   }
@@ -98,23 +112,19 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_e1", "lambda"
+      "tau_e1", "lambda", "theta"
     ), n.iter = n.iter, thin = n.thin)
   }))
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$tau_e1[posterior$tau_e1 > length(records)] <- Inf
   posterior$year <- posterior$tau_e1 + init.time - 1
 
   # Calculate p(extant)
-  p.extant <- mean(is.infinite(posterior$year))
+  p.extant <- mean(posterior$year > test.time)
 
   # Calculate point estimate
   estimate <- median(posterior$year)
-  if (is.infinite(estimate)) {
-    estimate <- NA
-  }
 
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(quantile(posterior$year, 0))
