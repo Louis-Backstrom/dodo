@@ -1,11 +1,11 @@
-#' @title Backstrom et al.'s (2026) "Certain-only No-effort" model
+#' @title Backstrom et al.'s (2026) "Uncertain No-effort" model
 #'
 #' @description
-#' Model 1 from Backstrom et al. 2026. Estimates a posterior probability that
+#' Model 2 from Backstrom et al. 2026. Estimates a posterior probability that
 #' the species is extant at the test time, and a point estimate and one-sided
 #' \eqn{1 - \alpha} credible interval on the time of extinction.
 #'
-#' @param records sighting records in `cdis` format (see
+#' @param records sighting records in `udis` format (see
 #' \code{\link{convert_dodo}} for details).
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
@@ -33,7 +33,7 @@
 #'
 #' Backstrom, L. J. et al. (in prep).
 #'
-#' @seealso [BA26B2()], [BA26B3()], [BA26B4()]
+#' @seealso [BA26B1()], [BA26B3()], [BA26B4()]
 #'
 #' @examples
 #' \dontrun{
@@ -42,8 +42,8 @@
 #'
 #' @export
 
-BA26B1 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + length(records) - 1,
+BA26B2 <- function(records, alpha = 0.05, init.time,
+                   test.time = init.time + nrow(records) - 1,
                    priors = list(a = 1, b = 1), n.chains = 4, n.iter = 11e4,
                    n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -52,7 +52,9 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   }
 
   # Check that data and priors are in a valid format
-  if (any(records < 0) || !is.integer(records)) {
+  if (any(records$certain < 0) || any(records$uncertain < 0) ||
+    any(records$certain != floor(records$certain)) ||
+    any(records$uncertain != floor(records$uncertain))) {
     stop("records must be non-negative integer counts")
   }
 
@@ -61,24 +63,39 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     stop("priors$a and priors$b must be positive")
   }
 
+  y_c <- records$certain
+  y_u <- records$uncertain
+
   # Calculate key values
-  bigT <- length(records)
-  y_sum <- cumsum(records)
-  logfact_sum <- cumsum(lfactorial(records))
+  bigT <- nrow(records)
+  y_c_sum <- cumsum(y_c)
+  y_c_logfact_sum <- cumsum(lfactorial(y_c))
+  y_c_total <- sum(y_c)
+  y_c_logfact_total <- sum(lfactorial(y_c))
+  y_u_sum <- cumsum(y_u)
+  y_u_logfact_sum <- cumsum(lfactorial(y_u))
+  y_u_total <- sum(y_u)
+  y_u_logfact_total <- sum(lfactorial(y_u))
   zero_ok <- integer(bigT)
   for (t in 1:bigT) {
     if (t == bigT) {
       zero_ok[t] <- 1L
     } else {
-      zero_ok[t] <- as.integer(all(records[(t + 1):bigT] == 0))
+      zero_ok[t] <- as.integer(all(y_c[(t + 1):bigT] == 0))
     }
   }
 
   # Specify model and parameters
   data_list <- list(
     bigT = bigT,
-    y_sum = y_sum,
-    logfact_sum = logfact_sum,
+    y_c_sum = y_c_sum,
+    y_c_logfact_sum = y_c_logfact_sum,
+    y_c_total = y_c_total,
+    y_c_logfact_total = y_c_logfact_total,
+    y_u_sum = y_u_sum,
+    y_u_logfact_sum = y_u_logfact_sum,
+    y_u_total = y_u_total,
+    y_u_logfact_total = y_u_logfact_total,
     zero_ok = zero_ok,
     zeros = 0L,
     a = priors$a,
@@ -92,16 +109,39 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       tau_e ~ dnegbin(theta, 1)
       tau_e1 <- tau_e + 1
 
-      lambda ~ dgamma(a, b)
+      lambda_v ~ dgamma(a, b)
+      lambda_i ~ dgamma(a, b)
+
+      pi_e ~ dunif(0, 1)
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        loglik_raw[t] <- -t * lambda + y_sum[t] * log(lambda) - logfact_sum[t]
+        mu_c_extant[t] <- lambda_v * pi_e
+        mu_u_extant[t] <- lambda_v * (1 - pi_e) + lambda_i
+
+        n_after[t] <- bigT - t
+        y_u_after[t] <- y_u_total - y_u_sum[t]
+        y_u_logfact_after[t] <- y_u_logfact_total - y_u_logfact_sum[t]
+
+        loglik_extant_c[t] <- -t * mu_c_extant[t] + y_c_sum[t] *
+          log(mu_c_extant[t]) - y_c_logfact_sum[t]
+        loglik_extant_u[t] <- -t * mu_u_extant[t] + y_u_sum[t] *
+          log(mu_u_extant[t]) - y_u_logfact_sum[t]
+        loglik_post_u[t] <- -n_after[t] * lambda_i + y_u_after[t] *
+          log(lambda_i) - y_u_logfact_after[t]
+
+        loglik_raw[t] <- loglik_extant_c[t] + loglik_extant_u[t] +
+          loglik_post_u[t]
         loglik[t] <- zero_ok[t] * loglik_raw[t] + (1 - zero_ok[t]) * (-1.0E12)
       }
 
-      loglik[bigT + 1] <- -bigT * lambda + y_sum[bigT] * log(lambda) -
-        logfact_sum[bigT]
+      mu_c_extant_after <- lambda_v * pi_e
+      mu_u_extant_after <- lambda_v * (1 - pi_e) + lambda_i
+
+      loglik[bigT + 1] <- -bigT * mu_c_extant_after + y_c_total *
+        log(mu_c_extant_after) - y_c_logfact_total + -bigT * mu_u_extant_after +
+        y_u_total * log(mu_u_extant_after) - y_u_logfact_total
+
       x <- step(bigT - tau_e1) * tau_e1 + step(tau_e1 - bigT - 1) * (bigT + 1)
 
       phi <- -loglik[x]
@@ -113,7 +153,9 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     list(
       theta = runif(1, 0.01, 0.99),
       tau_e = sample(0:(2 * bigT), 1),
-      lambda = rgamma(1, shape = priors$a, rate = priors$b)
+      lambda_v = rgamma(1, shape = priors$a, rate = priors$b),
+      lambda_i = rgamma(1, shape = priors$a, rate = priors$b),
+      pi_e = runif(1, 0.01, 0.99)
     )
   }
 
@@ -129,7 +171,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_e1", "lambda", "theta"
+      "tau_e1", "lambda_v", "lambda_i", "pi_e", "theta"
     ), n.iter = n.iter, thin = n.thin)
   }))
 

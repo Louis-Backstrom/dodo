@@ -51,6 +51,7 @@
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.
 #' * [BA26B1()] Backstrom et al.'s (2026) "Certain-only No-effort" model.
+#' * [BA26B2()] Backstrom et al.'s (2026) "Uncertain No-effort" model.
 #'
 #' @section Other Functions:
 #' * [convert_dodo()] Convert basic sightings spreadsheet into all `dodo`
