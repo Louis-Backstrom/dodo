@@ -113,13 +113,23 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        lambda[t] <- exp(alpha0 + inprod(alpha[1:p], x[t, 1:p]))
-        loglik_obs[t] <- -lambda[t] + y[t] * log(lambda[t]) - logfact_y[t]
+        log_lambda_raw[t] <- alpha0 + inprod(alpha[1:p], x[t, 1:p])
+        # Clamp log(lambda) to prevent 0 and Inf later; 20 seems reasonable?
+        log_lambda[t] <- max(-20, min(20, log_lambda_raw[t]))
+
+        lambda[t] <- exp(log_lambda[t])
+
+        # Clamp log(lambda) again
+        log_lambda_safe[t] <- log(max(lambda[t], 1.0E-10))
+
+        loglik_obs[t] <- -lambda[t] + y[t] * log_lambda_safe[t] - logfact_y[t]
       }
 
       cum_loglik[1] <- loglik_obs[1]
       for (t in 2:bigT) {
-        cum_loglik[t] <- cum_loglik[t - 1] + loglik_obs[t]
+        cum_loglik_raw[t] <- cum_loglik[t - 1] + loglik_obs[t]
+        # Clamp cumulative log-likelihood
+        cum_loglik[t] <- max(-1.0E10, min(1.0E10, cum_loglik_raw[t]))
       }
 
       for (t in 1:bigT) {
@@ -129,7 +139,10 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
       idx <- step(bigT - tau_e1) * tau_e1 + step(tau_e1 - bigT - 1) * (bigT + 1)
 
-      phi <- -loglik[idx]
+      phi_raw <- -loglik[idx]
+      # Clamp phi for zeros trick
+      phi <- max(phi_raw, 1.0E-10)
+
       zeros ~ dpois(phi)
     }
   "
