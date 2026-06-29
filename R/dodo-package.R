@@ -20,6 +20,7 @@
 #' @importFrom stats quantile
 #' @importFrom stats rbeta
 #' @importFrom stats rbinom
+#' @importFrom stats rgamma
 #' @importFrom stats rgeom
 #' @importFrom stats rlnorm
 #' @importFrom stats rmultinom
