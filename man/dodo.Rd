@@ -60,6 +60,7 @@ dodo implements a selection of published extinction models.
 \item \code{\link[=BA26B1]{BA26B1()}} Backstrom et al.'s (2026) "Certain-only No-effort" model.
 \item \code{\link[=BA26B2]{BA26B2()}} Backstrom et al.'s (2026) "Uncertain No-effort" model.
 \item \code{\link[=BA26B3]{BA26B3()}} Backstrom et al.'s (2026) "Certain-only Effort" model.
+\item \code{\link[=BA26B4]{BA26B4()}} Backstrom et al.'s (2026) "Uncertain Effort" model.
 }
 }
 

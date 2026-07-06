@@ -53,6 +53,7 @@
 #' * [BA26B1()] Backstrom et al.'s (2026) "Certain-only No-effort" model.
 #' * [BA26B2()] Backstrom et al.'s (2026) "Uncertain No-effort" model.
 #' * [BA26B3()] Backstrom et al.'s (2026) "Certain-only Effort" model.
+#' * [BA26B4()] Backstrom et al.'s (2026) "Uncertain Effort" model.
 #'
 #' @section Other Functions:
 #' * [convert_dodo()] Convert basic sightings spreadsheet into all `dodo`

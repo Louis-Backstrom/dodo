@@ -51,8 +51,7 @@ the species is extant at the test time, and a point estimate and one-sided
 \eqn{1 - \alpha} credible interval on the time of extinction.
 }
 \note{
-All sighting records are assumed to be certain and sampling effort is assumed
-to be constant.
+Sampling effort is assumed to be constant.
 }
 \examples{
 \dontrun{

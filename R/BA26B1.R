@@ -52,9 +52,10 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   }
 
   # Check that data and priors are in a valid format
-  if (any(records < 0) || !is.integer(records)) {
+  if (anyNA(records) || any(records < 0) || any(records != floor(records))) {
     stop("records must be non-negative integer counts")
   }
+  records <- as.integer(records)
 
   if (is.null(priors$a) || is.null(priors$b) ||
     priors$a <= 0 || priors$b <= 0) {
@@ -65,12 +66,12 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   bigT <- length(records)
   y_sum <- cumsum(records)
   logfact_sum <- cumsum(lfactorial(records))
-  zero_ok <- integer(bigT)
+  no_records_after <- integer(bigT)
   for (t in 1:bigT) {
     if (t == bigT) {
-      zero_ok[t] <- 1L
+      no_records_after[t] <- 1L
     } else {
-      zero_ok[t] <- as.integer(all(records[(t + 1):bigT] == 0))
+      no_records_after[t] <- as.integer(all(records[(t + 1):bigT] == 0))
     }
   }
 
@@ -79,7 +80,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     bigT = bigT,
     y_sum = y_sum,
     logfact_sum = logfact_sum,
-    zero_ok = zero_ok,
+    no_records_after = no_records_after,
     zeros = 0L,
     a = priors$a,
     b = priors$b
@@ -97,7 +98,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       # 2. Likelihood
       for (t in 1:bigT) {
         loglik_raw[t] <- -t * lambda + y_sum[t] * log(lambda) - logfact_sum[t]
-        loglik[t] <- zero_ok[t] * loglik_raw[t] + (1 - zero_ok[t]) * (-1.0E12)
+        loglik[t] <- no_records_after[t] * loglik_raw[t] + (1 - no_records_after[t]) * (-0.5E3)
       }
 
       loglik[bigT + 1] <- -bigT * lambda + y_sum[bigT] * log(lambda) -

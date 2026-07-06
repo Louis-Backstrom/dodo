@@ -29,8 +29,7 @@
 #' interval is a two-element numeric vector called `cred.int`.
 #'
 #' @note
-#' All sighting records are assumed to be certain and sampling effort is assumed
-#' to be constant.
+#' All sighting records are assumed to be certain.
 #'
 #' @references
 #' **Key Reference**
@@ -56,8 +55,18 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   }
 
   # Check that data and priors are in a valid format
-  if (any(records < 0) || !is.integer(records)) {
+  if (anyNA(records) || any(records < 0) || any(records != floor(records))) {
     stop("records must be non-negative integer counts")
+  }
+  records <- as.integer(records)
+
+  effort <- as.matrix(effort)
+  if (anyNA(effort) || !is.numeric(effort)) {
+    stop("effort must be numeric and not contain NA values")
+  }
+
+  if (nrow(effort) != length(records)) {
+    stop("effort must have one row per record")
   }
 
   if (any(is.null(priors$sigma)) || any(priors$sigma <= 0)) {
@@ -78,25 +87,26 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(records)
   logfact_y <- lfactorial(records)
-  zero_ok <- integer(bigT)
+  no_records_after <- integer(bigT)
   for (t in 1:bigT) {
     if (t == bigT) {
-      zero_ok[t] <- 1L
+      no_records_after[t] <- 1L
     } else {
-      zero_ok[t] <- as.integer(all(records[(t + 1):bigT] == 0))
+      no_records_after[t] <- as.integer(all(records[(t + 1):bigT] == 0))
     }
   }
+  precision <- 1 / sigma^2
 
   # Specify model and parameters
   data_list <- list(
     y = records,
-    x = as.matrix(effort),
+    x = effort,
     p = ncol(effort),
     bigT = bigT,
     logfact_y = logfact_y,
-    zero_ok = zero_ok,
+    no_records_after = no_records_after,
     zeros = 0L,
-    sigma = sigma
+    precision = precision
   )
 
   model_string <- "
@@ -106,43 +116,33 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       tau_e ~ dnegbin(theta, 1)
       tau_e1 <- tau_e + 1
 
-      alpha0 ~ dnorm(0, 1 / (sigma[1] ^ 2))
+      alpha0 ~ dnorm(0, precision[1])
       for (m in 1:p) {
-        alpha[m] ~ dnorm(0, 1 / (sigma[m + 1] ^ 2))
+        alpha[m] ~ dnorm(0, precision[m + 1])
       }
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        log_lambda_raw[t] <- alpha0 + inprod(alpha[1:p], x[t, 1:p])
-        # Clamp log(lambda) to prevent 0 and Inf later; 20 seems reasonable?
-        log_lambda[t] <- max(-20, min(20, log_lambda_raw[t]))
+        eta[t] <- alpha0 + inprod(alpha[1:p], x[t, 1:p])
+        lambda[t] <- exp(eta[t])
 
-        lambda[t] <- exp(log_lambda[t])
-
-        # Clamp log(lambda) again
-        log_lambda_safe[t] <- log(max(lambda[t], 1.0E-10))
-
-        loglik_obs[t] <- -lambda[t] + y[t] * log_lambda_safe[t] - logfact_y[t]
+        loglik_obs[t] <- -lambda[t] + y[t] * eta[t] - logfact_y[t]
       }
 
       cum_loglik[1] <- loglik_obs[1]
       for (t in 2:bigT) {
-        cum_loglik_raw[t] <- cum_loglik[t - 1] + loglik_obs[t]
-        # Clamp cumulative log-likelihood
-        cum_loglik[t] <- max(-1.0E10, min(1.0E10, cum_loglik_raw[t]))
+        cum_loglik[t] <- cum_loglik[t - 1] + loglik_obs[t]
       }
 
       for (t in 1:bigT) {
-        loglik[t] <- zero_ok[t] * cum_loglik[t] + (1 - zero_ok[t]) * (-1.0E12)
+        loglik[t] <- no_records_after[t] * cum_loglik[t] +
+          (1 - no_records_after[t]) * (-0.5E3)
       }
       loglik[bigT + 1] <- cum_loglik[bigT]
 
       idx <- step(bigT - tau_e1) * tau_e1 + step(tau_e1 - bigT - 1) * (bigT + 1)
 
-      phi_raw <- -loglik[idx]
-      # Clamp phi for zeros trick
-      phi <- max(phi_raw, 1.0E-10)
-
+      phi <- -loglik[idx]
       zeros ~ dpois(phi)
     }
   "
