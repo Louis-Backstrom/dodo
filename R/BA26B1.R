@@ -98,7 +98,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       # 2. Likelihood
       for (t in 1:bigT) {
         loglik_raw[t] <- -t * lambda + y_sum[t] * log(lambda) - logfact_sum[t]
-        loglik[t] <- no_records_after[t] * loglik_raw[t] + (1 - no_records_after[t]) * (-0.5E3)
+        loglik[t] <- no_records_after[t] * loglik_raw[t] + (1 - no_records_after[t]) * (-1.0E12)
       }
 
       loglik[bigT + 1] <- -bigT * lambda + y_sum[bigT] * log(lambda) -

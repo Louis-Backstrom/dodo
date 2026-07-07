@@ -136,7 +136,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
       for (t in 1:bigT) {
         loglik[t] <- no_records_after[t] * cum_loglik[t] +
-          (1 - no_records_after[t]) * (-0.5E3)
+          (1 - no_records_after[t]) * (-1.0E12)
       }
       loglik[bigT + 1] <- cum_loglik[bigT]
 

@@ -135,7 +135,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
         loglik_raw[t] <- loglik_c_extant[t] + loglik_u_extant[t] +
           loglik_u_post[t]
         loglik[t] <- no_certain_after[t] * loglik_raw[t] +
-          (1 - no_certain_after[t]) * (-0.5E3)
+          (1 - no_certain_after[t]) * (-1.0E12)
       }
 
       mu_c_extant_after <- lambda_v * pi_e

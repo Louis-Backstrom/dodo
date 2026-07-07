@@ -186,7 +186,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
         loglik_raw[t] <- cum_extant[t] + post_u_after[t]
 
         loglik[t] <- no_certain_after[t] * loglik_raw[t] +
-          (1 - no_certain_after[t]) * (-0.5E3)
+          (1 - no_certain_after[t]) * (-1.0E12)
       }
       loglik[bigT + 1] <- cum_extant[bigT]
 
