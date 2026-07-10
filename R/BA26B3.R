@@ -112,7 +112,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta ~ dunif(0, 1)
+      theta ~ dbeta(0.5, 0.5) # Jeffrey's prior
       tau_e ~ dnegbin(theta, 1)
       tau_e1 <- tau_e + 1
 
