@@ -65,17 +65,17 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(posterior))
-  posterior$year <- posterior$tau + init.time - 1
+  posterior$time <- posterior$tau + init.time - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$year > test.time)
+  p.extant <- mean(posterior$time > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$year)
+  estimate <- median(posterior$time)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$year, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$year, 1 - alpha))
+  cred.int.lower <- as.numeric(quantile(posterior$time, 0))
+  cred.int.upper <- as.numeric(quantile(posterior$time, 1 - alpha))
 
   # Output
   output <- list(

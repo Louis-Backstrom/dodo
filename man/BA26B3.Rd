@@ -10,7 +10,7 @@ BA26B3(
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
-  priors = list(sigma = 1),
+  priors = list(theta = c(1, 5), sigma = c(1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -32,10 +32,11 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with one element: \code{sigma}, the scale parameter(s) for
-the Normal priors on \emph{\eqn{\alpha}}. \code{sigma} should either be a single
-\code{numeric} object, or a \code{numeric} vector of the same length as the number of
-coefficients to estimate (i.e. \code{ncol(effort) + 1}). Defaults to 1.}
+\item{priors}{\code{list} with two elements: \code{theta} and \code{sigma}, themselves both
+\code{numeric} vectors.  \code{theta} is of length two, with the two elements being the
+shape parameters for the Beta hyperprior on \eqn{\theta}. They default to
+(1, 5). \code{sigma} should either be of length one, or the same length as the
+number of coefficients to estimate (i.e. \code{ncol(effort) + 1}). Defaults to 1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 

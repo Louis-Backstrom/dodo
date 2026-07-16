@@ -14,11 +14,12 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
-#' @param priors `list` with two elements: `sigma_v` and `sigma_i`, the scale
-#' parameters for the Normal priors on \emph{\eqn{\beta}} and
-#' \emph{\eqn{\gamma}}. Both `sigma_v` and `sigma_i` should either be a single
-#' `numeric` object, or a `numeric` vector of the same length as the number of
-#' coefficients to estimate (i.e. `ncol(effort) + 1`). Both default to 1.
+#' @param priors `list` with three elements: `theta`, `sigma_v` and `sigma_i`,
+#' themselves all `numeric` vectors.  `theta` is of length two, with the two
+#' elements being the shape parameters for the Beta hyperprior on \eqn{\theta}.
+#' They default to (1, 5). `sigma_v` and `sigma_i` should either be of length
+#' one, or the same length as the number of coefficients to estimate (i.e.
+#' `ncol(effort) + 1`). They both default to 1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -48,9 +49,10 @@
 
 BA26B4 <- function(records, effort, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1,
-                   priors = list(sigma_v = 1, sigma_i = 1),
-                   n.chains = 4, n.iter = 11e4,
-                   n.burnin = 1e4, n.thin = 10) {
+                   priors = list(
+                     theta = c(1, 5), sigma_v = c(1), sigma_i = c(1)
+                   ),
+                   n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("package 'rjags' is required but could not be found")
@@ -65,6 +67,11 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   }
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
+
+  if (is.null(priors$theta) || length(priors$theta) != 2 ||
+    anyNA(priors$theta) || any(priors$theta <= 0)) {
+    stop("priors$theta must be a positive vector of length 2")
+  }
 
   effort <- as.matrix(effort)
   if (anyNA(effort) || !is.numeric(effort)) {
@@ -105,17 +112,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   # Calculate key values
   bigT <- nrow(records)
+  t_m <- max(which(records$certain > 0))
   p <- ncol(effort)
-  logfact_c <- lfactorial(y_c)
-  logfact_u <- lfactorial(y_u)
-  no_certain_after <- integer(bigT)
-  for (t in 1:bigT) {
-    if (t == bigT) {
-      no_certain_after[t] <- 1L
-    } else {
-      no_certain_after[t] <- as.integer(all(y_c[(t + 1):bigT] == 0))
-    }
-  }
   precision_v <- 1 / sigma_v^2
   precision_i <- 1 / sigma_i^2
 
@@ -126,10 +124,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     x = effort,
     p = ncol(effort),
     bigT = bigT,
-    logfact_c = logfact_c,
-    logfact_u = logfact_u,
-    no_certain_after = no_certain_after,
-    zeros = 0L,
+    t_m = t_m,
+    theta_a = priors$theta[1],
+    theta_b = priors$theta[2],
     precision_v = precision_v,
     precision_i = precision_i
   )
@@ -137,9 +134,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta ~ dbeta(0.5, 0.5) # Jeffrey's prior
-      tau_e ~ dnegbin(theta, 1)
-      tau_e1 <- tau_e + 1
+      theta ~ dbeta(theta_a, theta_b)
+      tau_L ~ dnegbin(theta, 1)
 
       pi_e ~ dunif(0, 1)
 
@@ -153,54 +149,29 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
       # 2. Likelihood
       for (t in 1:bigT) {
+        extant[t] <- step(t_m + tau_L - t)
+
         eta_v[t] <- beta0 + inprod(beta[1:p], x[t, 1:p])
         eta_i[t] <- gamma0 + inprod(gamma[1:p], x[t, 1:p])
 
         lambda_v[t] <- exp(eta_v[t])
         lambda_i[t] <- exp(eta_i[t])
 
-        mu_c_extant[t] <- lambda_v[t] * pi_e
-        mu_u_extant[t] <- lambda_v[t] * (1 - pi_e) + lambda_i[t]
+        # Certain
+        mu_c[t] <- extant[t] * lambda_v[t] * pi_e
+        y_c[t] ~ dpois(mu_c[t])
 
-        loglik_c_extant[t] <- -mu_c_extant[t] + y_c[t] *
-          (eta_v[t] + log(pi_e)) - logfact_c[t]
-        loglik_u_extant[t] <- -mu_u_extant[t] + y_u[t] *
-          log(mu_u_extant[t]) - logfact_u[t]
-
-        loglik_extant[t] <- loglik_c_extant[t] + loglik_u_extant[t]
-
-        loglik_u_post[t] <- -lambda_i[t] +  y_u[t] * eta_i[t] - logfact_u[t]
+        # Uncertain
+        mu_u[t] <- extant[t] * lambda_v[t] * (1 - pi_e) + lambda_i[t]
+        y_u[t] ~ dpois(mu_u[t])
       }
-
-      cum_extant[1] <- loglik_extant[1]
-      cum_u_post[1] <- loglik_u_post[1]
-
-      for (t in 2:bigT) {
-        cum_extant[t] <- cum_extant[t - 1] + loglik_extant[t]
-        cum_u_post[t] <- cum_u_post[t - 1] + loglik_u_post[t]
-      }
-
-      for (t in 1:bigT) {
-        post_u_after[t] <- cum_u_post[bigT] - cum_u_post[t]
-
-        loglik_raw[t] <- cum_extant[t] + post_u_after[t]
-
-        loglik[t] <- no_certain_after[t] * loglik_raw[t] +
-          (1 - no_certain_after[t]) * (-1.0E12)
-      }
-      loglik[bigT + 1] <- cum_extant[bigT]
-
-      idx <- step(bigT - tau_e1) * tau_e1 + step(tau_e1 - bigT - 1) * (bigT + 1)
-
-      phi <- -loglik[idx]
-      zeros ~ dpois(phi)
     }
   "
 
   inits_list <- function() {
     list(
       theta = runif(1, 0.01, 0.99),
-      tau_e = sample(0:(2 * bigT), 1),
+      tau_L = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
       beta0 = rnorm(1, 0, 1),
       gamma0 = rnorm(1, 0, 1),
@@ -221,23 +192,23 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_e1", "pi_e", "theta", "beta0", "beta", "gamma0", "gamma"
+      "tau_L", "pi_e", "theta", "beta0", "beta", "gamma0", "gamma"
     ), n.iter = n.iter, thin = n.thin)
   }))
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$year <- posterior$tau_e1 + init.time - 1
+  posterior$time <- init.time + t_m + posterior$tau_L - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$year >= test.time)
+  p.extant <- mean(posterior$time >= test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$year)
+  estimate <- median(posterior$time)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$year, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$year, 1 - alpha))
+  cred.int.lower <- as.numeric(quantile(posterior$time, 0))
+  cred.int.upper <- as.numeric(quantile(posterior$time, 1 - alpha))
 
   # Output
   output <- list(

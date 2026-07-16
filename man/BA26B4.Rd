@@ -10,7 +10,7 @@ BA26B4(
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
-  priors = list(sigma_v = 1, sigma_i = 1),
+  priors = list(theta = c(1, 5), sigma_v = c(1), sigma_i = c(1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -32,11 +32,12 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with two elements: \code{sigma_v} and \code{sigma_i}, the scale
-parameters for the Normal priors on \emph{\eqn{\beta}} and
-\emph{\eqn{\gamma}}. Both \code{sigma_v} and \code{sigma_i} should either be a single
-\code{numeric} object, or a \code{numeric} vector of the same length as the number of
-coefficients to estimate (i.e. \code{ncol(effort) + 1}). Both default to 1.}
+\item{priors}{\code{list} with three elements: \code{theta}, \code{sigma_v} and \code{sigma_i},
+themselves all \code{numeric} vectors.  \code{theta} is of length two, with the two
+elements being the shape parameters for the Beta hyperprior on \eqn{\theta}.
+They default to (1, 5). \code{sigma_v} and \code{sigma_i} should either be of length
+one, or the same length as the number of coefficients to estimate (i.e.
+\code{ncol(effort) + 1}). They both default to 1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 

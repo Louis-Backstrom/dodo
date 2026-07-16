@@ -9,7 +9,7 @@ BA26B2(
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
-  priors = list(a = 1, b = 1),
+  priors = list(theta = c(1, 5), lambda_v = c(1, 1), lambda_i = c(1, 1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -28,8 +28,12 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with two elements: \code{a} and \code{b}, the shape and rate
-parameters for the Gamma prior on \eqn{\lambda}. Both default to 1.}
+\item{priors}{\code{list} with three elements: \code{theta}, \code{lambda_v} and \code{lambda_i},
+themselves all \code{numeric} vectors of length two. The two elements in \code{theta}
+are the shape parameters for the Beta hyperprior on \eqn{\theta}. They
+default to (1, 5). The two elements in \code{lambda_v} and \code{lambda_i} are the
+shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
+\eqn{\lambda_i}. They both default to (1, 1).}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
