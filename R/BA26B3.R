@@ -17,7 +17,7 @@
 #' @param priors `list` with two elements: `theta` and `sigma`, themselves both
 #' `numeric` vectors.  `theta` is of length two, with the two elements being the
 #' shape parameters for the Beta hyperprior on \eqn{\theta}. They default to
-#' (1, 5). `sigma` should either be of length one, or the same length as the
+#' (1, 10). `sigma` should either be of length one, or the same length as the
 #' number of coefficients to estimate (i.e. `ncol(effort) + 1`). Defaults to 1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
@@ -48,7 +48,7 @@
 
 BA26B3 <- function(records, effort, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1,
-                   priors = list(theta = c(1, 5), sigma = c(1)),
+                   priors = list(theta = c(1, 10), sigma = c(1)),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {

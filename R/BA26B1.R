@@ -14,7 +14,7 @@
 #' probability at. Defaults to the end of the observation period.
 #' @param priors `list` with two elements: `theta` and `lambda`, themselves both
 #' `numeric` vectors of length two. The two elements in `theta` are the shape
-#' parameters for the Beta hyperprior on \eqn{\theta}. They default to (1, 5).
+#' parameters for the Beta hyperprior on \eqn{\theta}. They default to (1, 10).
 #' The two elements in `lambda` are the shape and rate parameters for the Gamma
 #' prior on \eqn{\lambda}. They default to (1, 1).
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
@@ -47,7 +47,7 @@
 
 BA26B1 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1,
-                   priors = list(theta = c(1, 5), lambda = c(1, 1)),
+                   priors = list(theta = c(1, 10), lambda = c(1, 1)),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {

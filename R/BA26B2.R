@@ -15,7 +15,7 @@
 #' @param priors `list` with three elements: `theta`, `lambda_v` and `lambda_i`,
 #' themselves all `numeric` vectors of length two. The two elements in `theta`
 #' are the shape parameters for the Beta hyperprior on \eqn{\theta}. They
-#' default to (1, 5). The two elements in `lambda_v` and `lambda_i` are the
+#' default to (1, 10). The two elements in `lambda_v` and `lambda_i` are the
 #' shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
 #' \eqn{\lambda_i}. They both default to (1, 1).
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
@@ -48,7 +48,7 @@
 BA26B2 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1,
                    priors = list(
-                     theta = c(1, 5), lambda_v = c(1, 1), lambda_i = c(1, 1)
+                     theta = c(1, 10), lambda_v = c(1, 1), lambda_i = c(1, 1)
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
