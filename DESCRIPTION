@@ -1,7 +1,7 @@
 Type: Package
 Package: dodo
 Title: Extinction Models in R
-Version: 2.3.4
+Version: 2.3.5
 Authors@R: 
     person("Louis", "Backstrom", , "ljb38@st-andrews.ac.uk", role = c("aut", "cre"))
 Description: A selection of published extinction models.
@@ -21,5 +21,5 @@ Suggests:
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 URL: https://louis-backstrom.github.io/dodo/
+Config/roxygen2/version: 8.0.0

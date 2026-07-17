@@ -113,6 +113,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- nrow(records)
   t_m <- max(which(records$certain > 0))
+  y_c_logfact <- lfactorial(y_c)
+  y_u_logfact <- lfactorial(y_u)
   p <- ncol(effort)
   precision_v <- 1 / sigma_v^2
   precision_i <- 1 / sigma_i^2
@@ -125,6 +127,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     p = ncol(effort),
     bigT = bigT,
     t_m = t_m,
+    y_c_logfact = y_c_logfact,
+    y_u_logfact = y_u_logfact,
+    zeros = 0L,
     theta_a = priors$theta[1],
     theta_b = priors$theta[2],
     precision_v = precision_v,
@@ -136,6 +141,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       # 1. Priors
       theta ~ dbeta(theta_a, theta_b)
       tau_L ~ dnegbin(theta, 1)
+      tau_E <- t_m + tau_L
 
       pi_e ~ dunif(0, 1)
 
@@ -149,22 +155,45 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        extant[t] <- step(t_m + tau_L - t)
-
         eta_v[t] <- beta0 + inprod(beta[1:p], x[t, 1:p])
         eta_i[t] <- gamma0 + inprod(gamma[1:p], x[t, 1:p])
 
         lambda_v[t] <- exp(eta_v[t])
         lambda_i[t] <- exp(eta_i[t])
 
-        # Certain
-        mu_c[t] <- extant[t] * lambda_v[t] * pi_e
-        y_c[t] ~ dpois(mu_c[t])
+        mu_c_ext[t] <- lambda_v[t] * pi_e
+        mu_u_ext[t] <- lambda_v[t] * (1 - pi_e) + lambda_i[t]
 
-        # Uncertain
-        mu_u[t] <- extant[t] * lambda_v[t] * (1 - pi_e) + lambda_i[t]
-        y_u[t] ~ dpois(mu_u[t])
+        loglik_c_ext[t] <- -mu_c_ext[t] + y_c[t] * log(mu_c_ext[t]) -
+          y_c_logfact[t]
+        loglik_u_ext[t] <- -mu_u_ext[t] + y_u[t] * log(mu_u_ext[t]) -
+          y_u_logfact[t]
+
+        loglik_ext[t] <- loglik_c_ext[t] + loglik_u_ext[t]
+
+        loglik_u_post[t] <- -lambda_i[t] + y_u[t] * eta_i[t] - y_u_logfact[t]
       }
+
+      cum_ext[1] <- loglik_ext[1]
+      cum_u_post[1] <- loglik_u_post[1]
+
+      for (t in 2:bigT) {
+        cum_ext[t] <- cum_ext[t - 1] + loglik_ext[t]
+        cum_u_post[t] <- cum_u_post[t - 1] + loglik_u_post[t]
+      }
+
+      for (t in 1:bigT) {
+        post_u_after[t] <- cum_u_post[bigT] - cum_u_post[t]
+        loglik[t] <- cum_ext[t] + post_u_after[t]
+      }
+
+      loglik[bigT + 1] <- cum_ext[bigT]
+
+      idx <- step(bigT - tau_E) * tau_E +  step(tau_E - bigT - 1) * (bigT + 1)
+      selected_loglik <- loglik[idx]
+
+      phi <- -selected_loglik
+      zeros ~ dpois(phi)
     }
   "
 

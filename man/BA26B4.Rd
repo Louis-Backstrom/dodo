@@ -10,7 +10,7 @@ BA26B4(
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
-  priors = list(theta = c(1, 5), sigma_v = c(1), sigma_i = c(1)),
+  priors = list(theta = c(1, 10), sigma_v = c(1), sigma_i = c(1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -35,7 +35,7 @@ probability at. Defaults to the end of the observation period.}
 \item{priors}{\code{list} with three elements: \code{theta}, \code{sigma_v} and \code{sigma_i},
 themselves all \code{numeric} vectors.  \code{theta} is of length two, with the two
 elements being the shape parameters for the Beta hyperprior on \eqn{\theta}.
-They default to (1, 5). \code{sigma_v} and \code{sigma_i} should either be of length
+They default to (1, 10). \code{sigma_v} and \code{sigma_i} should either be of length
 one, or the same length as the number of coefficients to estimate (i.e.
 \code{ncol(effort) + 1}). They both default to 1.}
 

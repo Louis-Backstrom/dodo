@@ -81,20 +81,30 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     stop("priors$lambda_i must be a positive vector of length 2")
   }
 
-  y_c <- records$certain
-  y_u <- records$uncertain
+  y_c <- as.integer(records$certain)
+  y_u <- as.integer(records$uncertain)
 
   # Calculate key values
-  bigT <- nrow(records)
+  bigT <- length(y_c)
   t_m <- max(which(y_c > 0))
-
+  y_c_sum <- cumsum(y_c)
+  y_u_sum <- cumsum(y_u)
+  y_c_logfact_sum <- cumsum(lfactorial(y_c))
+  y_u_logfact_sum <- cumsum(lfactorial(y_u))
+  y_u_total <- sum(y_u)
+  y_u_logfact_total <- sum(lfactorial(y_u))
 
   # Specify model and parameters
   data_list <- list(
-    y_c = y_c,
-    y_u = y_u,
     bigT = bigT,
     t_m = t_m,
+    y_c_sum = y_c_sum,
+    y_u_sum = y_u_sum,
+    y_c_logfact_sum = y_c_logfact_sum,
+    y_u_logfact_sum = y_u_logfact_sum,
+    y_u_total = y_u_total,
+    y_u_logfact_total = y_u_logfact_total,
+    zeros = 0L,
     theta_a = priors$theta[1],
     theta_b = priors$theta[2],
     lambda_v_a = priors$lambda_v[1],
@@ -108,6 +118,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
       # 1. Priors
       theta ~ dbeta(theta_a, theta_b)
       tau_L ~ dnegbin(theta, 1)
+      tau_E <- t_m + tau_L
 
       lambda_v ~ dgamma(lambda_v_a, lambda_v_b)
       lambda_i ~ dgamma(lambda_i_a, lambda_i_b)
@@ -115,17 +126,35 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
       pi_e ~ dunif(0, 1)
 
       # 2. Likelihood
+      mu_c_ext <- lambda_v * pi_e
+      mu_u_ext <- lambda_v * (1 - pi_e) + lambda_i
+
       for (t in 1:bigT) {
-        extant[t] <- step(t_m + tau_L - t)
+        loglik_c_ext[t] <- -t * mu_c_ext + y_c_sum[t] * log(mu_c_ext) -
+          y_c_logfact_sum[t]
 
-        # Certain
-        mu_c[t] <- extant[t] * lambda_v * pi_e
-        y_c[t] ~ dpois(mu_c[t])
+        loglik_u_ext[t] <- -t * mu_u_ext + y_u_sum[t] * log(mu_u_ext) -
+          y_u_logfact_sum[t]
 
-        # Uncertain
-        mu_u[t] <- extant[t] * lambda_v * (1 - pi_e) + lambda_i
-        y_u[t] ~ dpois(mu_u[t])
+        n_u_post[t] <- bigT - t
+        y_u_post[t] <- y_u_total - y_u_sum[t]
+        y_u_logfact_post[t] <- y_u_logfact_total - y_u_logfact_sum[t]
+
+        loglik_u_post[t] <- -n_u_post[t] * lambda_i + y_u_post[t] *
+          log(lambda_i) - y_u_logfact_post[t]
+
+        loglik[t] <- loglik_c_ext[t] + loglik_u_ext[t] + loglik_u_post[t]
       }
+
+      loglik[bigT + 1] <- -bigT * mu_c_ext + y_c_sum[bigT] * log(mu_c_ext) -
+        y_c_logfact_sum[bigT] + -bigT * mu_u_ext + y_u_sum[bigT] *
+        log(mu_u_ext) - y_u_logfact_sum[bigT]
+
+      idx <- step(bigT - tau_E) * tau_E + step(tau_E - bigT - 1) * (bigT + 1)
+      selected_loglik <- loglik[idx]
+
+      phi <- -selected_loglik
+      zeros ~ dpois(phi)
     }
   "
 
@@ -133,8 +162,8 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     list(
       theta = runif(1, 0.01, 0.99),
       tau_L = sample(0:(2 * bigT), 1),
-      lambda_v = rgamma(1, priors$lambda_v[1], priors$lambda_i[2]),
-      lambda_i = rgamma(1, priors$lambda_v[1], priors$lambda_i[2]),
+      lambda_v = rgamma(1, priors$lambda_v[1], priors$lambda_v[2]),
+      lambda_i = rgamma(1, priors$lambda_i[1], priors$lambda_i[2]),
       pi_e = runif(1, 0.01, 0.99)
     )
   }

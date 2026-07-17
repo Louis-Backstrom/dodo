@@ -73,12 +73,16 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
+  y_sum <- cumsum(records)
+  y_logfact_sum <- cumsum(lfactorial(records))
 
   # Specify model and parameters
   data_list <- list(
-    y = records,
     bigT = bigT,
     t_m = t_m,
+    y_sum = y_sum,
+    y_logfact_sum = y_logfact_sum,
+    zeros = 0L,
     theta_a = priors$theta[1],
     theta_b = priors$theta[2],
     lambda_a = priors$lambda[1],
@@ -90,15 +94,20 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       # 1. Priors
       theta ~ dbeta(theta_a, theta_b)
       tau_L ~ dnegbin(theta, 1)
+      tau_E <- t_m + tau_L
 
       lambda ~ dgamma(lambda_a, lambda_b)
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        extant[t] <- step(t_m + tau_L - t)
-        mu[t] <- extant[t] * lambda
-        y[t] ~ dpois(mu[t])
+        loglik[t] <- -t * lambda + y_sum[t] * log(lambda) - y_logfact_sum[t]
       }
+
+      loglik[bigT + 1] <- loglik[bigT]
+      idx <- step(bigT - tau_E) * tau_E + step(tau_E - bigT - 1) * (bigT + 1)
+
+      phi <- -loglik[idx]
+      zeros ~ dpois(phi)
     }
   "
 

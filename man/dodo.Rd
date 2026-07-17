@@ -82,4 +82,9 @@ Useful links:
 \author{
 \strong{Maintainer}: Louis Backstrom \email{ljb38@st-andrews.ac.uk}
 
+Authors:
+\itemize{
+  \item Louis Backstrom \email{ljb38@st-andrews.ac.uk}
+}
+
 }

@@ -93,6 +93,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
+  y_logfact <- lfactorial(records)
   precision <- 1 / sigma^2
 
   # Specify model and parameters
@@ -102,6 +103,8 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     p = ncol(effort),
     bigT = bigT,
     t_m = t_m,
+    y_logfact = y_logfact,
+    zeros = 0L,
     theta_a = priors$theta[1],
     theta_b = priors$theta[2],
     precision = precision
@@ -112,6 +115,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       # 1. Priors
       theta ~ dbeta(theta_a, theta_b)
       tau_L ~ dnegbin(theta, 1)
+      tau_E <- t_m + tau_L
 
       alpha0 ~ dnorm(0, precision[1])
       for (m in 1:p) {
@@ -123,11 +127,26 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
         eta[t] <- alpha0 + inprod(alpha[1:p], x[t, 1:p])
         lambda[t] <- exp(eta[t])
 
-        extant[t] <- step(t_m + tau_L - t)
-        mu[t] <- extant[t] * lambda[t]
-
-        y[t] ~ dpois(mu[t])
+        loglik_obs[t] <- -lambda[t] + y[t] * eta[t] - y_logfact[t]
       }
+
+      cum_loglik[1] <- loglik_obs[1]
+
+      for (t in 2:bigT) {
+        cum_loglik[t] <- cum_loglik[t - 1] + loglik_obs[t]
+      }
+
+      for (t in 1:bigT) {
+        loglik[t] <- cum_loglik[t]
+      }
+
+      loglik[bigT + 1] <- cum_loglik[bigT]
+
+      idx <- step(bigT - tau_E) * tau_E + step(tau_E - bigT - 1) * (bigT + 1)
+      selected_loglik <- loglik[idx]
+
+      phi <- -selected_loglik
+      zeros ~ dpois(phi)
     }
   "
 

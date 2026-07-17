@@ -9,7 +9,7 @@ BA26B1(
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
-  priors = list(theta = c(1, 5), lambda = c(1, 1)),
+  priors = list(theta = c(1, 10), lambda = c(1, 1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -30,7 +30,7 @@ probability at. Defaults to the end of the observation period.}
 
 \item{priors}{\code{list} with two elements: \code{theta} and \code{lambda}, themselves both
 \code{numeric} vectors of length two. The two elements in \code{theta} are the shape
-parameters for the Beta hyperprior on \eqn{\theta}. They default to (1, 5).
+parameters for the Beta hyperprior on \eqn{\theta}. They default to (1, 10).
 The two elements in \code{lambda} are the shape and rate parameters for the Gamma
 prior on \eqn{\lambda}. They default to (1, 1).}
 
