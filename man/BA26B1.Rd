@@ -2,14 +2,15 @@
 % Please edit documentation in R/BA26B1.R
 \name{BA26B1}
 \alias{BA26B1}
-\title{Backstrom et al.'s (2026) "Certain-only No-effort" model}
+\title{Backstrom et al.'s (2026) "Certain-only No-detectability" model}
 \usage{
 BA26B1(
   records,
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
-  priors = list(theta = c(1, 10), lambda = c(1, 1)),
+  tol = 0.999,
+  priors = list(theta_max = c(1, 10), g = 0, lambda = c(1, 1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -28,10 +29,19 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with two elements: \code{theta} and \code{lambda}, themselves both
-\code{numeric} vectors of length two. The two elements in \code{theta} are the shape
-parameters for the Beta hyperprior on \eqn{\theta}. They default to (1, 10).
-The two elements in \code{lambda} are the shape and rate parameters for the Gamma
+\item{tol}{tolerance for the lagged extinction hazard tail approximation. The
+lagged hazard is exactly evaluated until it reaches \code{tol} of \code{theta_max},
+after which point the remaining tail is approximated using a constant hazard
+of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
+conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
+
+\item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{lambda}.
+Both \code{theta_max} and \code{lambda} are \code{numeric} vectors of length two, \code{g} is a
+single \code{numeric}. The two elements in \code{theta_max} are the shape parameters
+for the Beta hyperprior on \eqn{\theta_{max}}. They default to (1, 10). \code{g}
+is the delay parameter for the lagged extinction hazard. It defaults to 0,
+which recovers the constant-hazard geometric prior for extinction time. The
+two elements in \code{lambda} are the shape and rate parameters for the Gamma
 prior on \eqn{\lambda}. They default to (1, 1).}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}

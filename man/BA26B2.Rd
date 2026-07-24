@@ -2,14 +2,15 @@
 % Please edit documentation in R/BA26B2.R
 \name{BA26B2}
 \alias{BA26B2}
-\title{Backstrom et al.'s (2026) "Uncertain No-effort" model}
+\title{Backstrom et al.'s (2026) "Uncertain No-detectability" model}
 \usage{
 BA26B2(
   records,
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
-  priors = list(theta = c(1, 10), lambda_v = c(1, 1), lambda_i = c(1, 1)),
+  tol = 0.999,
+  priors = list(theta_max = c(1, 10), g = 0, lambda_v = c(1, 1), lambda_i = c(1, 1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -28,10 +29,19 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with three elements: \code{theta}, \code{lambda_v} and \code{lambda_i},
-themselves all \code{numeric} vectors of length two. The two elements in \code{theta}
-are the shape parameters for the Beta hyperprior on \eqn{\theta}. They
-default to (1, 10). The two elements in \code{lambda_v} and \code{lambda_i} are the
+\item{tol}{tolerance for the lagged extinction hazard tail approximation. The
+lagged hazard is exactly evaluated until it reaches \code{tol} of \code{theta_max},
+after which point the remaining tail is approximated using a constant hazard
+of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
+conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
+
+\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{lambda_v}, and
+\code{lambda_i}. \code{theta_max}, \code{lambda_v}, and \code{lambda_i} are all \code{numeric} vectors
+of length two, \code{g} is a single \code{numeric}. The two elements in \code{theta_max}
+are the shape parameters for the Beta hyperprior on \eqn{\theta_{max}}. They
+default to (1, 10). \code{g} is the delay parameter for the lagged extinction
+hazard. It defaults to 0, which recovers the constant-hazard geometric prior
+for extinction time. The two elements in \code{lambda_v} and \code{lambda_i} are the
 shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
 \eqn{\lambda_i}. They both default to (1, 1).}
 

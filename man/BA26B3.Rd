@@ -2,15 +2,16 @@
 % Please edit documentation in R/BA26B3.R
 \name{BA26B3}
 \alias{BA26B3}
-\title{Backstrom et al.'s (2026) "Certain-only Effort" model}
+\title{Backstrom et al.'s (2026) "Certain-only Detectability" model}
 \usage{
 BA26B3(
   records,
-  effort,
+  detectability,
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
-  priors = list(theta = c(1, 10), sigma = c(1)),
+  tol = 0.999,
+  priors = list(theta_max = c(1, 10), g = 0, sigma = c(1)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -21,8 +22,9 @@ BA26B3(
 \item{records}{sighting records in \code{cdis} format (see
 \code{\link{convert_dodo}} for details).}
 
-\item{effort}{a \code{data.frame} of effort data, with the same number of rows as
-\code{records} and as many columns as there are effort variables.}
+\item{detectability}{a \code{data.frame} of detectability data, with the same
+number of rows as \code{records} and as many columns as there are detection
+variables.}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
@@ -32,11 +34,21 @@ the \eqn{1 - \alpha} credible interval.}
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
 
-\item{priors}{\code{list} with two elements: \code{theta} and \code{sigma}, themselves both
-\code{numeric} vectors.  \code{theta} is of length two, with the two elements being the
-shape parameters for the Beta hyperprior on \eqn{\theta}. They default to
-(1, 10). \code{sigma} should either be of length one, or the same length as the
-number of coefficients to estimate (i.e. \code{ncol(effort) + 1}). Defaults to 1.}
+\item{tol}{tolerance for the lagged extinction hazard tail approximation. The
+lagged hazard is exactly evaluated until it reaches \code{tol} of \code{theta_max},
+after which point the remaining tail is approximated using a constant hazard
+of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
+conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
+
+\item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{sigma}. Both
+\code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric.}
+\code{theta_max} is of length two, with the two elements being the shape
+parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
+(1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
+defaults to 0, which recovers the constant-hazard geometric prior for
+extinction time. \code{sigma} should either be of length one, or the same length
+as the number of coefficients to estimate (i.e. \code{ncol(detectability) + 1}).
+Defaults to 1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 

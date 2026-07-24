@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Uncertain Effort" model
+#' @title Backstrom et al.'s (2026) "Uncertain Detectability" model
 #'
 #' @description
 #' Model 4 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -7,19 +7,28 @@
 #'
 #' @param records sighting records in `udis` format (see
 #' \code{\link{convert_dodo}} for details).
-#' @param effort a `data.frame` of effort data, with the same number of rows as
-#' `records` and as many columns as there are effort variables.
+#' @param detectability a `data.frame` of detectability data, with the same
+#' number of rows as `records` and as many columns as there are detection
+#' variables.
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
-#' @param priors `list` with three elements: `theta`, `sigma_v` and `sigma_i`,
-#' themselves all `numeric` vectors.  `theta` is of length two, with the two
-#' elements being the shape parameters for the Beta hyperprior on \eqn{\theta}.
-#' They default to (1, 10). `sigma_v` and `sigma_i` should either be of length
-#' one, or the same length as the number of coefficients to estimate (i.e.
-#' `ncol(effort) + 1`). They both default to 1.
+#' @param tol tolerance for the lagged extinction hazard tail approximation. The
+#' lagged hazard is exactly evaluated until it reaches `tol` of `theta_max`,
+#' after which point the remaining tail is approximated using a constant hazard
+#' of `theta_max`. Defaults to 0.999; if this yields slow evaluation (in
+#' conjunction with a large value of `g`), consider a lower tolerance e.g. 0.99.
+#' @param priors `list` with four elements: `theta_max`, `g`, `sigma_v` and
+#' `sigma_i`. `theta_max`, `sigma_v`, and `sigma_i` are all `numeric` vectors,
+#' `g` is a single `numeric`. The two elements in `theta_max` are the shape
+#' parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
+#' (1, 10). `g` is the delay parameter for the lagged extinction hazard. It
+#' defaults to 0, which recovers the constant-hazard geometric prior for
+#' extinction time. `sigma_v` and `sigma_i` should either be of length one, or
+#' the same length as the number of coefficients to estimate (i.e.
+#' `ncol(detectability) + 1`). They both default to 1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -47,10 +56,10 @@
 #'
 #' @export
 
-BA26B4 <- function(records, effort, alpha = 0.05, init.time,
-                   test.time = init.time + nrow(records) - 1,
+BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
+                   test.time = init.time + nrow(records) - 1, tol = 0.999,
                    priors = list(
-                     theta = c(1, 10), sigma_v = c(1), sigma_i = c(1)
+                     theta_max = c(1, 10), g = 0, sigma_v = c(1), sigma_i = c(1)
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -68,18 +77,23 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
 
-  if (is.null(priors$theta) || length(priors$theta) != 2 ||
-    anyNA(priors$theta) || any(priors$theta <= 0)) {
-    stop("priors$theta must be a positive vector of length 2")
+  if (is.null(priors$theta_max) || length(priors$theta_max) != 2 ||
+    anyNA(priors$theta_max) || any(priors$theta_max <= 0)) {
+    stop("priors$theta_max must be a positive vector of length 2")
   }
 
-  effort <- as.matrix(effort)
-  if (anyNA(effort) || !is.numeric(effort)) {
-    stop("effort must be numeric and not contain NA values")
+  if (is.null(priors$g) || length(priors$g) != 1 ||
+    anyNA(priors$g) || priors$g < 0) {
+    stop("priors$g must be a single non-negative number")
   }
 
-  if (nrow(effort) != nrow(records)) {
-    stop("effort must have one row per record")
+  detectability <- as.matrix(detectability)
+  if (anyNA(detectability) || !is.numeric(detectability)) {
+    stop("detectability must be numeric and not contain NA values")
+  }
+
+  if (nrow(detectability) != nrow(records)) {
+    stop("detectability must have one row per record")
   }
 
   if (any(is.null(priors$sigma_v)) || any(is.null(priors$sigma_i)) ||
@@ -88,23 +102,28 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   }
 
   if (length(priors$sigma_v) != 1 && length(priors$sigma_v) !=
-    (ncol(effort) + 1) ||
+    (ncol(detectability) + 1) ||
     length(priors$sigma_i) != 1 && length(priors$sigma_i) !=
-      (ncol(effort) + 1)) {
-    stop("both sigma priors must be of length 1 or ncol(effort) + 1")
+      (ncol(detectability) + 1)) {
+    stop("both sigma priors must be of length 1 or ncol(detectability) + 1")
   }
 
   # Reformat sigma priors
   if (length(priors$sigma_v) == 1) {
-    sigma_v <- rep(priors$sigma_v, ncol(effort) + 1)
+    sigma_v <- rep(priors$sigma_v, ncol(detectability) + 1)
   } else {
     sigma_v <- priors$sigma_v
   }
 
   if (length(priors$sigma_i) == 1) {
-    sigma_i <- rep(priors$sigma_i, ncol(effort) + 1)
+    sigma_i <- rep(priors$sigma_i, ncol(detectability) + 1)
   } else {
     sigma_i <- priors$sigma_i
+  }
+
+  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1 || is.na(tol) ||
+    tol <= 0 || tol >= 1) {
+    stop("tol must be a single number in (0, 1)")
   }
 
   y_c <- records$certain
@@ -113,25 +132,44 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- nrow(records)
   t_m <- max(which(records$certain > 0))
+  max_lag_obs <- bigT - t_m
+  haz_tol <- tol
+  if (priors$g == 0) {
+    max_lag_prior <- max_lag_obs
+  } else {
+    lag_req <- ceiling(log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1)
+    max_lag_prior <- max(max_lag_obs, lag_req)
+  }
+  n_cat <- max_lag_prior + 2
   y_c_logfact <- lfactorial(y_c)
   y_u_logfact <- lfactorial(y_u)
-  p <- ncol(effort)
+  p <- ncol(detectability)
   precision_v <- 1 / sigma_v^2
   precision_i <- 1 / sigma_i^2
+
+  # Check if the maximum lag before swapping to tail approximation is large
+  if (max_lag_prior > 1000) {
+    warning(paste0(
+      "maximum lag is very large (", max_lag_prior, "); JAGS may be slow"
+    ))
+  }
 
   # Specify model and parameters
   data_list <- list(
     y_c = y_c,
     y_u = y_u,
-    x = effort,
-    p = ncol(effort),
+    x = detectability,
+    p = ncol(detectability),
     bigT = bigT,
     t_m = t_m,
+    max_lag_prior = max_lag_prior,
+    n_cat = n_cat,
     y_c_logfact = y_c_logfact,
     y_u_logfact = y_u_logfact,
     zeros = 0L,
-    theta_a = priors$theta[1],
-    theta_b = priors$theta[2],
+    g = priors$g,
+    theta_max_a = priors$theta_max[1],
+    theta_max_b = priors$theta_max[2],
     precision_v = precision_v,
     precision_i = precision_i
   )
@@ -139,9 +177,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta ~ dbeta(theta_a, theta_b)
-      tau_L ~ dnegbin(theta, 1)
-      tau_E <- t_m + tau_L
+      theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       pi_e ~ dunif(0, 1)
 
@@ -152,6 +188,27 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
         beta[m] ~ dnorm(0, precision_v[m + 1])
         gamma[m] ~ dnorm(0, precision_i[m + 1])
       }
+
+      ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
+      surv[1] <- 1
+
+      for (k in 1:(max_lag_prior + 1)) {
+        lag[k] <- k - 1
+        theta_lag[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+        p_tau[k] <- surv[k] * theta_lag[k]
+        surv[k + 1] <- surv[k] * (1 - theta_lag[k])
+      }
+
+      ## 1.2. Approximate tail probability after max_lag_prior
+      p_tau[n_cat] <- surv[max_lag_prior + 2]
+      tau_cat ~ dcat(p_tau[1:n_cat])
+      is_tail <- equals(tau_cat, n_cat)
+
+      tau_tail ~ dnegbin(theta_max, 1)
+
+      tau_L <- (1 - is_tail) * (tau_cat - 1) + is_tail *
+        (max_lag_prior + 1 + tau_tail)
+      tau_E <- t_m + tau_L
 
       # 2. Likelihood
       for (t in 1:bigT) {
@@ -199,13 +256,14 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   inits_list <- function() {
     list(
-      theta = runif(1, 0.01, 0.99),
-      tau_L = sample(0:(2 * bigT), 1),
+      theta_max = runif(1, 0.01, 0.99),
+      tau_cat = sample(1:n_cat, 1),
+      tau_tail = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
       beta0 = rnorm(1, 0, 1),
       gamma0 = rnorm(1, 0, 1),
-      beta = rnorm(ncol(effort), 0, 1),
-      gamma = rnorm(ncol(effort), 0, 1)
+      beta = rnorm(ncol(detectability), 0, 1),
+      gamma = rnorm(ncol(detectability), 0, 1)
     )
   }
 
@@ -221,13 +279,13 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_L", "pi_e", "theta", "beta0", "beta", "gamma0", "gamma"
+      "tau_E", "pi_e", "theta_max", "beta0", "beta", "gamma0", "gamma"
     ), n.iter = n.iter, thin = n.thin)
   }))
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$time <- init.time + t_m + posterior$tau_L - 1
+  posterior$time <- init.time + posterior$tau_E - 1
 
   # Calculate p(extant)
   p.extant <- mean(posterior$time >= test.time)
@@ -245,6 +303,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
+    tol = tol,
     priors = priors,
     p.extant = p.extant,
     estimate = estimate,
