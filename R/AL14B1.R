@@ -84,7 +84,7 @@ AL14B1 <- function(records) {
     p.extant = 1 - tail(post, 1)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "AL14B1"))
 }
 
 #' @title mu function from Alroy (2014).

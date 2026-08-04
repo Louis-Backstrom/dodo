@@ -70,5 +70,5 @@ CB14B1 <- function(records, alpha = 0.05, init.time,
     cred.int = as.numeric(quantile(posterior, c(0, 1 - alpha)))
   )
 
-  return(output)
+  return(dodo_fit(output, model = "CB14B1"))
 }

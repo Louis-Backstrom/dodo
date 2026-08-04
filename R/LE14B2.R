@@ -125,5 +125,5 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
     cred.int = cred.int
   )
 
-  return(output)
+  return(dodo_fit(output, model = "LE14B2"))
 }

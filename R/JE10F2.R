@@ -90,5 +90,5 @@ JE10F2 <- function(records, alpha = 0.05, init.time = min(records),
     conf.int = c(init.time + tn, init.time + x)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "JE10F2"))
 }

@@ -88,7 +88,7 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
     cred.int = c(cred.int.lower, cred.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "KO20B1"))
 }
 
 #' @title Model 1 function from Kodikara et al. 2020

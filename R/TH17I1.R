@@ -87,5 +87,5 @@ TH17I1 <- function(records, surveys) {
     p.extant = PXt
   )
 
-  return(output)
+  return(dodo_fit(output, model = "TH17I1"))
 }

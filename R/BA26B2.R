@@ -32,9 +32,9 @@
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `list` object with the original parameters and the p(extant),
-#' point estimate, and credible interval included as elements. The credible
-#' interval is a two-element numeric vector called `cred.int`.
+#' @returns a `list` object with the original parameters, posterior samples, and
+#' the p(extant), point estimate, and credible interval included as elements.
+#' The credible interval is a two-element numeric vector called `cred.int`.
 #'
 #' @note
 #' Sampling effort is assumed to be constant.
@@ -131,6 +131,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
   # Specify model and parameters
   data_list <- list(
+    init_time = init.time,
     bigT = bigT,
     t_m = t_m,
     max_lag_prior = max_lag_prior,
@@ -180,7 +181,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
       tau_L <- (1 - is_tail) * (tau_cat - 1) + is_tail *
         (max_lag_prior + 1 + tau_tail)
-      tau_E <- t_m + tau_L
+      tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
       mu_c_ext <- lambda_v * pi_e
@@ -207,11 +208,13 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
         y_c_logfact_sum[bigT] + -bigT * mu_u_ext + y_u_sum[bigT] *
         log(mu_u_ext) - y_u_logfact_sum[bigT]
 
-      idx <- step(bigT - tau_E) * tau_E + step(tau_E - bigT - 1) * (bigT + 1)
+      idx <- step(bigT - tau_E0) * tau_E0 + step(tau_E0 - bigT - 1) * (bigT + 1)
       selected_loglik <- loglik[idx]
 
       phi <- -selected_loglik
       zeros ~ dpois(phi)
+
+      tau_E <- init_time + tau_E0 - 1
     }
   "
 
@@ -247,14 +250,14 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   posterior$time <- init.time + posterior$tau_E - 1
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$time >= test.time)
+  p.extant <- mean(posterior$tau_E >= test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$time)
+  estimate <- median(posterior$tau_E)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$time, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$time, 1 - alpha))
+  cred.int.lower <- as.numeric(quantile(posterior$tau_E, 0))
+  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha))
 
   # Output
   output <- list(
@@ -264,10 +267,11 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     test.time = test.time,
     tol = tol,
     priors = priors,
+    samples = samples,
     p.extant = p.extant,
     estimate = estimate,
     cred.int = c(cred.int.lower, cred.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "BA26B2"))
 }

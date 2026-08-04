@@ -10,7 +10,7 @@ install.packages("devtools") # if not already installed
 library(devtools)
 
 ## install dodo from GitHub and load
-install_github("Louis-Backstrom/dodo")
+install_github("Louis-Backstrom/dodo@development")
 library(dodo)
 ```
 

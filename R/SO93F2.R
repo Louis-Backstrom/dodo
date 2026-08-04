@@ -128,7 +128,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
     conf.int = c(init.time + as.numeric(tn), init.time + conf.int)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SO93F2"))
 }
 
 #' @title F(x) from Solow 2005

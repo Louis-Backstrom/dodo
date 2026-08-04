@@ -51,7 +51,7 @@ AL15B1 <- function(records) {
     p.extant = 1 - tail(model_output, 1)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "AL15B1"))
 }
 
 #' @title Agnostic model function from Alroy (2015).

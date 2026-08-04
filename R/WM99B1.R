@@ -177,5 +177,5 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
     cred.int = c(tm + t0, qupper + t0)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "WM99B1"))
 }

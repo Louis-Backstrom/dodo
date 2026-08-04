@@ -78,5 +78,5 @@ SO93B1 <- function(records, init.time = min(records),
     p.extant = posterior
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SO93B1"))
 }

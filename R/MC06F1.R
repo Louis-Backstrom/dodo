@@ -71,5 +71,5 @@ MC06F1 <- function(records, alpha = 0.05, init.time) {
     conf.int = c(init.time + tn - 1, init.time + tn - 1 + x)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "MC06F1"))
 }

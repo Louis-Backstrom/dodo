@@ -94,5 +94,5 @@ SO93F1 <- function(records, alpha = 0.05, init.time = min(records),
     conf.int = c(max(records), init.time + tn / x)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SO93F1"))
 }

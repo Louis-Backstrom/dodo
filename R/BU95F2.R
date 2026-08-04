@@ -74,5 +74,5 @@ BU95F2 <- function(records) {
     p.value = p.value
   )
 
-  return(output)
+  return(dodo_fit(output, model = "BU95F2"))
 }

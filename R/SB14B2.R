@@ -90,5 +90,5 @@ SB14B2 <- function(records, init.time, increment = 0.01) {
     Bayes.factor = fit$Results
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SB14B2"))
 }

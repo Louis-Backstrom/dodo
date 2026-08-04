@@ -123,7 +123,7 @@ KO20B2 <- function(records, alpha = 0.05, init.time,
     cred.int = c(cred.int.lower, cred.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "KO20B2"))
 }
 
 # Declare certain as a known global variable (column in records data.frame):

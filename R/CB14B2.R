@@ -79,5 +79,5 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
     cred.int = cred.int
   )
 
-  return(output)
+  return(dodo_fit(output, model = "CB14B2"))
 }

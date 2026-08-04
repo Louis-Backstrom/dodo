@@ -110,7 +110,7 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
     conf.int = c(conf.int.lower, conf.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "RS03F1"))
 }
 
 #' @title myfun from sExtinct package

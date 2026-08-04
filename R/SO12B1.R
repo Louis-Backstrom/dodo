@@ -118,5 +118,5 @@ SO12B1 <- function(records, init.time, increment = 0.01, gamma = 1,
     Bayes.factor = fit$Results
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SO12B1"))
 }

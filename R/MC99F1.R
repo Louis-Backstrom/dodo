@@ -66,5 +66,5 @@ MC99F1 <- function(records, alpha = 0.05,
     conf.int = c(max(records), max(records) + x)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "MC99F1"))
 }

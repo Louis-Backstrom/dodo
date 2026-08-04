@@ -78,5 +78,5 @@ MA94F1 <- function(records, alpha = 0.05, gamma = 0.1) {
     ) # unique() to fix NAs
   )
 
-  return(output)
+  return(dodo_fit(output, model = "MA94F1"))
 }

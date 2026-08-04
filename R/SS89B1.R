@@ -97,5 +97,5 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
   )
 
   gc()
-  return(output)
+  return(dodo_fit(output, model = "SS89B1"))
 }

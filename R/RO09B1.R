@@ -113,5 +113,5 @@ RO09B1 <- function(records, pi = 0.5, n.chains = 4, n.iter = 11e4,
     p.extant = posterior
   )
 
-  return(output)
+  return(dodo_fit(output, model = "RO09B1"))
 }

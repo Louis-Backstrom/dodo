@@ -278,5 +278,5 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     p.extant = ifelse(bigT == tn, 1, mean(Q))
   )
 
-  return(output)
+  return(dodo_fit(output, model = "LE14B1"))
 }

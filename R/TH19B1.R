@@ -96,5 +96,5 @@ TH19B1 <- function(records, surveys, init.time, test.time, pi = 0.5) {
     p.extant = tail(data$PXt, 1)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "TH19B1"))
 }

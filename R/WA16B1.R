@@ -64,5 +64,5 @@ WA16B1 <- function(records, alpha = 0.05, init.time = min(records)) {
     cred.int = abm_results[2:3]
   )
 
-  return(output)
+  return(dodo_fit(output, model = "WA16B1"))
 }

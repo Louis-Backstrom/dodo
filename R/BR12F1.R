@@ -71,5 +71,5 @@ BR12F1 <- function(records, alpha = 0.05) {
     estimate = estimate + max(records)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "BR12F1"))
 }

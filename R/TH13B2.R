@@ -203,7 +203,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     p.extant = p.extant
   )
 
-  return(output)
+  return(dodo_fit(output, model = "TH13B2"))
 }
 
 # Declare time as a known global variable (column in records data.frame):

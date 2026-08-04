@@ -93,5 +93,5 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
     conf.int = c(init.time + tr, conf.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "JR14F1"))
 }

@@ -54,5 +54,5 @@ MC98F1 <- function(records, effort) {
     p.value = p.value
   )
 
-  return(output)
+  return(dodo_fit(output, model = "MC98F1"))
 }

@@ -86,5 +86,5 @@ SR03F1 <- function(records, alpha = 0.05,
     conf.int = c(records[n], records[n] + x)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SR03F1"))
 }

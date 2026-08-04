@@ -77,5 +77,5 @@ BR19F5 <- function(records, alpha = 0.05, init.time = min(records$time),
     conf.int = as.numeric(quantile(estimates, c(0, 1 - alpha)))
   )
 
-  return(output)
+  return(dodo_fit(output, model = "BR19F5"))
 }

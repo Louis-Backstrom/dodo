@@ -107,7 +107,7 @@ SO16B1 <- function(records, init.time = NULL, test.time = NULL,
     p.extant = 1 - p.extinct
   )
 
-  return(output)
+  return(dodo_fit(output, model = "SO16B1"))
 }
 
 #' @title Equation 7 from Solow (2016).

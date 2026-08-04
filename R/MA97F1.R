@@ -73,5 +73,5 @@ MA97F1 <- function(records, effort, alpha = 0.05, init.time) {
     conf.int = c(conf.int.lower, conf.int.upper)
   )
 
-  return(output)
+  return(dodo_fit(output, model = "MA97F1"))
 }
