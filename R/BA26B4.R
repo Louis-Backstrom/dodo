@@ -288,7 +288,6 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$time <- init.time + posterior$tau_E - 1
 
   # Calculate p(extant)
   p.extant <- mean(posterior$tau_E >= test.time)

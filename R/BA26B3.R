@@ -86,7 +86,7 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
     stop("detectability must be numeric and not contain NA values")
   }
 
-  if (nrow(detectability) != length(detectability)) {
+  if (nrow(detectability) != length(records)) {
     stop("detectability must have one row per record")
   }
 
@@ -240,7 +240,6 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
-  posterior$time <- init.time + posterior$tau_E - 1
 
   # Calculate p(extant)
   p.extant <- mean(posterior$tau_E >= test.time)

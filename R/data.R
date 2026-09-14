@@ -325,11 +325,11 @@
 #' Slender-billed Curlew (*Numenius tenuirostris*) sighting record from
 #' Buchanan et al. (2025), processed into various `dodo` formats. The temporal
 #' range (`init.time` to `test.time`) of these data is 1817 to 2022. Formats:
-#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `umcb`, `iucn`. An additional
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `udis`, `umcb`, `iucn`. An additional
 #' "format", `buchanan`, contains the data in the exact `iucn` format as used
 #' in Buchanan et al. (2025).
 #'
-#' @format a `list` with 8 elements.
+#' @format a `list` with 13 elements.
 #'
 #' @references
 #' **Key Reference**
@@ -540,3 +540,22 @@
 #' to declare eradication of an invasive species. *Journal of Applied Ecology*,
 #' 46(1), 110-117.\doi{10.1111/j.1365-2664.2008.01586.x}
 "bitterweed"
+
+#' @title Laughing Owl sightings
+#'
+#' @description
+#' Laughing Owl (*Ninox albifacies*) sighting record from Butchart et al.
+#' (2018), processed into various `dodo` formats. The temporal range
+#' (`init.time` to `test.time`) of these data is 1844 to 2018 Formats:
+#' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `udis`, `umcb`, `iucn`.
+#'
+#' @format a `list` with 12 elements.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Butchart, S. H., Lowe, S., Martin, R. W., Symes, A., Westrip, J. R., &
+#' Wheatley, H. (2018). Which bird species have gone extinct? A novel
+#' quantitative classification approach. *Biological Conservation*, 227, 9-18.
+#' \doi{10.1016/j.biocon.2018.08.014}
+"laughing_owl"
