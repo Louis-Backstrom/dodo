@@ -456,4 +456,3 @@ laughing_owl <- convert_dodo(
 )
 
 usethis::use_data(laughing_owl, overwrite = TRUE)
-

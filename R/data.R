@@ -558,4 +558,37 @@
 #' Wheatley, H. (2018). Which bird species have gone extinct? A novel
 #' quantitative classification approach. *Biological Conservation*, 227, 9-18.
 #' \doi{10.1016/j.biocon.2018.08.014}
+#'
+#' @seealso [laughing_owl_effort]
 "laughing_owl"
+
+#' @title Laughing Owl effort
+#'
+#' @description
+#' Sampling effort proxy data for the Laughing Owl (*Ninox albifacies*).
+#' Effort is approximated via three variables: (1) by the number of species
+#' recorded in the species' range in each year, following McCarthy et al.
+#' (1998); (2) by the number of birds recorded in the species' range in each
+#' year; and (3) by the number of Morepork (*Ninox novaeseelandiae*) records in
+#' the species' range in each year. Data come from GBIF (all records with
+#' coordinates), and range is defined as all of New Zealand. The temporal range
+#' (`init.time` to `test.time`) of these data is 1844 to 2018
+#'
+#' @format a `data.frame` with 3 columns and 175 rows.
+#'
+#' @references
+#' **Key Reference**
+#'
+#' Butchart, S. H., Lowe, S., Martin, R. W., Symes, A., Westrip, J. R., &
+#' Wheatley, H. (2018). Which bird species have gone extinct? A novel
+#' quantitative classification approach. *Biological Conservation*, 227, 9-18.
+#' \doi{10.1016/j.biocon.2018.08.014}
+#'
+#' **Other References**
+#'
+#' McCarthy, M. A. (1998). Identifying declining and threatened species with
+#' museum data. Biological Conservation, 83(1), 9-17.
+#' \doi{10.1016/S0006-3207(97)00048-7}
+#'
+#' @seealso [laughing_owl]
+"laughing_owl_effort"
