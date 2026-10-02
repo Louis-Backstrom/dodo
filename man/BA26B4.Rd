@@ -11,7 +11,9 @@ BA26B4(
   init.time,
   test.time = init.time + nrow(records) - 1,
   tol = 0.999,
-  priors = list(theta_max = c(1, 10), g = 0, sigma_v = c(1), sigma_i = c(1)),
+  fix.intercept = NULL,
+  scale.detectability = TRUE,
+  priors = list(theta_max = c(1, 10), g = 0, sigma_v = c(100), sigma_i = c(100)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -40,6 +42,17 @@ after which point the remaining tail is approximated using a constant hazard
 of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
 conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
 
+\item{fix.intercept}{optional fixed value for the intercepts. Defaults to
+\code{NULL}, in which case the intercepts are estimated; otherwise both are held
+fixed at the supplied value. If a single value is supplied, both intercepts
+are fixed at that value. If two values are supplied, the first is used for
+the valid-sighting submodel and the second for the invalid-sighting submodel.}
+
+\item{scale.detectability}{whether or not to scale (but not centre) each
+detectability covariate prior to model fitting. Defaults to \code{TRUE}, in which
+case each covariate is divided by its standard deviation. Scaling can improve
+MCMC mixing and the numerical stability of the JAGS sampler.}
+
 \item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{sigma_v} and
 \code{sigma_i}. \code{theta_max}, \code{sigma_v}, and \code{sigma_i} are all \code{numeric} vectors,
 \code{g} is a single \code{numeric}. The two elements in \code{theta_max} are the shape
@@ -48,7 +61,7 @@ parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 defaults to 0, which recovers the constant-hazard geometric prior for
 extinction time. \code{sigma_v} and \code{sigma_i} should either be of length one, or
 the same length as the number of coefficients to estimate (i.e.
-\code{ncol(detectability) + 1}). They both default to 1.}
+\code{ncol(detectability) + 1}). They both default to 100.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 

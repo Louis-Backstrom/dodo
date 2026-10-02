@@ -11,7 +11,9 @@ BA26B3(
   init.time,
   test.time = init.time + length(records) - 1,
   tol = 0.999,
-  priors = list(theta_max = c(1, 10), g = 0, sigma = c(1)),
+  fix.intercept = NULL,
+  scale.detectability = TRUE,
+  priors = list(theta_max = c(1, 10), g = 0, sigma = c(100)),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -40,15 +42,24 @@ after which point the remaining tail is approximated using a constant hazard
 of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
 conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
 
+\item{fix.intercept}{optional fixed value for the intercept. Defaults to
+\code{NULL}, in which case the intercept is estimated; otherwise it is held
+fixed at the supplied value.}
+
+\item{scale.detectability}{whether or not to scale (but not centre) each
+detectability covariate prior to model fitting. Defaults to \code{TRUE}, in which
+case each covariate is divided by its standard deviation. Scaling can improve
+MCMC mixing and the numerical stability of the JAGS sampler.}
+
 \item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{sigma}. Both
-\code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric.}
+\code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric}.
 \code{theta_max} is of length two, with the two elements being the shape
 parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 (1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
 defaults to 0, which recovers the constant-hazard geometric prior for
 extinction time. \code{sigma} should either be of length one, or the same length
 as the number of coefficients to estimate (i.e. \code{ncol(detectability) + 1}).
-Defaults to 1.}
+Defaults to 100.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
