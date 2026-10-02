@@ -20,6 +20,15 @@
 #' after which point the remaining tail is approximated using a constant hazard
 #' of `theta_max`. Defaults to 0.999; if this yields slow evaluation (in
 #' conjunction with a large value of `g`), consider a lower tolerance e.g. 0.99.
+#' @param fix.intercept optional fixed value for the intercepts. Defaults to
+#' `NULL`, in which case the intercepts are estimated; otherwise both are held
+#' fixed at the supplied value. If a single value is supplied, both intercepts
+#' are fixed at that value. If two values are supplied, the first is used for
+#' the valid-sighting submodel and the second for the invalid-sighting submodel.
+#' @param scale.detectability whether or not to scale (but not centre) each
+#' detectability covariate prior to model fitting. Defaults to `TRUE`, in which
+#' case each covariate is divided by its standard deviation. Scaling can improve
+#' MCMC mixing and the numerical stability of the JAGS sampler.
 #' @param priors `list` with four elements: `theta_max`, `g`, `sigma_v` and
 #' `sigma_i`. `theta_max`, `sigma_v`, and `sigma_i` are all `numeric` vectors,
 #' `g` is a single `numeric`. The two elements in `theta_max` are the shape
@@ -28,7 +37,7 @@
 #' defaults to 0, which recovers the constant-hazard geometric prior for
 #' extinction time. `sigma_v` and `sigma_i` should either be of length one, or
 #' the same length as the number of coefficients to estimate (i.e.
-#' `ncol(detectability) + 1`). They both default to 1.
+#' `ncol(detectability) + 1`). They both default to 100.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -58,8 +67,10 @@
 
 BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1, tol = 0.999,
+                   fix.intercept = NULL, scale.detectability = TRUE,
                    priors = list(
-                     theta_max = c(1, 10), g = 0, sigma_v = c(1), sigma_i = c(1)
+                     theta_max = c(1, 10), g = 0,
+                     sigma_v = c(100), sigma_i = c(100)
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -126,6 +137,33 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
     stop("tol must be a single number in (0, 1)")
   }
 
+  if (!is.null(fix.intercept)) {
+    if (!is.numeric(fix.intercept) || length(fix.intercept) %notin% c(1, 2) ||
+        anyNA(fix.intercept)) {
+      stop("fix.intercept must be NULL or either one or two numbers")
+    }
+  }
+
+  if (!is.logical(scale.detectability) || length(scale.detectability) != 1 ||
+      is.na(scale.detectability)) {
+    stop("scale.detectability must be TRUE or FALSE")
+  }
+
+  if (scale.detectability == TRUE) {
+    detectability <- as.matrix(
+      scale(detectability, center = FALSE, scale = TRUE)
+    )
+
+    if (anyNA(detectability) || any(!is.finite(detectability))) {
+      stop(
+        paste(
+          "Cannot scale detectability covariates;",
+          "at least one variable has zero variance"
+        )
+      )
+    }
+  }
+
   y_c <- records$certain
   y_u <- records$uncertain
 
@@ -175,16 +213,28 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
     precision_i = precision_i
   )
 
-  model_string <- "
+  beta0_string <- if (is.null(fix.intercept)) {
+    "beta0 ~ dnorm(0, precision_v[1])"
+  } else {
+    paste0("beta0 <- ", format(fix.intercept[1], digits = 16))
+  }
+
+  gamma0_string <- if (is.null(fix.intercept)) {
+    "gamma0 ~ dnorm(0, precision_i[1])"
+  } else {
+    paste0("gamma0 <- ", format(
+      fix.intercept[length(fix.intercept)], digits = 16))
+  }
+
+  model_string <- paste0("
     model {
       # 1. Priors
       theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       pi_e ~ dunif(0, 1)
 
-      beta0 ~ dnorm(0, precision_v[1])
-      gamma0 ~ dnorm(0, precision_i[1])
-
+      ", beta0_string, "
+      ", gamma0_string, "
       for (m in 1:p) {
         beta[m] ~ dnorm(0, precision_v[m + 1])
         gamma[m] ~ dnorm(0, precision_i[m + 1])
@@ -255,19 +305,24 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
       tau_E <- init_time + tau_E0 - 1
     }
-  "
+  ")
 
   inits_list <- function() {
-    list(
+    out <- list(
       theta_max = runif(1, 0.01, 0.99),
       tau_cat = sample(1:n_cat, 1),
       tau_tail = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
-      beta0 = rnorm(1, 0, 1),
-      gamma0 = rnorm(1, 0, 1),
       beta = rnorm(ncol(detectability), 0, 1),
       gamma = rnorm(ncol(detectability), 0, 1)
     )
+
+    if (is.null(fix.intercept)) {
+      out$beta0 <- rnorm(1, 0, 1)
+      out$gamma0 <- rnorm(1, 0, 1)
+    }
+
+    return(out)
   }
 
   model_file <- tempfile(fileext = ".txt")
@@ -302,10 +357,13 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
   # Output
   output <- list(
     records = records,
+    detectability = detectability,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
     tol = tol,
+    fix.intercept = fix.intercept,
+    scale.detectability = scale.detectability,
     priors = priors,
     samples = samples,
     p.extant = p.extant,

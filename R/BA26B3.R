@@ -20,15 +20,22 @@
 #' after which point the remaining tail is approximated using a constant hazard
 #' of `theta_max`. Defaults to 0.999; if this yields slow evaluation (in
 #' conjunction with a large value of `g`), consider a lower tolerance e.g. 0.99.
+#' @param fix.intercept optional fixed value for the intercept. Defaults to
+#' `NULL`, in which case the intercept is estimated; otherwise it is held
+#' fixed at the supplied value.
+#' @param scale.detectability whether or not to scale (but not centre) each
+#' detectability covariate prior to model fitting. Defaults to `TRUE`, in which
+#' case each covariate is divided by its standard deviation. Scaling can improve
+#' MCMC mixing and the numerical stability of the JAGS sampler.
 #' @param priors `list` with three elements: `theta_max`, `g`, and `sigma`. Both
-#' `theta_max` and `sigma` are `numeric` vectors, `g` is a single `numeric.`
+#' `theta_max` and `sigma` are `numeric` vectors, `g` is a single `numeric`.
 #' `theta_max` is of length two, with the two elements being the shape
 #' parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 #' (1, 10). `g` is the delay parameter for the lagged extinction hazard. It
 #' defaults to 0, which recovers the constant-hazard geometric prior for
 #' extinction time. `sigma` should either be of length one, or the same length
 #' as the number of coefficients to estimate (i.e. `ncol(detectability) + 1`).
-#' Defaults to 1.
+#' Defaults to 100.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -58,7 +65,8 @@
 
 BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1, tol = 0.999,
-                   priors = list(theta_max = c(1, 10), g = 0, sigma = c(1)),
+                   fix.intercept = NULL, scale.detectability = TRUE,
+                   priors = list(theta_max = c(1, 10), g = 0, sigma = c(100)),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
@@ -111,6 +119,33 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
     stop("tol must be a single number in (0, 1)")
   }
 
+  if (!is.null(fix.intercept)) {
+    if (!is.numeric(fix.intercept) || length(fix.intercept) != 1 ||
+      is.na(fix.intercept)) {
+      stop("fix.intercept must be NULL or a single number")
+    }
+  }
+
+  if (!is.logical(scale.detectability) || length(scale.detectability) != 1 ||
+    is.na(scale.detectability)) {
+    stop("scale.detectability must be TRUE or FALSE")
+  }
+
+  if (scale.detectability == TRUE) {
+    detectability <- as.matrix(
+      scale(detectability, center = FALSE, scale = TRUE)
+    )
+
+    if (anyNA(detectability) || any(!is.finite(detectability))) {
+      stop(
+        paste(
+          "Cannot scale detectability covariates;",
+          "at least one variable has zero variance"
+        )
+      )
+    }
+  }
+
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
@@ -151,12 +186,18 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
     precision = precision
   )
 
-  model_string <- "
+  alpha0_string <- if (is.null(fix.intercept)) {
+    "alpha0 ~ dnorm(0, precision[1])"
+  } else {
+    paste0("alpha0 <- ", format(fix.intercept, digits = 16))
+  }
+
+  model_string <- paste0("
     model {
       # 1. Priors
       theta_max ~ dbeta(theta_max_a, theta_max_b)
 
-      alpha0 ~ dnorm(0, precision[1])
+      ", alpha0_string, "
       for (m in 1:p) {
         alpha[m] ~ dnorm(0, precision[m + 1])
       }
@@ -210,16 +251,21 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
 
       tau_E <- init_time + tau_E0 - 1
     }
-  "
+  ")
 
   inits_list <- function() {
-    list(
+    out <- list(
       theta_max = runif(1, 0.01, 0.99),
       tau_cat = sample(1:n_cat, 1),
       tau_tail = sample(0:(2 * bigT), 1),
-      alpha0 = rnorm(1, 0, 1),
       alpha = rnorm(ncol(detectability), 0, 1)
     )
+
+    if (is.null(fix.intercept)) {
+      out$alpha0 <- rnorm(1, 0, 1)
+    }
+
+    return(out)
   }
 
   model_file <- tempfile(fileext = ".txt")
@@ -259,6 +305,8 @@ BA26B3 <- function(records, detectability, alpha = 0.05, init.time,
     init.time = init.time,
     test.time = test.time,
     tol = tol,
+    fix.intercept = fix.intercept,
+    scale.detectability = scale.detectability,
     priors = priors,
     samples = samples,
     p.extant = p.extant,

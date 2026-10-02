@@ -2,9 +2,9 @@
 local({
 
   # the requested version of renv
-  version <- "1.2.4"
-  attr(version, "md5") <- "d5a3bd382107712f897630627794f81a"
-  attr(version, "sha") <- NULL
+  version <- "1.3.0.9000"
+  attr(version, "md5") <- "528d2fbb2b3943278c31d21f70740d08"
+  attr(version, "sha") <- "bde1035a41f0f275d2cf58d255603f8d466879f0"
 
   # the project directory
   project <- Sys.getenv("RENV_PROJECT")
@@ -716,6 +716,18 @@ local({
   # (512 byte) header.
   renv_bootstrap_git_extract_sha1_tar <- function(bundle) {
   
+    tryCatch(
+      renv_bootstrap_git_extract_sha1_tar_impl(bundle),
+      error = function(cnd) {
+        catf("- Failed to extract the Git SHA from '%s': %s", bundle, conditionMessage(cnd))
+        NULL
+      }
+    )
+  
+  }
+  
+  renv_bootstrap_git_extract_sha1_tar_impl <- function(bundle) {
+  
     # open the bundle for reading
     # We use gzcon for everything because (from ?gzcon)
     # > Reading from a connection which does not supply a 'gzip' magic
@@ -734,6 +746,7 @@ local({
     } else {
       NULL
     }
+  
   }
   
   renv_bootstrap_install <- function(version, tarball, library) {
