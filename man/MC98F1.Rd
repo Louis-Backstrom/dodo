@@ -13,7 +13,7 @@ MC98F1(records, effort)
 \item{effort}{a vector of effort data, of the same length as \code{records}.}
 }
 \value{
-a \code{list} object with the original parameters and the p-value
+a \code{dodo_fit} object with the original parameters and the p-value
 included as elements.
 }
 \description{

@@ -11,7 +11,7 @@ BU95F3(records)
 \code{\link{convert_dodo}} for details).}
 }
 \value{
-a \code{list} object with the original parameters and the p-value
+a \code{dodo_fit} object with the original parameters and the p-value
 included as elements.
 }
 \description{

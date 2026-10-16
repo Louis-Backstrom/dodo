@@ -13,7 +13,7 @@
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #'
-#' @returns a `list` object with the original parameters and the p-value, point
+#' @returns a `dodo_fit` object with the original parameters and the p-value, point
 #' estimate, and confidence interval included as elements. The confidence
 #' interval is a two-element numeric vector called `conf.int`.
 #'

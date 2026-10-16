@@ -2,7 +2,7 @@
 % Please edit documentation in R/BA26B2.R
 \name{BA26B2}
 \alias{BA26B2}
-\title{Backstrom et al.'s (2026) "Uncertain No-detectability" model}
+\title{Backstrom et al.'s (2026) "Uncertain No-effort" model}
 \usage{
 BA26B2(
   records,
@@ -55,7 +55,7 @@ shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{list} object with the original parameters, posterior samples, and
+a \code{dodo_fit} object with the original parameters, posterior samples, and
 the p(extant), point estimate, and credible interval included as elements.
 The credible interval is a two-element numeric vector called \code{cred.int}.
 }

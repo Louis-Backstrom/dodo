@@ -11,7 +11,7 @@
 #' `epsilon_lower`, `epsilon_upper`, `p_i`, `p_i_lower`, `p_i_upper`, `p_r`,
 #' `p_r_lower`, and `p_r_upper`. The number of rows must match `records`.
 #'
-#' @returns a `list` object with the original parameters and the iterative and
+#' @returns a `dodo_fit` object with the original parameters and the iterative and
 #'  final estimates of p(extant) (\eqn{P(X_t)}) included as elements.
 #'
 #' @note

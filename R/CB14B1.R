@@ -15,7 +15,7 @@
 #' probability at. Defaults to the end of the observation period.
 #' @param n.iter number of iterations to run (defaults to 100,000).
 #'
-#' @returns a `list` object with the original parameters and the p(extant),
+#' @returns a `dodo_fit` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
 #' interval is a two-element numeric vector called `cred.int`.
 #'

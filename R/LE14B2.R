@@ -18,7 +18,7 @@
 #' 5,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `list` object with the original parameters and the p(extant),
+#' @returns a `dodo_fit` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
 #' interval is a two-element numeric vector called `cred.int`.
 #'

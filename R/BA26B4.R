@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Uncertain Detectability" model
+#' @title Backstrom et al.'s (2026) "Uncertain Effort" model
 #'
 #' @description
 #' Model 4 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -7,9 +7,8 @@
 #'
 #' @param records sighting records in `udis` format (see
 #' \code{\link{convert_dodo}} for details).
-#' @param detectability a `data.frame` of detectability data, with the same
-#' number of rows as `records` and as many columns as there are detection
-#' variables.
+#' @param effort a `data.frame` of effort data, with the same number of rows as
+#' `records` and as many columns as there are effort variables.
 #' @param alpha desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period.
@@ -20,36 +19,37 @@
 #' after which point the remaining tail is approximated using a constant hazard
 #' of `theta_max`. Defaults to 0.999; if this yields slow evaluation (in
 #' conjunction with a large value of `g`), consider a lower tolerance e.g. 0.99.
-#' @param fix.intercept optional fixed value for the intercepts. Defaults to
-#' `NULL`, in which case the intercepts are estimated; otherwise both are held
-#' fixed at the supplied value. If a single value is supplied, both intercepts
-#' are fixed at that value. If two values are supplied, the first is used for
-#' the valid-sighting submodel and the second for the invalid-sighting submodel.
-#' @param scale.detectability whether or not to scale (but not centre) each
-#' detectability covariate prior to model fitting. Defaults to `TRUE`, in which
-#' case each covariate is divided by its standard deviation. Scaling can improve
-#' MCMC mixing and the numerical stability of the JAGS sampler.
-#' @param priors `list` with four elements: `theta_max`, `g`, `sigma_v` and
-#' `sigma_i`. `theta_max`, `sigma_v`, and `sigma_i` are all `numeric` vectors,
-#' `g` is a single `numeric`. The two elements in `theta_max` are the shape
-#' parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
-#' (1, 10). `g` is the delay parameter for the lagged extinction hazard. It
-#' defaults to 0, which recovers the constant-hazard geometric prior for
-#' extinction time. `sigma_v` and `sigma_i` should either be of length one, or
-#' the same length as the number of coefficients to estimate (i.e.
-#' `ncol(detectability) + 1`). They both default to 100.
+#' @param scale.effort whether or not to scale, but not centre, each effort
+#' covariate before model fitting. Defaults to `TRUE`, in which case each
+#' covariate is divided by its standard deviation. Scaling can improve MCMC
+#' mixing and the numerical stability of the JAGS sampler while preserving
+#' meaningful zeros.
+#' @param priors `list` with four elements: `theta_max`, `g`, `sigma_v`, and
+#' `sigma_i`. `theta_max`, `sigma_v`, and `sigma_i` are numeric vectors, and
+#' `g` is a single numeric value. The two elements of `theta_max` are the shape
+#' parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
+#' (1, 10). `g` is the delay parameter for the lagged extinction hazard and
+#' defaults to 0, which recovers the constant-hazard geometric prior.
+#' `sigma_v` and `sigma_i` specify the scales of the half-normal priors on the
+#' non-negative valid- and invalid-sighting effort coefficients, respectively.
+#' Each must have length one or `ncol(effort)`. A scalar value is applied to
+#' every corresponding coefficient. Both default to 1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `list` object with the original parameters, posterior samples, and
-#' the p(extant), point estimate, and credible interval included as elements.
-#' The credible interval is a two-element numeric vector called `cred.int`.
+#' @returns a `dodo_fit` object containing the original sighting and effort
+#' data, the scaled effort matrix used for fitting, effort scaling factors,
+#' posterior samples, p(extant), the point estimate, and the credible interval.
 #'
 #' @note
 #' This model incorporates both sighting uncertainty and variable survey effort.
+#' The expected valid- and invalid-sighting rates are non-negative additive
+#' functions of the effort covariates, with no intercepts. Consequently,
+#' intervals in which every effort covariate is zero must also have zero
+#' certain and uncertain sighting counts.
 #'
 #' @references
 #' **Key Reference**
@@ -65,12 +65,12 @@
 #'
 #' @export
 
-BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
+BA26B4 <- function(records, effort, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1, tol = 0.999,
-                   fix.intercept = NULL, scale.detectability = TRUE,
+                   scale.effort = TRUE,
                    priors = list(
                      theta_max = c(1, 10), g = 0,
-                     sigma_v = c(100), sigma_i = c(100)
+                     sigma_v = 1, sigma_i = 1
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -78,90 +78,156 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
     stop("package 'rjags' is required but could not be found")
   }
 
-  # Check that data and priors are in a valid format
-  if (anyNA(records$certain) || anyNA(records$uncertain) ||
+  # Check that scalar arguments are in a valid format
+  if (!is.numeric(alpha) || length(alpha) != 1L ||
+    !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("alpha must be a single number in (0, 1)")
+  }
+
+  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1L ||
+    !is.finite(tol) || tol <= 0 || tol >= 1) {
+    stop("tol must be a single number in (0, 1)")
+  }
+
+  if (!is.logical(scale.effort) || length(scale.effort) != 1L ||
+    is.na(scale.effort)) {
+    stop("scale.effort must be TRUE or FALSE")
+  }
+
+  # Check that records are in a valid format
+  if (!is.data.frame(records) ||
+    !all(c("certain", "uncertain") %in% names(records))) {
+    stop("records must contain columns named 'certain' and 'uncertain'")
+  }
+
+  if (!is.numeric(records$certain) || !is.numeric(records$uncertain) ||
+    anyNA(records$certain) || anyNA(records$uncertain) ||
+    any(!is.finite(records$certain)) ||
+    any(!is.finite(records$uncertain)) ||
     any(records$certain < 0) || any(records$uncertain < 0) ||
     any(records$certain != floor(records$certain)) ||
     any(records$uncertain != floor(records$uncertain))) {
-    stop("records must be non-negative integer counts")
+    stop("records must contain only finite, non-negative integer counts")
   }
+
+  if (nrow(records) < 2L) {
+    stop("records must contain at least two sampling intervals")
+  }
+
+  if (!any(records$certain > 0)) {
+    stop("records must contain at least one positive certain count")
+  }
+
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
 
-  if (is.null(priors$theta_max) || length(priors$theta_max) != 2 ||
-    anyNA(priors$theta_max) || any(priors$theta_max <= 0)) {
-    stop("priors$theta_max must be a positive vector of length 2")
+  # Check that extinction-time priors are in a valid format
+  if (is.null(priors$theta_max) || !is.numeric(priors$theta_max) ||
+    length(priors$theta_max) != 2L || anyNA(priors$theta_max) ||
+    any(!is.finite(priors$theta_max)) || any(priors$theta_max <= 0)) {
+    stop("priors$theta_max must be a finite positive vector of length 2")
   }
 
-  if (is.null(priors$g) || length(priors$g) != 1 ||
-    anyNA(priors$g) || priors$g < 0) {
-    stop("priors$g must be a single non-negative number")
+  if (is.null(priors$g) || !is.numeric(priors$g) ||
+    length(priors$g) != 1L || !is.finite(priors$g) ||
+    priors$g < 0) {
+    stop("priors$g must be a single finite non-negative number")
   }
 
-  detectability <- as.matrix(detectability)
-  if (anyNA(detectability) || !is.numeric(detectability)) {
-    stop("detectability must be numeric and not contain NA values")
+  # Check that effort data are in a valid format
+  effort <- as.matrix(effort)
+
+  if (!is.numeric(effort) || anyNA(effort) ||
+    any(!is.finite(effort))) {
+    stop("effort must contain only finite numeric values")
   }
 
-  if (nrow(detectability) != nrow(records)) {
-    stop("detectability must have one row per record")
+  if (ncol(effort) < 1L) {
+    stop("effort must contain at least one variable")
   }
 
-  if (any(is.null(priors$sigma_v)) || any(is.null(priors$sigma_i)) ||
-    any(priors$sigma_v <= 0) || any(priors$sigma_i <= 0)) {
-    stop("both sigma priors must be positive")
+  if (nrow(effort) != nrow(records)) {
+    stop("effort must have one row per record")
   }
 
-  if (length(priors$sigma_v) != 1 && length(priors$sigma_v) !=
-    (ncol(detectability) + 1) ||
-    length(priors$sigma_i) != 1 && length(priors$sigma_i) !=
-      (ncol(detectability) + 1)) {
-    stop("both sigma priors must be of length 1 or ncol(detectability) + 1")
+  if (any(effort < 0)) {
+    stop("effort variables must be non-negative")
   }
 
-  # Reformat sigma priors
-  if (length(priors$sigma_v) == 1) {
-    sigma_v <- rep(priors$sigma_v, ncol(detectability) + 1)
+  if (is.null(colnames(effort))) {
+    colnames(effort) <- paste0("effort", seq_len(ncol(effort)))
+  }
+
+  effort_original <- effort
+
+  # Check that effort-coefficient priors are in a valid format
+  if (is.null(priors$sigma_v) || !is.numeric(priors$sigma_v) ||
+    anyNA(priors$sigma_v) || any(!is.finite(priors$sigma_v)) ||
+    any(priors$sigma_v <= 0)) {
+    stop("priors$sigma_v must contain finite positive values")
+  }
+
+  if (is.null(priors$sigma_i) || !is.numeric(priors$sigma_i) ||
+    anyNA(priors$sigma_i) || any(!is.finite(priors$sigma_i)) ||
+    any(priors$sigma_i <= 0)) {
+    stop("priors$sigma_i must contain finite positive values")
+  }
+
+  if (!length(priors$sigma_v) %in% c(1L, ncol(effort))) {
+    stop("priors$sigma_v must have length 1 or ncol(effort)")
+  }
+
+  if (!length(priors$sigma_i) %in% c(1L, ncol(effort))) {
+    stop("priors$sigma_i must have length 1 or ncol(effort)")
+  }
+
+  if (length(priors$sigma_v) == 1L) {
+    sigma_v <- rep(priors$sigma_v, ncol(effort))
   } else {
     sigma_v <- priors$sigma_v
   }
 
-  if (length(priors$sigma_i) == 1) {
-    sigma_i <- rep(priors$sigma_i, ncol(detectability) + 1)
+  if (length(priors$sigma_i) == 1L) {
+    sigma_i <- rep(priors$sigma_i, ncol(effort))
   } else {
     sigma_i <- priors$sigma_i
   }
 
-  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1 || is.na(tol) ||
-    tol <= 0 || tol >= 1) {
-    stop("tol must be a single number in (0, 1)")
-  }
+  names(sigma_v) <- colnames(effort)
+  names(sigma_i) <- colnames(effort)
 
-  if (!is.null(fix.intercept)) {
-    if (!is.numeric(fix.intercept) || length(fix.intercept) %notin% c(1, 2) ||
-        anyNA(fix.intercept)) {
-      stop("fix.intercept must be NULL or either one or two numbers")
-    }
-  }
+  # Scale effort data without centring
+  effort_scale <- rep(1, ncol(effort))
+  names(effort_scale) <- colnames(effort)
 
-  if (!is.logical(scale.detectability) || length(scale.detectability) != 1 ||
-      is.na(scale.detectability)) {
-    stop("scale.detectability must be TRUE or FALSE")
-  }
+  if (scale.effort) {
+    effort_scale <- apply(effort, MARGIN = 2, FUN = stats::sd)
 
-  if (scale.detectability == TRUE) {
-    detectability <- as.matrix(
-      scale(detectability, center = FALSE, scale = TRUE)
-    )
-
-    if (anyNA(detectability) || any(!is.finite(detectability))) {
+    if (any(!is.finite(effort_scale)) || any(effort_scale <= 0)) {
       stop(
         paste(
-          "Cannot scale detectability covariates;",
-          "at least one variable has zero variance"
+          "Cannot scale effort covariates;",
+          "all variables must have finite, non-zero variance"
         )
       )
     }
+
+    effort <- sweep(effort, MARGIN = 2, STATS = effort_scale, FUN = "/")
+  }
+
+  # Check compatibility with the zero-effort model assumption
+  zero_effort <- rowSums(effort) == 0
+  positive_sightings <- records$certain > 0 | records$uncertain > 0
+
+  if (any(zero_effort & positive_sightings)) {
+    bad_rows <- which(zero_effort & positive_sightings)
+
+    stop(
+      paste0(
+        "Non-zero sighting counts occur in interval(s) with zero effort: ",
+        paste(bad_rows, collapse = ", ")
+      )
+    )
   }
 
   y_c <- records$certain
@@ -169,19 +235,23 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
   # Calculate key values
   bigT <- nrow(records)
-  t_m <- max(which(records$certain > 0))
+  t_m <- max(which(y_c > 0))
   max_lag_obs <- bigT - t_m
   haz_tol <- tol
+
   if (priors$g == 0) {
     max_lag_prior <- max_lag_obs
   } else {
-    lag_req <- ceiling(log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1)
+    lag_req <- ceiling(
+      log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1
+    )
+
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
+
   n_cat <- max_lag_prior + 2
   y_c_logfact <- lfactorial(y_c)
   y_u_logfact <- lfactorial(y_u)
-  p <- ncol(detectability)
   precision_v <- 1 / sigma_v^2
   precision_i <- 1 / sigma_i^2
 
@@ -197,8 +267,8 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
     init_time = init.time,
     y_c = y_c,
     y_u = y_u,
-    x = detectability,
-    p = ncol(detectability),
+    x = effort,
+    p = ncol(effort),
     bigT = bigT,
     t_m = t_m,
     max_lag_prior = max_lag_prior,
@@ -213,31 +283,16 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
     precision_i = precision_i
   )
 
-  beta0_string <- if (is.null(fix.intercept)) {
-    "beta0 ~ dnorm(0, precision_v[1])"
-  } else {
-    paste0("beta0 <- ", format(fix.intercept[1], digits = 16))
-  }
-
-  gamma0_string <- if (is.null(fix.intercept)) {
-    "gamma0 ~ dnorm(0, precision_i[1])"
-  } else {
-    paste0("gamma0 <- ", format(
-      fix.intercept[length(fix.intercept)], digits = 16))
-  }
-
-  model_string <- paste0("
+  model_string <- "
     model {
       # 1. Priors
       theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       pi_e ~ dunif(0, 1)
 
-      ", beta0_string, "
-      ", gamma0_string, "
       for (m in 1:p) {
-        beta[m] ~ dnorm(0, precision_v[m + 1])
-        gamma[m] ~ dnorm(0, precision_i[m + 1])
+        beta[m] ~ dnorm(0, precision_v[m]) T(0, )
+        gamma[m] ~ dnorm(0, precision_i[m]) T(0, )
       }
 
       ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
@@ -245,7 +300,8 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
       for (k in 1:(max_lag_prior + 1)) {
         lag[k] <- k - 1
-        theta_lag[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+        theta_lag[k] <- theta_max *
+          (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
         p_tau[k] <- surv[k] * theta_lag[k]
         surv[k + 1] <- surv[k] * (1 - theta_lag[k])
       }
@@ -263,23 +319,29 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        eta_v[t] <- beta0 + inprod(beta[1:p], x[t, 1:p])
-        eta_i[t] <- gamma0 + inprod(gamma[1:p], x[t, 1:p])
-
-        lambda_v[t] <- exp(eta_v[t])
-        lambda_i[t] <- exp(eta_i[t])
+        lambda_v[t] <- inprod(beta[1:p], x[t, 1:p])
+        lambda_i[t] <- inprod(gamma[1:p], x[t, 1:p])
 
         mu_c_ext[t] <- lambda_v[t] * pi_e
         mu_u_ext[t] <- lambda_v[t] * (1 - pi_e) + lambda_i[t]
 
-        loglik_c_ext[t] <- -mu_c_ext[t] + y_c[t] * log(mu_c_ext[t]) -
+        mu_c_safe[t] <- mu_c_ext[t] + equals(mu_c_ext[t], 0)
+        mu_u_safe[t] <- mu_u_ext[t] + equals(mu_u_ext[t], 0)
+        lambda_i_safe[t] <- lambda_i[t] + equals(lambda_i[t], 0)
+
+        loglik_c_ext[t] <- -mu_c_ext[t] +
+          y_c[t] * log(mu_c_safe[t]) -
           y_c_logfact[t]
-        loglik_u_ext[t] <- -mu_u_ext[t] + y_u[t] * log(mu_u_ext[t]) -
+
+        loglik_u_ext[t] <- -mu_u_ext[t] +
+          y_u[t] * log(mu_u_safe[t]) -
           y_u_logfact[t]
 
         loglik_ext[t] <- loglik_c_ext[t] + loglik_u_ext[t]
 
-        loglik_u_post[t] <- -lambda_i[t] + y_u[t] * eta_i[t] - y_u_logfact[t]
+        loglik_u_post[t] <- -lambda_i[t] +
+          y_u[t] * log(lambda_i_safe[t]) -
+          y_u_logfact[t]
       }
 
       cum_ext[1] <- loglik_ext[1]
@@ -297,7 +359,9 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
       loglik[bigT + 1] <- cum_ext[bigT]
 
-      idx <- step(bigT - tau_E0) * tau_E0 +  step(tau_E0 - bigT - 1) * (bigT + 1)
+      idx <- step(bigT - tau_E0) * tau_E0 +
+        step(tau_E0 - bigT - 1) * (bigT + 1)
+
       selected_loglik <- loglik[idx]
 
       phi <- -selected_loglik
@@ -305,24 +369,23 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
       tau_E <- init_time + tau_E0 - 1
     }
-  ")
+  "
 
   inits_list <- function() {
-    out <- list(
+    list(
       theta_max = runif(1, 0.01, 0.99),
-      tau_cat = sample(1:n_cat, 1),
+      tau_cat = sample(seq_len(n_cat), 1),
       tau_tail = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
-      beta = rnorm(ncol(detectability), 0, 1),
-      gamma = rnorm(ncol(detectability), 0, 1)
+      beta = pmax(
+        abs(rnorm(ncol(effort), 0, sigma_v)),
+        1e-6
+      ),
+      gamma = pmax(
+        abs(rnorm(ncol(effort), 0, sigma_i)),
+        1e-6
+      )
     )
-
-    if (is.null(fix.intercept)) {
-      out$beta0 <- rnorm(1, 0, 1)
-      out$gamma0 <- rnorm(1, 0, 1)
-    }
-
-    return(out)
   }
 
   model_file <- tempfile(fileext = ".txt")
@@ -332,13 +395,23 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
   # Run MCMC sampling
   invisible(capture.output({
     jags_model <- rjags::jags.model(
-      file = model_file, data = data_list, inits = inits_list,
-      n.chains = n.chains, n.adapt = n.burnin
+      file = model_file,
+      data = data_list,
+      inits = inits_list,
+      n.chains = n.chains,
+      n.adapt = n.burnin
     )
+
     update(jags_model, n.iter = n.burnin)
-    samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_E", "pi_e", "theta_max", "beta0", "beta", "gamma0", "gamma"
-    ), n.iter = n.iter, thin = n.thin)
+
+    samples <- rjags::coda.samples(
+      jags_model,
+      variable.names = c(
+        "tau_E", "pi_e", "theta_max", "beta", "gamma"
+      ),
+      n.iter = n.iter,
+      thin = n.thin
+    )
   }))
 
   # Extract posteriors
@@ -352,18 +425,22 @@ BA26B4 <- function(records, detectability, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(quantile(posterior$tau_E, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha))
+  cred.int.upper <- as.numeric(quantile(
+    posterior$tau_E,
+    1 - alpha
+  ))
 
   # Output
   output <- list(
     records = records,
-    detectability = detectability,
+    effort = effort_original,
+    effort.model = effort,
+    effort.scale = effort_scale,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
     tol = tol,
-    fix.intercept = fix.intercept,
-    scale.detectability = scale.detectability,
+    scale.effort = scale.effort,
     priors = priors,
     samples = samples,
     p.extant = p.extant,

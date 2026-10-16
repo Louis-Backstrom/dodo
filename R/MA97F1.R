@@ -11,7 +11,7 @@
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start of the observation period.
 #'
-#' @returns a `list` object with the original parameters and the confidence
+#' @returns a `dodo_fit` object with the original parameters and the confidence
 #' interval included as elements. The confidence interval is a two-element
 #' numeric vector called `conf.int`.
 #'

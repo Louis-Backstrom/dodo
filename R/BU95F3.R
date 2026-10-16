@@ -7,7 +7,7 @@
 #' @param records sighting records in `cdis` format (see
 #' \code{\link{convert_dodo}} for details).
 #'
-#' @returns a `list` object with the original parameters and the p-value
+#' @returns a `dodo_fit` object with the original parameters and the p-value
 #' included as elements.
 #'
 #' @note

@@ -17,7 +17,7 @@
 #' @param precBits number of bits of precision to use in `Rmpfr` arithmetic.
 #' Defaults to 1024, which should be sufficient for most datasets.
 #'
-#' @returns a `list` object with the original parameters and the p-value, point
+#' @returns a `dodo_fit` object with the original parameters and the p-value, point
 #' estimate, and confidence interval included as elements. The confidence
 #' interval is a two-element numeric vector called `conf.int`.
 #'

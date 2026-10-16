@@ -2,18 +2,17 @@
 % Please edit documentation in R/BA26B4.R
 \name{BA26B4}
 \alias{BA26B4}
-\title{Backstrom et al.'s (2026) "Uncertain Detectability" model}
+\title{Backstrom et al.'s (2026) "Uncertain Effort" model}
 \usage{
 BA26B4(
   records,
-  detectability,
+  effort,
   alpha = 0.05,
   init.time,
   test.time = init.time + nrow(records) - 1,
   tol = 0.999,
-  fix.intercept = NULL,
-  scale.detectability = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, sigma_v = c(100), sigma_i = c(100)),
+  scale.effort = TRUE,
+  priors = list(theta_max = c(1, 10), g = 0, sigma_v = 1, sigma_i = 1),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -24,9 +23,8 @@ BA26B4(
 \item{records}{sighting records in \code{udis} format (see
 \code{\link{convert_dodo}} for details).}
 
-\item{detectability}{a \code{data.frame} of detectability data, with the same
-number of rows as \code{records} and as many columns as there are detection
-variables.}
+\item{effort}{a \code{data.frame} of effort data, with the same number of rows as
+\code{records} and as many columns as there are effort variables.}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
@@ -42,26 +40,22 @@ after which point the remaining tail is approximated using a constant hazard
 of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
 conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
 
-\item{fix.intercept}{optional fixed value for the intercepts. Defaults to
-\code{NULL}, in which case the intercepts are estimated; otherwise both are held
-fixed at the supplied value. If a single value is supplied, both intercepts
-are fixed at that value. If two values are supplied, the first is used for
-the valid-sighting submodel and the second for the invalid-sighting submodel.}
+\item{scale.effort}{whether or not to scale, but not centre, each effort
+covariate before model fitting. Defaults to \code{TRUE}, in which case each
+covariate is divided by its standard deviation. Scaling can improve MCMC
+mixing and the numerical stability of the JAGS sampler while preserving
+meaningful zeros.}
 
-\item{scale.detectability}{whether or not to scale (but not centre) each
-detectability covariate prior to model fitting. Defaults to \code{TRUE}, in which
-case each covariate is divided by its standard deviation. Scaling can improve
-MCMC mixing and the numerical stability of the JAGS sampler.}
-
-\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{sigma_v} and
-\code{sigma_i}. \code{theta_max}, \code{sigma_v}, and \code{sigma_i} are all \code{numeric} vectors,
-\code{g} is a single \code{numeric}. The two elements in \code{theta_max} are the shape
-parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
-(1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
-defaults to 0, which recovers the constant-hazard geometric prior for
-extinction time. \code{sigma_v} and \code{sigma_i} should either be of length one, or
-the same length as the number of coefficients to estimate (i.e.
-\code{ncol(detectability) + 1}). They both default to 100.}
+\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{sigma_v}, and
+\code{sigma_i}. \code{theta_max}, \code{sigma_v}, and \code{sigma_i} are numeric vectors, and
+\code{g} is a single numeric value. The two elements of \code{theta_max} are the shape
+parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
+(1, 10). \code{g} is the delay parameter for the lagged extinction hazard and
+defaults to 0, which recovers the constant-hazard geometric prior.
+\code{sigma_v} and \code{sigma_i} specify the scales of the half-normal priors on the
+non-negative valid- and invalid-sighting effort coefficients, respectively.
+Each must have length one or \code{ncol(effort)}. A scalar value is applied to
+every corresponding coefficient. Both default to 1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -73,9 +67,9 @@ the same length as the number of coefficients to estimate (i.e.
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{list} object with the original parameters, posterior samples, and
-the p(extant), point estimate, and credible interval included as elements.
-The credible interval is a two-element numeric vector called \code{cred.int}.
+a \code{dodo_fit} object containing the original sighting and effort
+data, the scaled effort matrix used for fitting, effort scaling factors,
+posterior samples, p(extant), the point estimate, and the credible interval.
 }
 \description{
 Model 4 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -84,6 +78,10 @@ the species is extant at the test time, and a point estimate and one-sided
 }
 \note{
 This model incorporates both sighting uncertainty and variable survey effort.
+The expected valid- and invalid-sighting rates are non-negative additive
+functions of the effort covariates, with no intercepts. Consequently,
+intervals in which every effort covariate is zero must also have zero
+certain and uncertain sighting counts.
 }
 \examples{
 \dontrun{

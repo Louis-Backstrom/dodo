@@ -34,7 +34,7 @@ extinction. \code{c} and \code{d} are the two shape parameters for the beta prio
 \item{increment}{step size used for integration. Defaults to 0.001.}
 }
 \value{
-a \code{list} object with the original parameters and the p(extant),
+a \code{dodo_fit} object with the original parameters and the p(extant),
 point estimate, and credible interval included as elements. The credible
 interval is a two-element numeric vector called \code{cred.int}. The point
 estimate is the median (not the mean) of the posterior distribution of

@@ -25,7 +25,7 @@ the first sighting, in which case this sighting is removed from the record.}
 \eqn{\pi = 0.5}).}
 }
 \value{
-a \code{list} object with the original parameters and the Bayes factor
+a \code{dodo_fit} object with the original parameters and the Bayes factor
 and p(extant) included as elements.
 }
 \description{

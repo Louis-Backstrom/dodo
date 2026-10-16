@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Uncertain No-detectability" model
+#' @title Backstrom et al.'s (2026) "Uncertain No-effort" model
 #'
 #' @description
 #' Model 2 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -32,7 +32,7 @@
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `list` object with the original parameters, posterior samples, and
+#' @returns a `dodo_fit` object with the original parameters, posterior samples, and
 #' the p(extant), point estimate, and credible interval included as elements.
 #' The credible interval is a two-element numeric vector called `cred.int`.
 #'
@@ -65,40 +65,74 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     stop("package 'rjags' is required but could not be found")
   }
 
-  # Check that data and priors are in a valid format
-  if (anyNA(records$certain) || anyNA(records$uncertain) ||
+  # Check that scalar arguments are in a valid format
+  if (!is.numeric(alpha) || length(alpha) != 1L ||
+    !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("alpha must be a single number in (0, 1)")
+  }
+
+  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1L ||
+    !is.finite(tol) || tol <= 0 || tol >= 1) {
+    stop("tol must be a single number in (0, 1)")
+  }
+
+  # Check that records are in a valid format
+  if (!is.data.frame(records) ||
+    !all(c("certain", "uncertain") %in% names(records))) {
+    stop("records must contain columns named 'certain' and 'uncertain'")
+  }
+
+  if (!is.numeric(records$certain) || !is.numeric(records$uncertain) ||
+    anyNA(records$certain) || anyNA(records$uncertain) ||
+    any(!is.finite(records$certain)) ||
+    any(!is.finite(records$uncertain)) ||
     any(records$certain < 0) || any(records$uncertain < 0) ||
     any(records$certain != floor(records$certain)) ||
     any(records$uncertain != floor(records$uncertain))) {
-    stop("records must be non-negative integer counts")
+    stop("records must contain only finite, non-negative integer counts")
   }
+
+  if (nrow(records) < 2L) {
+    stop("records must contain at least two sampling intervals")
+  }
+
+  if (!any(records$certain > 0)) {
+    stop("records must contain at least one positive certain count")
+  }
+
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
 
-  if (is.null(priors$theta_max) || length(priors$theta_max) != 2 ||
-    anyNA(priors$theta_max) || any(priors$theta_max <= 0)) {
-    stop("priors$theta_max must be a positive vector of length 2")
+  # Check that extinction-time priors are in a valid format
+  if (is.null(priors$theta_max) || !is.numeric(priors$theta_max) ||
+    length(priors$theta_max) != 2L || anyNA(priors$theta_max) ||
+    any(!is.finite(priors$theta_max)) || any(priors$theta_max <= 0)) {
+    stop("priors$theta_max must be a finite positive vector of length 2")
   }
 
-  if (is.null(priors$g) || length(priors$g) != 1 ||
-    anyNA(priors$g) || priors$g < 0) {
-    stop("priors$g must be a single non-negative number")
+  if (is.null(priors$g) || !is.numeric(priors$g) ||
+    length(priors$g) != 1L || !is.finite(priors$g) ||
+    priors$g < 0) {
+    stop("priors$g must be a single finite non-negative number")
   }
 
-  if (is.null(priors$lambda_v) || length(priors$lambda_v) != 2 ||
-    anyNA(priors$lambda_v) || any(priors$lambda_v <= 0)) {
-    stop("priors$lambda_v must be a positive vector of length 2")
+  # Check that sighting-rate priors are in a valid format
+  if (is.null(priors$lambda_v) || !is.numeric(priors$lambda_v) ||
+    length(priors$lambda_v) != 2L || anyNA(priors$lambda_v) ||
+    any(!is.finite(priors$lambda_v)) ||
+    any(priors$lambda_v <= 0)) {
+    stop("priors$lambda_v must be a finite positive vector of length 2")
   }
 
-  if (is.null(priors$lambda_i) || length(priors$lambda_i) != 2 ||
-    anyNA(priors$lambda_i) || any(priors$lambda_i <= 0)) {
-    stop("priors$lambda_i must be a positive vector of length 2")
+  if (is.null(priors$lambda_i) || !is.numeric(priors$lambda_i) ||
+    length(priors$lambda_i) != 2L || anyNA(priors$lambda_i) ||
+    any(!is.finite(priors$lambda_i)) ||
+    any(priors$lambda_i <= 0)) {
+    stop("priors$lambda_i must be a finite positive vector of length 2")
   }
 
-  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1 || is.na(tol) ||
-    tol <= 0 || tol >= 1) {
-    stop("tol must be a single number in (0, 1)")
-  }
+  y_c <- records$certain
+  y_u <- records$uncertain
 
   y_c <- as.integer(records$certain)
   y_u <- as.integer(records$uncertain)

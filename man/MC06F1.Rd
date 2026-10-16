@@ -16,7 +16,7 @@ the \eqn{1 - \alpha} confidence interval.}
 \item{init.time}{start time for the discrete-time sighting record.}
 }
 \value{
-a \code{list} object with the original parameters and the p-value and
+a \code{dodo_fit} object with the original parameters and the p-value and
 confidence interval included as elements.
 }
 \description{

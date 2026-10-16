@@ -11,7 +11,7 @@ AL14B1(records)
 \code{\link{convert_dodo}} for details).}
 }
 \value{
-a \code{list} object with the original parameters and p(extant) included
+a \code{dodo_fit} object with the original parameters and p(extant) included
 as elements.
 }
 \description{

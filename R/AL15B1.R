@@ -7,7 +7,7 @@
 #' @param records sighting records in `cbin` format (see
 #' \code{\link{convert_dodo}} for details).
 #'
-#' @returns a `list` object with the original parameters and p(extant) included
+#' @returns a `dodo_fit` object with the original parameters and p(extant) included
 #' as elements.
 #'
 #' @note

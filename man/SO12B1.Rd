@@ -26,7 +26,7 @@ certain sighting. Three options: \code{error} (default, throws an error),
 (problematic sightings are treated as certain sightings).}
 }
 \value{
-a \code{list} object with the original parameters and the Bayes factor
+a \code{dodo_fit} object with the original parameters and the Bayes factor
 included as elements.
 }
 \description{

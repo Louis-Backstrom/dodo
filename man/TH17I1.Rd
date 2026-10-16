@@ -16,7 +16,7 @@ survey effort). A \code{data.frame} with 11 columns: \code{time}, \code{survey},
 \code{p_r_lower}, and \code{p_r_upper}. The number of rows must match \code{records}.}
 }
 \value{
-a \code{list} object with the original parameters and the iterative and
+a \code{dodo_fit} object with the original parameters and the iterative and
 final estimates of p(extant) (\eqn{P(X_t)}) included as elements.
 }
 \description{

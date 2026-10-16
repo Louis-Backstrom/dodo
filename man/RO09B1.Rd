@@ -21,7 +21,7 @@ RO09B1(records, pi = 0.5, n.chains = 4, n.iter = 110000, n.burnin = 10000)
 10,000.}
 }
 \value{
-a \code{list} object with the original parameters and the rate of
+a \code{dodo_fit} object with the original parameters and the rate of
 decline (\eqn{a}), the Bayes factor, and p(extant) included as elements.
 }
 \description{

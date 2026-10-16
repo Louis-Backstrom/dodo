@@ -39,7 +39,7 @@ and upper bounds of a uniform prior for the rate \eqn{p_i^\alpha} or
 \item{pb}{whether to show a progress bar. Defaults to \code{FALSE}.}
 }
 \value{
-a \code{list} object with the original parameters and p(extant) included
+a \code{dodo_fit} object with the original parameters and p(extant) included
 as elements.
 }
 \description{

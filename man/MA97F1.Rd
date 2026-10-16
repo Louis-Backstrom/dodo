@@ -18,7 +18,7 @@ the \eqn{1 - \alpha} confidence interval.}
 \item{init.time}{start of the observation period.}
 }
 \value{
-a \code{list} object with the original parameters and the confidence
+a \code{dodo_fit} object with the original parameters and the confidence
 interval included as elements. The confidence interval is a two-element
 numeric vector called \code{conf.int}.
 }

@@ -15,7 +15,7 @@
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 10,000.
 #'
-#' @returns a `list` object with the original parameters and the rate of
+#' @returns a `dodo_fit` object with the original parameters and the rate of
 #' decline (\eqn{a}), the Bayes factor, and p(extant) included as elements.
 #'
 #' @note

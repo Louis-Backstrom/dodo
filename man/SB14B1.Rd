@@ -16,7 +16,7 @@ SB14B1(records, init.time, increment = 0.01)
 the original code from Solow & Beet 2014.}
 }
 \value{
-a \code{list} object with the original parameters and the Bayes factor
+a \code{dodo_fit} object with the original parameters and the Bayes factor
 included as elements.
 }
 \description{

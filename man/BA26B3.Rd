@@ -2,18 +2,17 @@
 % Please edit documentation in R/BA26B3.R
 \name{BA26B3}
 \alias{BA26B3}
-\title{Backstrom et al.'s (2026) "Certain-only Detectability" model}
+\title{Backstrom et al.'s (2026) "Certain-only Effort" model}
 \usage{
 BA26B3(
   records,
-  detectability,
+  effort,
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
   tol = 0.999,
-  fix.intercept = NULL,
-  scale.detectability = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, sigma = c(100)),
+  scale.effort = TRUE,
+  priors = list(theta_max = c(1, 10), g = 0, sigma = 1),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -24,9 +23,8 @@ BA26B3(
 \item{records}{sighting records in \code{cdis} format (see
 \code{\link{convert_dodo}} for details).}
 
-\item{detectability}{a \code{data.frame} of detectability data, with the same
-number of rows as \code{records} and as many columns as there are detection
-variables.}
+\item{effort}{a \code{data.frame} of effort data, with the same number of rows as
+\code{records} and as many columns as there are effort variables.}
 
 \item{alpha}{desired threshold level (defaults to \eqn{\alpha = 0.05}) of
 the \eqn{1 - \alpha} credible interval.}
@@ -42,14 +40,11 @@ after which point the remaining tail is approximated using a constant hazard
 of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
 conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
 
-\item{fix.intercept}{optional fixed value for the intercept. Defaults to
-\code{NULL}, in which case the intercept is estimated; otherwise it is held
-fixed at the supplied value.}
-
-\item{scale.detectability}{whether or not to scale (but not centre) each
-detectability covariate prior to model fitting. Defaults to \code{TRUE}, in which
-case each covariate is divided by its standard deviation. Scaling can improve
-MCMC mixing and the numerical stability of the JAGS sampler.}
+\item{scale.effort}{whether or not to scale, but not centre, each effort
+covariate before model fitting. Defaults to \code{TRUE}, in which case each
+covariate is divided by its standard deviation. Scaling can improve MCMC
+mixing and the numerical stability of the JAGS sampler while preserving
+meaningful zeros.}
 
 \item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{sigma}. Both
 \code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric}.
@@ -57,9 +52,10 @@ MCMC mixing and the numerical stability of the JAGS sampler.}
 parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 (1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
 defaults to 0, which recovers the constant-hazard geometric prior for
-extinction time. \code{sigma} should either be of length one, or the same length
-as the number of coefficients to estimate (i.e. \code{ncol(detectability) + 1}).
-Defaults to 100.}
+extinction time. \code{sigma} should have length one or the same length as the
+number of effort covariates, i.e. \code{ncol(effort)}, and specifies the scale of
+the half-normal prior on each non-negative effort coefficient. A scalar value
+is applied to every coefficient. Defaults to 1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -71,9 +67,9 @@ Defaults to 100.}
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{list} object with the original parameters, posterior samples, and
-the p(extant), point estimate, and credible interval included as elements.
-The credible interval is a two-element numeric vector called \code{cred.int}.
+a \code{dodo_fit} object containing the original sighting and effort
+data, the scaled effort matrix used for fitting, effort scaling factors,
+posterior samples, p(extant), the point estimate, and the credible interval.
 }
 \description{
 Model 3 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -81,7 +77,10 @@ the species is extant at the test time, and a point estimate and one-sided
 \eqn{1 - \alpha} credible interval on the time of extinction.
 }
 \note{
-All sighting records are assumed to be certain.
+All sighting records are assumed to be certain. The expected sighting rate
+is a non-negative additive function of the effort covariates, with no
+intercept. Consequently, intervals in which every effort covariate is zero
+must also have zero sighting counts.
 }
 \examples{
 \dontrun{

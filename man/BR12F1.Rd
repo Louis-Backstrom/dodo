@@ -14,7 +14,7 @@ BR12F1(records, alpha = 0.05)
 use in the underlying McInerny et al. 2006 model.}
 }
 \value{
-a \code{list} object with the original parameters and the point estimate
+a \code{dodo_fit} object with the original parameters and the point estimate
 included as elements.
 }
 \description{

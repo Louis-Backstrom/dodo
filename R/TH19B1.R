@@ -18,7 +18,7 @@
 #' @param pi prior probability that the species is extant at `init.time`
 #' (defaults to \eqn{\pi = 0.5}).
 #'
-#' @returns a `list` object with the original parameters and the final
+#' @returns a `dodo_fit` object with the original parameters and the final
 #' estimates of p(extant) (\eqn{P(X_t)}) and the cumulative Bayes Factor
 #' included as elements.
 #'

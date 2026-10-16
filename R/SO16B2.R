@@ -17,7 +17,7 @@
 #' of the observation period. If specified, `curr.time` - `init.time` must equal
 #' `length(records)`.
 #'
-#' @returns a `list` object with the original parameters and p(extant) included
+#' @returns a `dodo_fit` object with the original parameters and p(extant) included
 #' as elements.
 #'
 #' @note

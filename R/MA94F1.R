@@ -13,7 +13,7 @@
 #' @param gamma desired confidence probability of the bounds of the confidence
 #' interval.
 #'
-#' @returns a `list` object with the original parameters and the p-value, point
+#' @returns a `dodo_fit` object with the original parameters and the p-value, point
 #' estimate, and confidence interval included as elements. The confidence
 #' interval is a three-element numeric vector called `conf.int`; the first
 #' element is the lower bound of the confidence interval (the time of the last

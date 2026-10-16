@@ -18,7 +18,7 @@
 #' @param PE estimate of \eqn{P_E}. Defaults to `NULL`, in which case
 #' \eqn{P_E = 1 / T}.
 #'
-#' @returns a `list` object with the original parameters and p(extant) included
+#' @returns a `dodo_fit` object with the original parameters and p(extant) included
 #' as elements.
 #'
 #' @note

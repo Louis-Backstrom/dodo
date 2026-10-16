@@ -13,7 +13,7 @@ laughing_owl
 \description{
 Laughing Owl (\emph{Ninox albifacies}) sighting record from Butchart et al.
 (2018), processed into various \code{dodo} formats. The temporal range
-(\code{init.time} to \code{test.time}) of these data is 1844 to 2018 Formats:
+(\code{init.time} to \code{test.time}) of these data is 1844 to 2018. Formats:
 \code{ccon}, \code{cbin}, \code{cdis}, \code{ucon}, \code{ubin}, \code{udis}, \code{umcb}, \code{iucn}.
 }
 \references{

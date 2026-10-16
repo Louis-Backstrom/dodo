@@ -546,7 +546,7 @@
 #' @description
 #' Laughing Owl (*Ninox albifacies*) sighting record from Butchart et al.
 #' (2018), processed into various `dodo` formats. The temporal range
-#' (`init.time` to `test.time`) of these data is 1844 to 2018 Formats:
+#' (`init.time` to `test.time`) of these data is 1844 to 2018. Formats:
 #' `ccon`, `cbin`, `cdis`, `ucon`, `ubin`, `udis`, `umcb`, `iucn`.
 #'
 #' @format a `list` with 12 elements.

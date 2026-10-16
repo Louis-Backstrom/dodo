@@ -8,7 +8,7 @@
 #' \code{\link{convert_dodo}} for details).
 #' @param effort a vector of effort data, of the same length as `records`.
 #'
-#' @returns a `list` object with the original parameters and the p-value
+#' @returns a `dodo_fit` object with the original parameters and the p-value
 #' included as elements.
 #'
 #' @note

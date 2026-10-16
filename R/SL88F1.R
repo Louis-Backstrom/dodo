@@ -9,7 +9,7 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #'
-#' @returns a `list` object with the original parameters and the confidence
+#' @returns a `dodo_fit` object with the original parameters and the confidence
 #' interval included as elements. The confidence interval is a two-element
 #' numeric vector called `conf.int`.
 #'

@@ -9,7 +9,7 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) to
 #' use in the underlying McInerny et al. 2006 model.
 #'
-#' @returns a `list` object with the original parameters and the point estimate
+#' @returns a `dodo_fit` object with the original parameters and the point estimate
 #' included as elements.
 #'
 #' @note

@@ -28,7 +28,7 @@ the first sighting, in which case this sighting is removed from the record.}
 \item{n.iter}{number of iterations to run (defaults to 10,000).}
 }
 \value{
-a \code{list} object with the original parameters and the probability,
+a \code{dodo_fit} object with the original parameters and the probability,
 point estimate, and confidence interval included as elements. The confidence
 interval is a two-element numeric vector called \code{conf.int}.
 }

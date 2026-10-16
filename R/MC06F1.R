@@ -11,7 +11,7 @@
 #' the \eqn{1 - \alpha} confidence interval.
 #' @param init.time start time for the discrete-time sighting record.
 #'
-#' @returns a `list` object with the original parameters and the p-value and
+#' @returns a `dodo_fit` object with the original parameters and the p-value and
 #' confidence interval included as elements.
 #'
 #' @note

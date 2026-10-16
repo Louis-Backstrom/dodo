@@ -19,7 +19,7 @@
 #' `pi`, the pre-extinction detection probability.
 #' @param increment step size used for integration. Defaults to 0.001.
 #'
-#' @returns a `list` object with the original parameters and the p(extant),
+#' @returns a `dodo_fit` object with the original parameters and the p(extant),
 #' point estimate, and credible interval included as elements. The credible
 #' interval is a two-element numeric vector called `cred.int`. The point
 #' estimate is the median (not the mean) of the posterior distribution of

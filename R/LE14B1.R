@@ -17,7 +17,7 @@
 #' of the (uniform) prior for extant (P(X_T)). Defaults to `c(0, 1)`.
 #' @param n.iter number of iterations to run (defaults to 10,000).
 #'
-#' @returns a `list` object with the original parameters and p(extant) included
+#' @returns a `dodo_fit` object with the original parameters and p(extant) included
 #' as elements.
 #'
 #' @note

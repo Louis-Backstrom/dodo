@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Certain-only No-detectability" model
+#' @title Backstrom et al.'s (2026) "Certain-only No-effort" model
 #'
 #' @description
 #' Model 1 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -31,7 +31,7 @@
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `list` object with the original parameters, posterior samples, and
+#' @returns a `dodo_fit` object with the original parameters, posterior samples, and
 #' the p(extant), point estimate, and credible interval included as elements.
 #' The credible interval is a two-element numeric vector called `cred.int`.
 #'
@@ -62,30 +62,51 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     stop("package 'rjags' is required but could not be found")
   }
 
-  # Check that data and priors are in a valid format
-  if (anyNA(records) || any(records < 0) || any(records != floor(records))) {
-    stop("records must be non-negative integer counts")
+  # Check that scalar arguments are in a valid format
+  if (!is.numeric(alpha) || length(alpha) != 1L ||
+    !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
+    stop("alpha must be a single number in (0, 1)")
   }
+
+  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1L ||
+    !is.finite(tol) || tol <= 0 || tol >= 1) {
+    stop("tol must be a single number in (0, 1)")
+  }
+
+  # Check that records are in a valid format
+  if (!is.numeric(records) || anyNA(records) || any(!is.finite(records)) ||
+    any(records < 0) || any(records != floor(records))) {
+    stop("records must contain only finite, non-negative integer counts")
+  }
+
+  if (length(records) < 2L) {
+    stop("records must contain at least two sampling intervals")
+  }
+
+  if (!any(records > 0)) {
+    stop("records must contain at least one positive count")
+  }
+
   records <- as.integer(records)
 
-  if (is.null(priors$theta_max) || length(priors$theta_max) != 2 ||
-    anyNA(priors$theta_max) || any(priors$theta_max <= 0)) {
-    stop("priors$theta_max must be a positive vector of length 2")
+  # Check that extinction-time priors are in a valid format
+  if (is.null(priors$theta_max) || !is.numeric(priors$theta_max) ||
+    length(priors$theta_max) != 2L || anyNA(priors$theta_max) ||
+    any(!is.finite(priors$theta_max)) || any(priors$theta_max <= 0)) {
+    stop("priors$theta_max must be a finite positive vector of length 2")
   }
 
-  if (is.null(priors$g) || length(priors$g) != 1 ||
-    anyNA(priors$g) || priors$g < 0) {
-    stop("priors$g must be a single non-negative number")
+  if (is.null(priors$g) || !is.numeric(priors$g) ||
+    length(priors$g) != 1L || !is.finite(priors$g) ||
+    priors$g < 0) {
+    stop("priors$g must be a single finite non-negative number")
   }
 
-  if (is.null(priors$lambda) || length(priors$lambda) != 2 ||
-    anyNA(priors$lambda) || any(priors$lambda <= 0)) {
-    stop("priors$lambda must be a positive vector of length 2")
-  }
-
-  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1 || is.na(tol) ||
-    tol <= 0 || tol >= 1) {
-    stop("tol must be a single number in (0, 1)")
+  # Check that sighting-rate prior is in a valid format
+  if (is.null(priors$lambda) || !is.numeric(priors$lambda) ||
+    length(priors$lambda) != 2L || anyNA(priors$lambda) ||
+    any(!is.finite(priors$lambda)) || any(priors$lambda <= 0)) {
+    stop("priors$lambda must be a finite positive vector of length 2")
   }
 
   # Calculate key values

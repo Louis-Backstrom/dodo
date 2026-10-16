@@ -13,7 +13,7 @@
 #' @param pi prior probability that \eqn{H_0} is true (defaults to
 #' \eqn{\pi = 0.5}).
 #'
-#' @returns a `list` object with the original parameters and the Bayes factor
+#' @returns a `dodo_fit` object with the original parameters and the Bayes factor
 #' and p(extant) included as elements.
 #'
 #' @note

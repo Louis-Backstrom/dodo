@@ -14,7 +14,7 @@ SL88F1(records, alpha = 0.05)
 the \eqn{1 - \alpha} confidence interval.}
 }
 \value{
-a \code{list} object with the original parameters and the confidence
+a \code{dodo_fit} object with the original parameters and the confidence
 interval included as elements. The confidence interval is a two-element
 numeric vector called \code{conf.int}.
 }

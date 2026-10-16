@@ -14,7 +14,7 @@
 #' @param scale factor to scale sighting records by. Defaults to 0.01; adjust
 #' if warned.
 #'
-#' @returns a `list` object with the original parameters and the point estimate
+#' @returns a `dodo_fit` object with the original parameters and the point estimate
 #' and credible interval included as elements. The credible interval is a
 #' two-element numeric vector called `cred.int`.
 #'

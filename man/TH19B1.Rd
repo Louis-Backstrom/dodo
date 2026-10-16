@@ -25,7 +25,7 @@ probability at.}
 (defaults to \eqn{\pi = 0.5}).}
 }
 \value{
-a \code{list} object with the original parameters and the final
+a \code{dodo_fit} object with the original parameters and the final
 estimates of p(extant) (\eqn{P(X_t)}) and the cumulative Bayes Factor
 included as elements.
 }
