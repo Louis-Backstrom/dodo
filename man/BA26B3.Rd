@@ -12,7 +12,7 @@ BA26B3(
   test.time = init.time + length(records) - 1,
   tol = 0.999,
   scale.effort = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, rate = 10),
+  priors = list(theta_max = c(1, 10), g = 0, rate = 10, inclusion = NULL),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -46,8 +46,9 @@ covariate is divided by its standard deviation. Scaling can improve MCMC
 mixing and the numerical stability of the JAGS sampler while preserving
 meaningful zeros.}
 
-\item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{rate}. Both
-\code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric}.
+\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{rate}, and
+\code{inclusion}. \code{theta_max} and \code{rate} are \code{numeric} vectors, \code{inclusion} is
+either \code{NULL} or a \code{numeric} vector, and \code{g} is a single \code{numeric}.
 \code{theta_max} is of length two, with the two elements being the shape
 parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 (1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
@@ -55,8 +56,13 @@ defaults to 0, which recovers the constant-hazard geometric prior for
 extinction time. \code{rate} should have length one or the same length as the
 number of effort covariates, i.e. \code{ncol(effort)}, and specifies the rate of
 the exponential prior on each non-negative effort coefficient. A scalar value
-is applied to every coefficient. Defaults to 10, corresponding to a prior
-mean and standard deviation of 0.1.}
+is applied to every coefficient. It defaults to 10, corresponding to a prior
+mean and standard deviation of 0.1. \code{inclusion} specifies the prior
+probability that each effort covariate is included and should have length one
+or \code{ncol(effort)}. #' If \code{NULL}, each inclusion probability defaults to
+\code{1 / ncol(effort)}, corresponding to a prior expected model size of one
+before conditioning on the selected covariates providing positive effort in
+all intervals containing positive sighting counts.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -70,7 +76,8 @@ mean and standard deviation of 0.1.}
 \value{
 a \code{dodo_fit} object containing the original sighting and effort
 data, the scaled effort matrix used for fitting, effort scaling factors,
-posterior samples, p(extant), the point estimate, and the credible interval.
+posterior samples, posterior inclusion and model probabilities, p(extant),
+the point estimate, and the credible interval.
 }
 \description{
 Model 3 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -82,6 +89,10 @@ All sighting records are assumed to be certain. The expected sighting rate
 is a non-negative additive function of the effort covariates, with no
 intercept. Consequently, intervals in which every effort covariate is zero
 must also have zero sighting counts.
+
+Uncertainty in the effort covariates included in the model is represented
+using binary inclusion indicators. The extinction-time posterior is
+therefore averaged over the effort models visited by the MCMC sampler.
 }
 \examples{
 \dontrun{
