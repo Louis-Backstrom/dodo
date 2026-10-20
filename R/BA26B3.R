@@ -395,11 +395,15 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   posterior <- as.data.frame(as.matrix(samples))
 
   # Calculate posterior inclusion probabilities
-  included_columns <- paste0(
-    "included[",
-    seq_len(ncol(effort)),
-    "]"
+  included_columns <- grep(
+    "^included($|\\[)",
+    colnames(posterior),
+    value = TRUE
   )
+
+  if (length(included_columns) != ncol(effort)) {
+    stop("could not identify all effort-variable inclusion samples")
+  }
 
   posterior_inclusion <- colMeans(
     posterior[, included_columns, drop = FALSE]
