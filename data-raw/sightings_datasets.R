@@ -446,7 +446,7 @@ bitterweed <- c(
 )
 usethis::use_data(bitterweed, overwrite = TRUE)
 
-laughing_owl_raw <- read_csv("data-raw/Ninox albifacies.csv")
+laughing_owl_raw <- read.csv("data-raw/Ninox albifacies.csv")
 laughing_owl_raw <- as.data.frame(laughing_owl_raw)
 
 laughing_owl <- convert_dodo(

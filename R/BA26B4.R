@@ -24,16 +24,17 @@
 #' covariate is divided by its standard deviation. Scaling can improve MCMC
 #' mixing and the numerical stability of the JAGS sampler while preserving
 #' meaningful zeros.
-#' @param priors `list` with four elements: `theta_max`, `g`, `sigma_v`, and
-#' `sigma_i`. `theta_max`, `sigma_v`, and `sigma_i` are numeric vectors, and
+#' @param priors `list` with four elements: `theta_max`, `g`, `rate_v`, and
+#' `rate_i`. `theta_max`, `rate_v`, and `rate_i` are numeric vectors, and
 #' `g` is a single numeric value. The two elements of `theta_max` are the shape
 #' parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
 #' (1, 10). `g` is the delay parameter for the lagged extinction hazard and
 #' defaults to 0, which recovers the constant-hazard geometric prior.
-#' `sigma_v` and `sigma_i` specify the scales of the half-normal priors on the
+#' `rate_v` and `rate_i` specify the rates of the exponential priors on the
 #' non-negative valid- and invalid-sighting effort coefficients, respectively.
 #' Each must have length one or `ncol(effort)`. A scalar value is applied to
-#' every corresponding coefficient. Both default to 1.
+#' every corresponding coefficient. Both default to 10, corresponding to a prior
+#' mean and standard deviation of 0.1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -70,7 +71,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
                    scale.effort = TRUE,
                    priors = list(
                      theta_max = c(1, 10), g = 0,
-                     sigma_v = 1, sigma_i = 1
+                     rate_v = 10, rate_i = 10
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -161,40 +162,40 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   effort_original <- effort
 
   # Check that effort-coefficient priors are in a valid format
-  if (is.null(priors$sigma_v) || !is.numeric(priors$sigma_v) ||
-    anyNA(priors$sigma_v) || any(!is.finite(priors$sigma_v)) ||
-    any(priors$sigma_v <= 0)) {
-    stop("priors$sigma_v must contain finite positive values")
+  if (is.null(priors$rate_v) || !is.numeric(priors$rate_v) ||
+    anyNA(priors$rate_v) || any(!is.finite(priors$rate_v)) ||
+    any(priors$rate_v <= 0)) {
+    stop("priors$rate_v must contain finite positive values")
   }
 
-  if (is.null(priors$sigma_i) || !is.numeric(priors$sigma_i) ||
-    anyNA(priors$sigma_i) || any(!is.finite(priors$sigma_i)) ||
-    any(priors$sigma_i <= 0)) {
-    stop("priors$sigma_i must contain finite positive values")
+  if (is.null(priors$rate_i) || !is.numeric(priors$rate_i) ||
+    anyNA(priors$rate_i) || any(!is.finite(priors$rate_i)) ||
+    any(priors$rate_i <= 0)) {
+    stop("priors$rate_i must contain finite positive values")
   }
 
-  if (!length(priors$sigma_v) %in% c(1L, ncol(effort))) {
-    stop("priors$sigma_v must have length 1 or ncol(effort)")
+  if (!length(priors$rate_v) %in% c(1L, ncol(effort))) {
+    stop("priors$rate_v must have length 1 or ncol(effort)")
   }
 
-  if (!length(priors$sigma_i) %in% c(1L, ncol(effort))) {
-    stop("priors$sigma_i must have length 1 or ncol(effort)")
+  if (!length(priors$rate_i) %in% c(1L, ncol(effort))) {
+    stop("priors$rate_i must have length 1 or ncol(effort)")
   }
 
-  if (length(priors$sigma_v) == 1L) {
-    sigma_v <- rep(priors$sigma_v, ncol(effort))
+  if (length(priors$rate_v) == 1L) {
+    rate_v <- rep(priors$rate_v, ncol(effort))
   } else {
-    sigma_v <- priors$sigma_v
+    rate_v <- priors$rate_v
   }
 
-  if (length(priors$sigma_i) == 1L) {
-    sigma_i <- rep(priors$sigma_i, ncol(effort))
+  if (length(priors$rate_i) == 1L) {
+    rate_i <- rep(priors$rate_i, ncol(effort))
   } else {
-    sigma_i <- priors$sigma_i
+    rate_i <- priors$rate_i
   }
 
-  names(sigma_v) <- colnames(effort)
-  names(sigma_i) <- colnames(effort)
+  names(rate_v) <- colnames(effort)
+  names(rate_i) <- colnames(effort)
 
   # Scale effort data without centring
   effort_scale <- rep(1, ncol(effort))
@@ -252,8 +253,6 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   n_cat <- max_lag_prior + 2
   y_c_logfact <- lfactorial(y_c)
   y_u_logfact <- lfactorial(y_u)
-  precision_v <- 1 / sigma_v^2
-  precision_i <- 1 / sigma_i^2
 
   # Check if the maximum lag before swapping to tail approximation is large
   if (max_lag_prior > 1000) {
@@ -279,8 +278,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
-    precision_v = precision_v,
-    precision_i = precision_i
+    rate_v = rate_v,
+    rate_i = rate_i
   )
 
   model_string <- "
@@ -291,8 +290,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       pi_e ~ dunif(0, 1)
 
       for (m in 1:p) {
-        beta[m] ~ dnorm(0, precision_v[m]) T(0, )
-        gamma[m] ~ dnorm(0, precision_i[m]) T(0, )
+        beta[m] ~ dexp(rate_v[m])
+        gamma[m] ~ dexp(rate_i[m])
       }
 
       ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
@@ -377,14 +376,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       tau_cat = sample(seq_len(n_cat), 1),
       tau_tail = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
-      beta = pmax(
-        abs(rnorm(ncol(effort), 0, sigma_v)),
-        1e-6
-      ),
-      gamma = pmax(
-        abs(rnorm(ncol(effort), 0, sigma_i)),
-        1e-6
-      )
+      beta = pmax(rexp(ncol(effort), rate = rate_v), 1e-6),
+      gamma = pmax(rexp(ncol(effort), rate = rate_i), 1e-6)
     )
   }
 

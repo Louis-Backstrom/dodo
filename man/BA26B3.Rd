@@ -12,7 +12,7 @@ BA26B3(
   test.time = init.time + length(records) - 1,
   tol = 0.999,
   scale.effort = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, sigma = 1),
+  priors = list(theta_max = c(1, 10), g = 0, rate = 10),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -46,16 +46,17 @@ covariate is divided by its standard deviation. Scaling can improve MCMC
 mixing and the numerical stability of the JAGS sampler while preserving
 meaningful zeros.}
 
-\item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{sigma}. Both
+\item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{rate}. Both
 \code{theta_max} and \code{sigma} are \code{numeric} vectors, \code{g} is a single \code{numeric}.
 \code{theta_max} is of length two, with the two elements being the shape
 parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 (1, 10). \code{g} is the delay parameter for the lagged extinction hazard. It
 defaults to 0, which recovers the constant-hazard geometric prior for
-extinction time. \code{sigma} should have length one or the same length as the
-number of effort covariates, i.e. \code{ncol(effort)}, and specifies the scale of
-the half-normal prior on each non-negative effort coefficient. A scalar value
-is applied to every coefficient. Defaults to 1.}
+extinction time. \code{rate} should have length one or the same length as the
+number of effort covariates, i.e. \code{ncol(effort)}, and specifies the rate of
+the exponential prior on each non-negative effort coefficient. A scalar value
+is applied to every coefficient. Defaults to 10, corresponding to a prior
+mean and standard deviation of 0.1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 

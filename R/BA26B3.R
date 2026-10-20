@@ -24,16 +24,17 @@
 #' covariate is divided by its standard deviation. Scaling can improve MCMC
 #' mixing and the numerical stability of the JAGS sampler while preserving
 #' meaningful zeros.
-#' @param priors `list` with three elements: `theta_max`, `g`, and `sigma`. Both
+#' @param priors `list` with three elements: `theta_max`, `g`, and `rate`. Both
 #' `theta_max` and `sigma` are `numeric` vectors, `g` is a single `numeric`.
 #' `theta_max` is of length two, with the two elements being the shape
 #' parameters for the Beta hyperprior on \eqn{\theta_{max}}. They default to
 #' (1, 10). `g` is the delay parameter for the lagged extinction hazard. It
 #' defaults to 0, which recovers the constant-hazard geometric prior for
-#' extinction time. `sigma` should have length one or the same length as the
-#' number of effort covariates, i.e. `ncol(effort)`, and specifies the scale of
-#' the half-normal prior on each non-negative effort coefficient. A scalar value
-#' is applied to every coefficient. Defaults to 1.
+#' extinction time. `rate` should have length one or the same length as the
+#' number of effort covariates, i.e. `ncol(effort)`, and specifies the rate of
+#' the exponential prior on each non-negative effort coefficient. A scalar value
+#' is applied to every coefficient. Defaults to 10, corresponding to a prior
+#' mean and standard deviation of 0.1.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -67,7 +68,7 @@
 BA26B3 <- function(records, effort, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1, tol = 0.999,
                    scale.effort = TRUE,
-                   priors = list(theta_max = c(1, 10), g = 0, sigma = 1),
+                   priors = list(theta_max = c(1, 10), g = 0, rate = 10),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
@@ -144,23 +145,23 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   effort_original <- effort
 
   # Check that effort-coefficient priors are in a valid format
-  if (is.null(priors$sigma) || !is.numeric(priors$sigma) ||
-    anyNA(priors$sigma) || any(!is.finite(priors$sigma)) ||
-    any(priors$sigma <= 0)) {
-    stop("priors$sigma must contain finite positive values")
+  if (is.null(priors$rate) || !is.numeric(priors$rate) ||
+    anyNA(priors$rate) || any(!is.finite(priors$rate)) ||
+    any(priors$rate <= 0)) {
+    stop("priors$rate must contain finite positive values")
   }
 
-  if (!length(priors$sigma) %in% c(1L, ncol(effort))) {
-    stop("priors$sigma must have length 1 or ncol(effort)")
+  if (!length(priors$rate) %in% c(1L, ncol(effort))) {
+    stop("priors$rate must have length 1 or ncol(effort)")
   }
 
-  if (length(priors$sigma) == 1L) {
-    sigma <- rep(priors$sigma, ncol(effort))
+  if (length(priors$rate) == 1L) {
+    rate <- rep(priors$rate, ncol(effort))
   } else {
-    sigma <- priors$sigma
+    rate <- priors$rate
   }
 
-  names(sigma) <- colnames(effort)
+  names(rate) <- colnames(effort)
 
   # Scale effort data without centring
   effort_scale <- rep(1, ncol(effort))
@@ -208,7 +209,6 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   }
   n_cat <- max_lag_prior + 2
   y_logfact <- lfactorial(records)
-  precision <- 1 / sigma^2
 
   # Check if the maximum lag before swapping to tail approximation is large
   if (max_lag_prior > 1000) {
@@ -232,7 +232,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
-    precision = precision
+    rate = rate
   )
 
   model_string <- "
@@ -241,7 +241,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       for (m in 1:p) {
-        alpha[m] ~ dnorm(0, precision[m]) T(0, )
+        beta[m] ~ dexp(rate[m])
       }
 
       ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
@@ -267,7 +267,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
       # 2. Likelihood
       for (t in 1:bigT) {
-        lambda[t] <- inprod(alpha[1:p], x[t, 1:p])
+        lambda[t] <- inprod(beta[1:p], x[t, 1:p])
         lambda_safe[t] <- lambda[t] + equals(lambda[t], 0)
 
         loglik_obs[t] <- -lambda[t] + y[t] * log(lambda_safe[t]) - y_logfact[t]
@@ -300,7 +300,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       theta_max = runif(1, 0.01, 0.99),
       tau_cat = sample(1:n_cat, 1),
       tau_tail = sample(0:(2 * bigT), 1),
-      alpha = pmax(abs(rnorm(ncol(effort), 0, sigma)), 1e-6)
+      beta = pmax(rexp(ncol(effort), rate = rate), 1e-6)
     )
 
     return(out)
@@ -318,7 +318,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_E", "theta_max", "alpha"
+      "tau_E", "theta_max", "beta"
     ), n.iter = n.iter, thin = n.thin)
   }))
 

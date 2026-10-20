@@ -12,7 +12,7 @@ BA26B4(
   test.time = init.time + nrow(records) - 1,
   tol = 0.999,
   scale.effort = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, sigma_v = 1, sigma_i = 1),
+  priors = list(theta_max = c(1, 10), g = 0, rate_v = 10, rate_i = 10),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -46,16 +46,17 @@ covariate is divided by its standard deviation. Scaling can improve MCMC
 mixing and the numerical stability of the JAGS sampler while preserving
 meaningful zeros.}
 
-\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{sigma_v}, and
-\code{sigma_i}. \code{theta_max}, \code{sigma_v}, and \code{sigma_i} are numeric vectors, and
+\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{rate_v}, and
+\code{rate_i}. \code{theta_max}, \code{rate_v}, and \code{rate_i} are numeric vectors, and
 \code{g} is a single numeric value. The two elements of \code{theta_max} are the shape
 parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
 (1, 10). \code{g} is the delay parameter for the lagged extinction hazard and
 defaults to 0, which recovers the constant-hazard geometric prior.
-\code{sigma_v} and \code{sigma_i} specify the scales of the half-normal priors on the
+\code{rate_v} and \code{rate_i} specify the rates of the exponential priors on the
 non-negative valid- and invalid-sighting effort coefficients, respectively.
 Each must have length one or \code{ncol(effort)}. A scalar value is applied to
-every corresponding coefficient. Both default to 1.}
+every corresponding coefficient. Both default to 10, corresponding to a prior
+mean and standard deviation of 0.1.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
