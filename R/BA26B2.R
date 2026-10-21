@@ -103,7 +103,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
 
-  # Check that extinction-time priors are in a valid format
+  # Check that extinction time priors are in a valid format
   if (is.null(priors$theta_max) || !is.numeric(priors$theta_max) ||
     length(priors$theta_max) != 2L || anyNA(priors$theta_max) ||
     any(!is.finite(priors$theta_max)) || any(priors$theta_max <= 0)) {

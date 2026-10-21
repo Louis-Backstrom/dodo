@@ -24,17 +24,29 @@
 #' covariate is divided by its standard deviation. Scaling can improve MCMC
 #' mixing and the numerical stability of the JAGS sampler while preserving
 #' meaningful zeros.
-#' @param priors `list` with four elements: `theta_max`, `g`, `rate_v`, and
-#' `rate_i`. `theta_max`, `rate_v`, and `rate_i` are numeric vectors, and
-#' `g` is a single numeric value. The two elements of `theta_max` are the shape
-#' parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
-#' (1, 10). `g` is the delay parameter for the lagged extinction hazard and
-#' defaults to 0, which recovers the constant-hazard geometric prior.
-#' `rate_v` and `rate_i` specify the rates of the exponential priors on the
-#' non-negative valid- and invalid-sighting effort coefficients, respectively.
-#' Each must have length one or `ncol(effort)`. A scalar value is applied to
-#' every corresponding coefficient. Both default to 10, corresponding to a prior
-#' mean and standard deviation of 0.1.
+#' @param variable.selection logical. If TRUE (default), Kuo-Mallick
+#' variable selection is to account for uncertainty in which effort covariates
+#' influence sighting rates of both valid and invalid sightings. If FALSE, all
+#' effort covariates are included in both submodels. If only a single effort
+#' covariate is supplied and variable.selection = TRUE, a warning is issued and
+#' variable selection is automatically disabled.
+#' @param priors `list` with six elements: `theta_max`, `g`, `rate_v`,
+#' `rate_i`, `inclusion_v`, and `inclusion_i`. `theta_max`, `rate_v`, and
+#' `rate_i` are `numeric` vectors; `inclusion_v` and `inclusion_i` are either
+#' `NULL` or `numeric` vectors; and `g` is a single `numeric`. The two elements
+#' of `theta_max` are the shape parameters for the Beta hyperprior on
+#' \eqn{\theta_{max}} and default to (1, 10). `g` is the delay parameter for
+#' the lagged extinction hazard and defaults to 0, which recovers the
+#' constant-hazard geometric prior. `rate_v` and `rate_i` specify the rates of
+#' the exponential priors on the non-negative valid- and invalid-sighting
+#' effort coefficients, respectively. Each must have length one or
+#' `ncol(effort)` and defaults to 10, corresponding to a prior mean and
+#' standard deviation of 0.1. `inclusion_v` and `inclusion_i` specify the prior
+#' probabilities that each effort covariate is included in the valid- and
+#' invalid-sighting submodels. If variable.selection = TRUE and inclusion_v or
+#' inclusion_i is NULL, each inclusion probability defaults to 1 / ncol(effort).
+#' If variable.selection = FALSE, all effort covariates are forced into both
+#' submodels and inclusion priors are ignored.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
@@ -43,7 +55,8 @@
 #'
 #' @returns a `dodo_fit` object containing the original sighting and effort
 #' data, the scaled effort matrix used for fitting, effort scaling factors,
-#' posterior samples, p(extant), the point estimate, and the credible interval.
+#' posterior samples, posterior inclusion and model probabilities for both
+#' sighting submodels, p(extant), the point estimate, and the credible interval.
 #'
 #' @note
 #' This model incorporates both sighting uncertainty and variable survey effort.
@@ -51,6 +64,11 @@
 #' functions of the effort covariates, with no intercepts. Consequently,
 #' intervals in which every effort covariate is zero must also have zero
 #' certain and uncertain sighting counts.
+#'
+#' If variable.selection = TRUE, uncertainty in the effort covariates included
+#' in the valid- and invalid-sighting submodels is represented using separate
+#' binary inclusion indicators. Extinction time summaries are therefore averaged
+#' over the effort models visited by the MCMC sampler.
 #'
 #' @references
 #' **Key Reference**
@@ -68,10 +86,11 @@
 
 BA26B4 <- function(records, effort, alpha = 0.05, init.time,
                    test.time = init.time + nrow(records) - 1, tol = 0.999,
-                   scale.effort = TRUE,
+                   scale.effort = TRUE, variable.selection = TRUE,
                    priors = list(
                      theta_max = c(1, 10), g = 0,
-                     rate_v = 10, rate_i = 10
+                     rate_v = 10, rate_i = 10,
+                     inclusion_v = NULL, inclusion_i = NULL
                    ),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -93,6 +112,12 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   if (!is.logical(scale.effort) || length(scale.effort) != 1L ||
     is.na(scale.effort)) {
     stop("scale.effort must be TRUE or FALSE")
+  }
+
+  if (!is.logical(variable.selection) ||
+    length(variable.selection) != 1L ||
+    is.na(variable.selection)) {
+    stop("variable.selection must be TRUE or FALSE")
   }
 
   # Check that records are in a valid format
@@ -122,7 +147,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   records$certain <- as.integer(records$certain)
   records$uncertain <- as.integer(records$uncertain)
 
-  # Check that extinction-time priors are in a valid format
+  # Check that extinction time priors are in a valid format
   if (is.null(priors$theta_max) || !is.numeric(priors$theta_max) ||
     length(priors$theta_max) != 2L || anyNA(priors$theta_max) ||
     any(!is.finite(priors$theta_max)) || any(priors$theta_max <= 0)) {
@@ -161,7 +186,19 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   effort_original <- effort
 
-  # Check that effort-coefficient priors are in a valid format
+  if (variable.selection && ncol(effort) == 1L) {
+    warning(
+      paste(
+        "variable.selection = TRUE but only one effort covariate was supplied;",
+        "selection has been disabled and the covariate will be forced into",
+        "both sighting submodels"
+      )
+    )
+
+    variable.selection <- FALSE
+  }
+
+  # Check that effort coefficient priors are in a valid format
   if (is.null(priors$rate_v) || !is.numeric(priors$rate_v) ||
     anyNA(priors$rate_v) || any(!is.finite(priors$rate_v)) ||
     any(priors$rate_v <= 0)) {
@@ -197,6 +234,62 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   names(rate_v) <- colnames(effort)
   names(rate_i) <- colnames(effort)
 
+  # Check that effort variable inclusion priors are in a valid format
+  if (variable.selection == TRUE) {
+    if (is.null(priors$inclusion_v)) {
+      inclusion_prob_v <- rep(1 / ncol(effort), ncol(effort))
+    } else {
+      if (!is.numeric(priors$inclusion_v) ||
+        anyNA(priors$inclusion_v) ||
+        any(!is.finite(priors$inclusion_v)) ||
+        any(priors$inclusion_v <= 0) ||
+        any(priors$inclusion_v > 1)) {
+        stop("priors$inclusion_v must contain values in (0, 1]")
+      }
+
+      if (!length(priors$inclusion_v) %in% c(1L, ncol(effort))) {
+        stop("priors$inclusion_v must have length 1 or ncol(effort)")
+      }
+
+      if (length(priors$inclusion_v) == 1L) {
+        inclusion_prob_v <- rep(priors$inclusion_v, ncol(effort))
+      } else {
+        inclusion_prob_v <- priors$inclusion_v
+      }
+    }
+  } else {
+    inclusion_prob_v <- rep(1, ncol(effort))
+  }
+
+  if (variable.selection == TRUE) {
+    if (is.null(priors$inclusion_i)) {
+      inclusion_prob_i <- rep(1 / ncol(effort), ncol(effort))
+    } else {
+      if (!is.numeric(priors$inclusion_i) ||
+        anyNA(priors$inclusion_i) ||
+        any(!is.finite(priors$inclusion_i)) ||
+        any(priors$inclusion_i <= 0) ||
+        any(priors$inclusion_i > 1)) {
+        stop("priors$inclusion_i must contain values in (0, 1]")
+      }
+
+      if (!length(priors$inclusion_i) %in% c(1L, ncol(effort))) {
+        stop("priors$inclusion_i must have length 1 or ncol(effort)")
+      }
+
+      if (length(priors$inclusion_i) == 1L) {
+        inclusion_prob_i <- rep(priors$inclusion_i, ncol(effort))
+      } else {
+        inclusion_prob_i <- priors$inclusion_i
+      }
+    }
+  } else {
+    inclusion_prob_i <- rep(1, ncol(effort))
+  }
+
+  names(inclusion_prob_v) <- colnames(effort)
+  names(inclusion_prob_i) <- colnames(effort)
+
   # Scale effort data without centring
   effort_scale <- rep(1, ncol(effort))
   names(effort_scale) <- colnames(effort)
@@ -230,6 +323,11 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       )
     )
   }
+
+  # Identify effort availability and positive-sighting intervals
+  effort_positive <- 1L * (effort > 0)
+  certain_positive <- as.integer(records$certain > 0)
+  uncertain_positive <- as.integer(records$uncertain > 0)
 
   y_c <- records$certain
   y_u <- records$uncertain
@@ -275,11 +373,17 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     y_c_logfact = y_c_logfact,
     y_u_logfact = y_u_logfact,
     zeros = 0L,
+    valid_model = 1L,
+    effort_positive = effort_positive,
+    certain_positive = certain_positive,
+    uncertain_positive = uncertain_positive,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
     rate_v = rate_v,
-    rate_i = rate_i
+    rate_i = rate_i,
+    inclusion_prob_v = inclusion_prob_v,
+    inclusion_prob_i = inclusion_prob_i
   )
 
   model_string <- "
@@ -290,9 +394,18 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       pi_e ~ dunif(0, 1)
 
       for (m in 1:p) {
-        beta[m] ~ dexp(rate_v[m])
-        gamma[m] ~ dexp(rate_i[m])
+        included_v[m] ~ dbern(inclusion_prob_v[m])
+        included_i[m] ~ dbern(inclusion_prob_i[m])
+
+        beta_raw[m] ~ dexp(rate_v[m])
+        gamma_raw[m] ~ dexp(rate_i[m])
+
+        beta[m] <- included_v[m] * beta_raw[m]
+        gamma[m] <- included_i[m] * gamma_raw[m]
       }
+
+      n_included_v <- sum(included_v[1:p])
+      n_included_i <- sum(included_i[1:p])
 
       ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
       surv[1] <- 1
@@ -315,6 +428,50 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       tau_L <- (1 - is_tail) * (tau_cat - 1) + is_tail *
         (max_lag_prior + 1 + tau_tail)
       tau_E0 <- t_m + tau_L
+
+      # Ensure selected covariates are compatible with observed sightings
+      for (t in 1:bigT) {
+        selected_effort_v[t] <- inprod(
+          included_v[1:p],
+          effort_positive[t, 1:p]
+        )
+
+        selected_effort_i[t] <- inprod(
+          included_i[1:p],
+          effort_positive[t, 1:p]
+        )
+
+        effort_v_covered[t] <- step(selected_effort_v[t] - 0.5)
+        effort_i_covered[t] <- step(selected_effort_i[t] - 0.5)
+
+        effort_any_covered[t] <- step(
+          selected_effort_v[t] + selected_effort_i[t] - 0.5
+        )
+
+        # Extinction at tau_E0 means periods through tau_E0 are extant
+        post_extinction[t] <- step(t - tau_E0 - 0.5)
+
+        # Certain sightings require valid-sighting effort
+        valid_certain[t] <- 1 - certain_positive[t] *
+          (1 - effort_v_covered[t])
+
+        # Before extinction, uncertain sightings may be valid or invalid.
+        # After extinction, uncertain sightings must be invalid.
+        valid_uncertain_pre[t] <- 1 - uncertain_positive[t] *
+          (1 - effort_any_covered[t])
+
+        valid_uncertain_post[t] <- 1 - uncertain_positive[t] *
+          (1 - effort_i_covered[t])
+
+        valid_uncertain[t] <- (1 - post_extinction[t]) *
+          valid_uncertain_pre[t] +
+          post_extinction[t] * valid_uncertain_post[t]
+
+        valid_period[t] <- valid_certain[t] * valid_uncertain[t]
+      }
+
+      all_periods_valid <- prod(valid_period[1:bigT])
+      valid_model ~ dbern(all_periods_valid)
 
       # 2. Likelihood
       for (t in 1:bigT) {
@@ -373,11 +530,19 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   inits_list <- function() {
     list(
       theta_max = runif(1, 0.01, 0.99),
-      tau_cat = sample(seq_len(n_cat), 1),
+      tau_cat = sample(1:n_cat, 1),
       tau_tail = sample(0:(2 * bigT), 1),
       pi_e = runif(1, 0.01, 0.99),
-      beta = pmax(rexp(ncol(effort), rate = rate_v), 1e-6),
-      gamma = pmax(rexp(ncol(effort), rate = rate_i), 1e-6)
+      included_v = rep(1L, ncol(effort)),
+      included_i = rep(1L, ncol(effort)),
+      beta_raw = pmax(
+        rexp(ncol(effort), rate = rate_v),
+        1e-6
+      ),
+      gamma_raw = pmax(
+        rexp(ncol(effort), rate = rate_i),
+        1e-6
+      )
     )
   }
 
@@ -397,11 +562,25 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
     update(jags_model, n.iter = n.burnin)
 
+    variables <- c(
+      "tau_E", "pi_e", "theta_max",
+      "beta", "gamma"
+    )
+
+    if (variable.selection) {
+      variables <- c(
+        variables,
+        "beta_raw", "gamma_raw",
+        "included_v",
+        "included_i",
+        "n_included_v",
+        "n_included_i"
+      )
+    }
+
     samples <- rjags::coda.samples(
       jags_model,
-      variable.names = c(
-        "tau_E", "pi_e", "theta_max", "beta", "gamma"
-      ),
+      variable.names = variables,
       n.iter = n.iter,
       thin = n.thin
     )
@@ -409,6 +588,133 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
+
+  # Identify posterior inclusion samples
+  if (variable.selection) {
+    included_columns_v <- grep(
+      "^included_v($|\\[)",
+      colnames(posterior),
+      value = TRUE
+    )
+
+    included_columns_i <- grep(
+      "^included_i($|\\[)",
+      colnames(posterior),
+      value = TRUE
+    )
+
+    if (length(included_columns_v) != ncol(effort)) {
+      stop("could not identify all valid-sighting inclusion samples")
+    }
+
+    if (length(included_columns_i) != ncol(effort)) {
+      stop("could not identify all invalid-sighting inclusion samples")
+    }
+
+    # Calculate posterior inclusion probabilities
+    posterior_inclusion_v <- colMeans(
+      posterior[, included_columns_v, drop = FALSE]
+    )
+
+    posterior_inclusion_i <- colMeans(
+      posterior[, included_columns_i, drop = FALSE]
+    )
+
+    names(posterior_inclusion_v) <- colnames(effort_original)
+    names(posterior_inclusion_i) <- colnames(effort_original)
+
+    # Calculate posterior model probabilities
+    included_samples_v <- posterior[
+      ,
+      included_columns_v,
+      drop = FALSE
+    ]
+
+    included_samples_i <- posterior[
+      ,
+      included_columns_i,
+      drop = FALSE
+    ]
+
+    model_id_v <- apply(
+      included_samples_v,
+      MARGIN = 1,
+      FUN = paste0,
+      collapse = ""
+    )
+
+    model_id_i <- apply(
+      included_samples_i,
+      MARGIN = 1,
+      FUN = paste0,
+      collapse = ""
+    )
+
+    model_id <- paste0(
+      "valid:", model_id_v,
+      "|invalid:", model_id_i
+    )
+
+    posterior_models <- sort(
+      prop.table(table(model_id)),
+      decreasing = TRUE
+    )
+
+    model_variables <- vapply(
+      names(posterior_models),
+      function(x) {
+        parts <- strsplit(
+          x,
+          split = "\\|",
+          fixed = FALSE
+        )[[1]]
+
+        valid_id <- sub("valid:", "", parts[1], fixed = TRUE)
+        invalid_id <- sub("invalid:", "", parts[2], fixed = TRUE)
+
+        selected_v <- strsplit(valid_id, split = "")[[1]] == "1"
+        selected_i <- strsplit(invalid_id, split = "")[[1]] == "1"
+
+        valid_names <- paste(
+          colnames(effort_original)[selected_v],
+          collapse = " + "
+        )
+
+        invalid_names <- paste(
+          colnames(effort_original)[selected_i],
+          collapse = " + "
+        )
+
+        paste0(
+          "valid: ", valid_names,
+          " | invalid: ", invalid_names
+        )
+      },
+      character(1)
+    )
+
+    names(posterior_models) <- model_variables
+  } else {
+    posterior_inclusion_v <- setNames(
+      rep(1, ncol(effort_original)),
+      colnames(effort_original)
+    )
+
+    posterior_inclusion_i <- setNames(
+      rep(1, ncol(effort_original)),
+      colnames(effort_original)
+    )
+
+    posterior_models <- structure(
+      1,
+      names = paste0(
+        "valid: ",
+        paste(colnames(effort_original), collapse = " + "),
+        " | invalid: ",
+        paste(colnames(effort_original), collapse = " + ")
+      )
+    )
+  }
 
   # Calculate p(extant)
   p.extant <- mean(posterior$tau_E >= test.time)
@@ -429,6 +735,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     effort = effort_original,
     effort.model = effort,
     effort.scale = effort_scale,
+    inclusion.prob.v = inclusion_prob_v,
+    inclusion.prob.i = inclusion_prob_i,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
@@ -436,6 +744,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     scale.effort = scale.effort,
     priors = priors,
     samples = samples,
+    posterior.inclusion.v = posterior_inclusion_v,
+    posterior.inclusion.i = posterior_inclusion_i,
+    posterior.models = posterior_models,
     p.extant = p.extant,
     estimate = estimate,
     cred.int = c(cred.int.lower, cred.int.upper)

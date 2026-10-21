@@ -12,7 +12,9 @@ BA26B4(
   test.time = init.time + nrow(records) - 1,
   tol = 0.999,
   scale.effort = TRUE,
-  priors = list(theta_max = c(1, 10), g = 0, rate_v = 10, rate_i = 10),
+  variable.selection = TRUE,
+  priors = list(theta_max = c(1, 10), g = 0, rate_v = 10, rate_i = 10, inclusion_v =
+    NULL, inclusion_i = NULL),
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
@@ -46,17 +48,30 @@ covariate is divided by its standard deviation. Scaling can improve MCMC
 mixing and the numerical stability of the JAGS sampler while preserving
 meaningful zeros.}
 
-\item{priors}{\code{list} with four elements: \code{theta_max}, \code{g}, \code{rate_v}, and
-\code{rate_i}. \code{theta_max}, \code{rate_v}, and \code{rate_i} are numeric vectors, and
-\code{g} is a single numeric value. The two elements of \code{theta_max} are the shape
-parameters for the Beta hyperprior on \eqn{\theta_{max}} and default to
-(1, 10). \code{g} is the delay parameter for the lagged extinction hazard and
-defaults to 0, which recovers the constant-hazard geometric prior.
-\code{rate_v} and \code{rate_i} specify the rates of the exponential priors on the
-non-negative valid- and invalid-sighting effort coefficients, respectively.
-Each must have length one or \code{ncol(effort)}. A scalar value is applied to
-every corresponding coefficient. Both default to 10, corresponding to a prior
-mean and standard deviation of 0.1.}
+\item{variable.selection}{logical. If TRUE (default), Kuo-Mallick
+variable selection is to account for uncertainty in which effort covariates
+influence sighting rates of both valid and invalid sightings. If FALSE, all
+effort covariates are included in both submodels. If only a single effort
+covariate is supplied and variable.selection = TRUE, a warning is issued and
+variable selection is automatically disabled.}
+
+\item{priors}{\code{list} with six elements: \code{theta_max}, \code{g}, \code{rate_v},
+\code{rate_i}, \code{inclusion_v}, and \code{inclusion_i}. \code{theta_max}, \code{rate_v}, and
+\code{rate_i} are \code{numeric} vectors; \code{inclusion_v} and \code{inclusion_i} are either
+\code{NULL} or \code{numeric} vectors; and \code{g} is a single \code{numeric}. The two elements
+of \code{theta_max} are the shape parameters for the Beta hyperprior on
+\eqn{\theta_{max}} and default to (1, 10). \code{g} is the delay parameter for
+the lagged extinction hazard and defaults to 0, which recovers the
+constant-hazard geometric prior. \code{rate_v} and \code{rate_i} specify the rates of
+the exponential priors on the non-negative valid- and invalid-sighting
+effort coefficients, respectively. Each must have length one or
+\code{ncol(effort)} and defaults to 10, corresponding to a prior mean and
+standard deviation of 0.1. \code{inclusion_v} and \code{inclusion_i} specify the prior
+probabilities that each effort covariate is included in the valid- and
+invalid-sighting submodels. If variable.selection = TRUE and inclusion_v or
+inclusion_i is NULL, each inclusion probability defaults to 1 / ncol(effort).
+If variable.selection = FALSE, all effort covariates are forced into both
+submodels and inclusion priors are ignored.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -70,7 +85,8 @@ mean and standard deviation of 0.1.}
 \value{
 a \code{dodo_fit} object containing the original sighting and effort
 data, the scaled effort matrix used for fitting, effort scaling factors,
-posterior samples, p(extant), the point estimate, and the credible interval.
+posterior samples, posterior inclusion and model probabilities for both
+sighting submodels, p(extant), the point estimate, and the credible interval.
 }
 \description{
 Model 4 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -83,6 +99,11 @@ The expected valid- and invalid-sighting rates are non-negative additive
 functions of the effort covariates, with no intercepts. Consequently,
 intervals in which every effort covariate is zero must also have zero
 certain and uncertain sighting counts.
+
+If variable.selection = TRUE, uncertainty in the effort covariates included
+in the valid- and invalid-sighting submodels is represented using separate
+binary inclusion indicators. Extinction time summaries are therefore averaged
+over the effort models visited by the MCMC sampler.
 }
 \examples{
 \dontrun{
