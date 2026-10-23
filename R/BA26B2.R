@@ -32,9 +32,9 @@
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `dodo_fit` object with the original parameters, posterior samples, and
-#' the p(extant), point estimate, and credible interval included as elements.
-#' The credible interval is a two-element numeric vector called `cred.int`.
+#' @returns a `dodo_fit` object with the original data, parameters, posterior
+#' samples, and the p(extant), point estimate, and credible interval included as
+#' elements.
 #'
 #' @note
 #' Sampling effort is assumed to be constant.
@@ -134,27 +134,18 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   y_c <- records$certain
   y_u <- records$uncertain
 
-  y_c <- as.integer(records$certain)
-  y_u <- as.integer(records$uncertain)
-
   # Calculate key values
   bigT <- length(y_c)
   t_m <- max(which(y_c > 0))
   max_lag_obs <- bigT - t_m
-  haz_tol <- tol
+
   if (priors$g == 0) {
     max_lag_prior <- max_lag_obs
   } else {
-    lag_req <- ceiling(log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1)
+    lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
   n_cat <- max_lag_prior + 2
-  y_c_sum <- cumsum(y_c)
-  y_u_sum <- cumsum(y_u)
-  y_c_logfact_sum <- cumsum(lfactorial(y_c))
-  y_u_logfact_sum <- cumsum(lfactorial(y_u))
-  y_u_total <- sum(y_u)
-  y_u_logfact_total <- sum(lfactorial(y_u))
 
   # Check if the maximum lag before swapping to tail approximation is large
   if (max_lag_prior > 1000) {
@@ -166,17 +157,12 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   # Specify model and parameters
   data_list <- list(
     init_time = init.time,
+    y_c = y_c,
+    y_u = y_u,
     bigT = bigT,
     t_m = t_m,
     max_lag_prior = max_lag_prior,
     n_cat = n_cat,
-    y_c_sum = y_c_sum,
-    y_u_sum = y_u_sum,
-    y_c_logfact_sum = y_c_logfact_sum,
-    y_u_logfact_sum = y_u_logfact_sum,
-    y_u_total = y_u_total,
-    y_u_logfact_total = y_u_logfact_total,
-    zeros = 0L,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
@@ -218,50 +204,36 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
-      mu_c_ext <- lambda_v * pi_e
-      mu_u_ext <- lambda_v * (1 - pi_e) + lambda_i
-
       for (t in 1:bigT) {
-        loglik_c_ext[t] <- -t * mu_c_ext + y_c_sum[t] * log(mu_c_ext) -
-          y_c_logfact_sum[t]
+        extant[t] <- step(tau_E0 - t + 0.5)
 
-        loglik_u_ext[t] <- -t * mu_u_ext + y_u_sum[t] * log(mu_u_ext) -
-          y_u_logfact_sum[t]
+        mu_c[t] <- extant[t] * lambda_v * pi_e
+        mu_u[t] <- extant[t] * lambda_v * (1 - pi_e) +
+          lambda_i
 
-        n_u_post[t] <- bigT - t
-        y_u_post[t] <- y_u_total - y_u_sum[t]
-        y_u_logfact_post[t] <- y_u_logfact_total - y_u_logfact_sum[t]
-
-        loglik_u_post[t] <- -n_u_post[t] * lambda_i + y_u_post[t] *
-          log(lambda_i) - y_u_logfact_post[t]
-
-        loglik[t] <- loglik_c_ext[t] + loglik_u_ext[t] + loglik_u_post[t]
+        y_c[t] ~ dpois(mu_c[t])
+        y_u[t] ~ dpois(mu_u[t])
       }
-
-      loglik[bigT + 1] <- -bigT * mu_c_ext + y_c_sum[bigT] * log(mu_c_ext) -
-        y_c_logfact_sum[bigT] + -bigT * mu_u_ext + y_u_sum[bigT] *
-        log(mu_u_ext) - y_u_logfact_sum[bigT]
-
-      idx <- step(bigT - tau_E0) * tau_E0 + step(tau_E0 - bigT - 1) * (bigT + 1)
-      selected_loglik <- loglik[idx]
-
-      phi <- -selected_loglik
-      zeros ~ dpois(phi)
 
       tau_E <- init_time + tau_E0 - 1
     }
   "
 
-  inits_list <- function() {
+  # Set up random seeds for JAGS that respect set.seed() etc.
+  jags_seeds <- sample.int(.Machine$integer.max, n.chains, replace = FALSE)
+
+  inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
       theta_max = runif(1, 0.01, 0.99),
-      tau_cat = sample(1:n_cat, 1),
-      tau_tail = sample(0:(2 * bigT), 1),
+      tau_cat = sample.int(n_cat, 1L),
+      tau_tail = sample.int(2L * bigT + 1L, 1L) - 1L,
       lambda_v = rgamma(1, priors$lambda_v[1], priors$lambda_v[2]),
       lambda_i = rgamma(1, priors$lambda_i[1], priors$lambda_i[2]),
-      pi_e = runif(1, 0.01, 0.99)
+      pi_e = runif(1, 0.01, 0.99),
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = jags_seeds[chain]
     )
-  }
+  })
 
   model_file <- tempfile(fileext = ".txt")
   writeLines(model_string, con = model_file)

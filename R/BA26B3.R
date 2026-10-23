@@ -37,28 +37,27 @@
 #' hyperprior on \eqn{\theta_{max}} and default to (1, 10). `g` is the delay
 #' parameter for the lagged extinction hazard and defaults to 0, which recovers
 #' the constant-hazard geometric prior for extinction time. `rate` should have
-#' length one or the same length as the
-#' number of effort covariates, i.e. `ncol(effort)`, and specifies the rate of
-#' the exponential prior on each non-negative effort coefficient. A scalar value
-#' is applied to every coefficient. It defaults to 10, corresponding to a prior
-#' mean and standard deviation of 0.1. `inclusion` specifies the prior
-#' probability that each effort covariate is included and should have length one
-#' or `ncol(effort)`. If variable.selection = TRUE and inclusion is NULL, each
-#' inclusion probability defaults to 1 / ncol(effort), corresponding to a prior
-#' expected model size of one before conditioning on the selected covariates
-#' providing positive effort in all intervals containing positive sighting
-#' counts. If variable.selection = FALSE, all effort covariates are forced into
-#' the model and inclusion priors are ignored.
+#' length one or the same length as the number of effort covariates, i.e.
+#' `ncol(effort)`, and specifies the rate of the exponential prior on each
+#' non-negative effort coefficient. A scalar value is applied to every
+#' coefficient. It defaults to 10, corresponding to a prior mean and standard
+#' deviation of 0.1. `inclusion` specifies the prior probability that each
+#' effort covariate is included and should have length one or `ncol(effort)`. If
+#' variable.selection = TRUE and inclusion is NULL, each inclusion probability
+#' defaults to 1 / ncol(effort), corresponding to a prior expected model size of
+#' one before conditioning on the selected covariates providing positive effort
+#' in all intervals containing positive sighting counts. If
+#' variable.selection = FALSE, all effort covariates are forced into the model
+#' and inclusion priors are ignored.
 #' @param n.chains number of MCMC chains to run. Defaults to 4.
 #' @param n.iter number of iterations in each chain. Defaults to 110,000.
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `dodo_fit` object containing the original sighting and effort
-#' data, the scaled effort matrix used for fitting, effort scaling factors,
-#' posterior samples, posterior inclusion and model probabilities, p(extant),
-#' the point estimate, and the credible interval.
+#' @returns a `dodo_fit` object with the original data, parameters, posterior
+#' samples, and the p(extant), point estimate, and credible interval included as
+#' elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain. The expected sighting rate
@@ -171,7 +170,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
   effort_original <- effort
 
-  if (variable.selection && ncol(effort) == 1L) {
+  if (variable.selection == TRUE && ncol(effort) == 1L) {
     warning(
       paste(
         "variable.selection = TRUE but only one effort covariate was supplied;",
@@ -259,23 +258,18 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     )
   }
 
-  # Identify effort availability and positive-sighting intervals
-  effort_positive <- 1L * (effort > 0)
-  sighting_positive <- as.integer(records > 0)
-
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
   max_lag_obs <- bigT - t_m
-  haz_tol <- tol
+
   if (priors$g == 0) {
     max_lag_prior <- max_lag_obs
   } else {
-    lag_req <- ceiling(log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1)
+    lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
   n_cat <- max_lag_prior + 2
-  y_logfact <- lfactorial(records)
 
   # Check if the maximum lag before swapping to tail approximation is large
   if (max_lag_prior > 1000) {
@@ -294,11 +288,6 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     t_m = t_m,
     max_lag_prior = max_lag_prior,
     n_cat = n_cat,
-    y_logfact = y_logfact,
-    zeros = 0L,
-    valid_model = 1L,
-    effort_positive = effort_positive,
-    sighting_positive = sighting_positive,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
@@ -316,24 +305,6 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
         beta_raw[m] ~ dexp(rate[m])
         beta[m] <- included[m] * beta_raw[m]
       }
-
-      # Ensure selected covariates cover every positive sighting
-      for (t in 1:bigT) {
-        selected_effort_positive[t] <- inprod(
-          included[1:p],
-          effort_positive[t, 1:p]
-        )
-
-        effort_covered[t] <- step(
-          selected_effort_positive[t] - 0.5
-        )
-
-        valid_period[t] <- 1 - sighting_positive[t] *
-          (1 - effort_covered[t])
-      }
-
-      all_periods_valid <- prod(valid_period[1:bigT])
-      valid_model ~ dbern(all_periods_valid)
 
       n_included <- sum(included[1:p])
 
@@ -361,45 +332,32 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       # 2. Likelihood
       for (t in 1:bigT) {
         lambda[t] <- inprod(beta[1:p], x[t, 1:p])
-        lambda_safe[t] <- lambda[t] + equals(lambda[t], 0)
 
-        loglik_obs[t] <- -lambda[t] + y[t] * log(lambda_safe[t]) - y_logfact[t]
+        extant[t] <- step(tau_E0 - t + 0.5)
+
+        mu[t] <- extant[t] * lambda[t]
+
+        y[t] ~ dpois(mu[t])
       }
-
-      cum_loglik[1] <- loglik_obs[1]
-
-      for (t in 2:bigT) {
-        cum_loglik[t] <- cum_loglik[t - 1] + loglik_obs[t]
-      }
-
-      for (t in 1:bigT) {
-        loglik[t] <- cum_loglik[t]
-      }
-
-      loglik[bigT + 1] <- cum_loglik[bigT]
-
-      idx <- step(bigT - tau_E0) * tau_E0 + step(tau_E0 - bigT - 1) * (bigT + 1)
-      selected_loglik <- loglik[idx]
-
-      phi <- -selected_loglik
-      zeros ~ dpois(phi)
 
       tau_E <- init_time + tau_E0 - 1
     }
   "
 
-  inits_list <- function() {
+  # Set up random seeds for JAGS that respect set.seed() etc.
+  jags_seeds <- sample.int(.Machine$integer.max, n.chains, replace = FALSE)
+
+  inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
       theta_max = runif(1, 0.01, 0.99),
-      tau_cat = sample(1:n_cat, 1),
-      tau_tail = sample(0:(2 * bigT), 1),
+      tau_cat = sample.int(n_cat, 1L),
+      tau_tail = sample.int(2L * bigT + 1L, 1L) - 1L,
       included = rep(1L, ncol(effort)),
-      beta_raw = pmax(
-        rexp(ncol(effort), rate = rate),
-        1e-6
-      )
+      beta_raw = pmax(rexp(ncol(effort), rate = rate), 1e-6),
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = jags_seeds[chain]
     )
-  }
+  })
 
   model_file <- tempfile(fileext = ".txt")
   writeLines(model_string, con = model_file)
@@ -414,7 +372,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     update(jags_model, n.iter = n.burnin)
     variables <- c("tau_E", "theta_max", "beta")
 
-    if (variable.selection) {
+    if (variable.selection == TRUE) {
       variables <- c(variables, "beta_raw", "included", "n_included")
     }
 
@@ -430,7 +388,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   posterior <- as.data.frame(as.matrix(samples))
 
   # Calculate posterior inclusion probabilities
-  if (variable.selection) {
+  if (variable.selection == TRUE) {
     included_columns <- grep(
       "^included($|\\[)",
       colnames(posterior),
@@ -447,33 +405,17 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
     names(posterior_inclusion) <- colnames(effort_original)
 
-    included_samples <- posterior[
-      ,
-      included_columns,
-      drop = FALSE
-    ]
+    included_samples <- posterior[, included_columns, drop = FALSE]
 
-    model_id <- apply(
-      included_samples,
-      MARGIN = 1,
-      FUN = paste0,
-      collapse = ""
-    )
+    model_id <- apply(included_samples, MARGIN = 1, FUN = paste0, collapse = "")
 
-    posterior_models <- sort(
-      prop.table(table(model_id)),
-      decreasing = TRUE
-    )
+    posterior_models <- sort(prop.table(table(model_id)), decreasing = TRUE)
 
     model_variables <- vapply(
       strsplit(names(posterior_models), split = ""),
       function(x) {
         selected <- as.logical(as.integer(x))
-
-        paste(
-          colnames(effort_original)[selected],
-          collapse = " + "
-        )
+        paste(colnames(effort_original)[selected], collapse = " + ")
       },
       character(1)
     )
@@ -481,8 +423,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     names(posterior_models) <- model_variables
   } else {
     posterior_inclusion <- setNames(
-      rep(1, ncol(effort_original)),
-      colnames(effort_original)
+      rep(1, ncol(effort_original)), colnames(effort_original)
     )
 
     posterior_models <- structure(

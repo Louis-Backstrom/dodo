@@ -61,18 +61,18 @@ The two elements of \code{theta_max} are the shape parameters for the Beta
 hyperprior on \eqn{\theta_{max}} and default to (1, 10). \code{g} is the delay
 parameter for the lagged extinction hazard and defaults to 0, which recovers
 the constant-hazard geometric prior for extinction time. \code{rate} should have
-length one or the same length as the
-number of effort covariates, i.e. \code{ncol(effort)}, and specifies the rate of
-the exponential prior on each non-negative effort coefficient. A scalar value
-is applied to every coefficient. It defaults to 10, corresponding to a prior
-mean and standard deviation of 0.1. \code{inclusion} specifies the prior
-probability that each effort covariate is included and should have length one
-or \code{ncol(effort)}. If variable.selection = TRUE and inclusion is NULL, each
-inclusion probability defaults to 1 / ncol(effort), corresponding to a prior
-expected model size of one before conditioning on the selected covariates
-providing positive effort in all intervals containing positive sighting
-counts. If variable.selection = FALSE, all effort covariates are forced into
-the model and inclusion priors are ignored.}
+length one or the same length as the number of effort covariates, i.e.
+\code{ncol(effort)}, and specifies the rate of the exponential prior on each
+non-negative effort coefficient. A scalar value is applied to every
+coefficient. It defaults to 10, corresponding to a prior mean and standard
+deviation of 0.1. \code{inclusion} specifies the prior probability that each
+effort covariate is included and should have length one or \code{ncol(effort)}. If
+variable.selection = TRUE and inclusion is NULL, each inclusion probability
+defaults to 1 / ncol(effort), corresponding to a prior expected model size of
+one before conditioning on the selected covariates providing positive effort
+in all intervals containing positive sighting counts. If
+variable.selection = FALSE, all effort covariates are forced into the model
+and inclusion priors are ignored.}
 
 \item{n.chains}{number of MCMC chains to run. Defaults to 4.}
 
@@ -84,10 +84,9 @@ the model and inclusion priors are ignored.}
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{dodo_fit} object containing the original sighting and effort
-data, the scaled effort matrix used for fitting, effort scaling factors,
-posterior samples, posterior inclusion and model probabilities, p(extant),
-the point estimate, and the credible interval.
+a \code{dodo_fit} object with the original data, parameters, posterior
+samples, and the p(extant), point estimate, and credible interval included as
+elements.
 }
 \description{
 Model 3 from Backstrom et al. 2026. Estimates a posterior probability that

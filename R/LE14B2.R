@@ -78,11 +78,22 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   }
   "
 
+  # Set up random seeds for JAGS that respect set.seed() etc.
+  jags_seeds <- sample.int(.Machine$integer.max, n.chains, replace = FALSE)
+
+  inits_list <- lapply(seq_len(n.chains), function(chain) {
+    list(
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = jags_seeds[chain]
+    )
+  })
+
   # Initialize and compile model
   invisible(capture.output({
     jags_model <- rjags::jags.model(
       textConnection(model),
       data = data,
+      inits = inits_list,
       n.chains = n.chains,
       quiet = TRUE
     )

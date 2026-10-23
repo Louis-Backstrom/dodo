@@ -53,10 +53,9 @@
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
 #'
-#' @returns a `dodo_fit` object containing the original sighting and effort
-#' data, the scaled effort matrix used for fitting, effort scaling factors,
-#' posterior samples, posterior inclusion and model probabilities for both
-#' sighting submodels, p(extant), the point estimate, and the credible interval.
+#' @returns a `dodo_fit` object with the original data, parameters, posterior
+#' samples, and the p(extant), point estimate, and credible interval included as
+#' elements.
 #'
 #' @note
 #' This model incorporates both sighting uncertainty and variable survey effort.
@@ -114,8 +113,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     stop("scale.effort must be TRUE or FALSE")
   }
 
-  if (!is.logical(variable.selection) ||
-    length(variable.selection) != 1L ||
+  if (!is.logical(variable.selection) || length(variable.selection) != 1L ||
     is.na(variable.selection)) {
     stop("variable.selection must be TRUE or FALSE")
   }
@@ -154,17 +152,15 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     stop("priors$theta_max must be a finite positive vector of length 2")
   }
 
-  if (is.null(priors$g) || !is.numeric(priors$g) ||
-    length(priors$g) != 1L || !is.finite(priors$g) ||
-    priors$g < 0) {
+  if (is.null(priors$g) || !is.numeric(priors$g) || length(priors$g) != 1L ||
+    !is.finite(priors$g) || priors$g < 0) {
     stop("priors$g must be a single finite non-negative number")
   }
 
   # Check that effort data are in a valid format
   effort <- as.matrix(effort)
 
-  if (!is.numeric(effort) || anyNA(effort) ||
-    any(!is.finite(effort))) {
+  if (!is.numeric(effort) || anyNA(effort) || any(!is.finite(effort))) {
     stop("effort must contain only finite numeric values")
   }
 
@@ -186,7 +182,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   effort_original <- effort
 
-  if (variable.selection && ncol(effort) == 1L) {
+  if (variable.selection == TRUE && ncol(effort) == 1L) {
     warning(
       paste(
         "variable.selection = TRUE but only one effort covariate was supplied;",
@@ -194,7 +190,6 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
         "both sighting submodels"
       )
     )
-
     variable.selection <- FALSE
   }
 
@@ -239,11 +234,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     if (is.null(priors$inclusion_v)) {
       inclusion_prob_v <- rep(1 / ncol(effort), ncol(effort))
     } else {
-      if (!is.numeric(priors$inclusion_v) ||
-        anyNA(priors$inclusion_v) ||
+      if (!is.numeric(priors$inclusion_v) || anyNA(priors$inclusion_v) ||
         any(!is.finite(priors$inclusion_v)) ||
-        any(priors$inclusion_v <= 0) ||
-        any(priors$inclusion_v > 1)) {
+        any(priors$inclusion_v <= 0) || any(priors$inclusion_v > 1)) {
         stop("priors$inclusion_v must contain values in (0, 1]")
       }
 
@@ -265,11 +258,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     if (is.null(priors$inclusion_i)) {
       inclusion_prob_i <- rep(1 / ncol(effort), ncol(effort))
     } else {
-      if (!is.numeric(priors$inclusion_i) ||
-        anyNA(priors$inclusion_i) ||
+      if (!is.numeric(priors$inclusion_i) || anyNA(priors$inclusion_i) ||
         any(!is.finite(priors$inclusion_i)) ||
-        any(priors$inclusion_i <= 0) ||
-        any(priors$inclusion_i > 1)) {
+        any(priors$inclusion_i <= 0) || any(priors$inclusion_i > 1)) {
         stop("priors$inclusion_i must contain values in (0, 1]")
       }
 
@@ -294,8 +285,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   effort_scale <- rep(1, ncol(effort))
   names(effort_scale) <- colnames(effort)
 
-  if (scale.effort) {
-    effort_scale <- apply(effort, MARGIN = 2, FUN = stats::sd)
+  if (scale.effort == TRUE) {
+    effort_scale <- apply(effort, MARGIN = 2, FUN = sd)
 
     if (any(!is.finite(effort_scale)) || any(effort_scale <= 0)) {
       stop(
@@ -324,11 +315,6 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     )
   }
 
-  # Identify effort availability and positive-sighting intervals
-  effort_positive <- 1L * (effort > 0)
-  certain_positive <- as.integer(records$certain > 0)
-  uncertain_positive <- as.integer(records$uncertain > 0)
-
   y_c <- records$certain
   y_u <- records$uncertain
 
@@ -336,21 +322,15 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   bigT <- nrow(records)
   t_m <- max(which(y_c > 0))
   max_lag_obs <- bigT - t_m
-  haz_tol <- tol
 
   if (priors$g == 0) {
     max_lag_prior <- max_lag_obs
   } else {
-    lag_req <- ceiling(
-      log(1 - haz_tol) / log(priors$g / (priors$g + 1)) - 1
-    )
+    lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
 
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
-
   n_cat <- max_lag_prior + 2
-  y_c_logfact <- lfactorial(y_c)
-  y_u_logfact <- lfactorial(y_u)
 
   # Check if the maximum lag before swapping to tail approximation is large
   if (max_lag_prior > 1000) {
@@ -370,13 +350,6 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     t_m = t_m,
     max_lag_prior = max_lag_prior,
     n_cat = n_cat,
-    y_c_logfact = y_c_logfact,
-    y_u_logfact = y_u_logfact,
-    zeros = 0L,
-    valid_model = 1L,
-    effort_positive = effort_positive,
-    certain_positive = certain_positive,
-    uncertain_positive = uncertain_positive,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
     theta_max_b = priors$theta_max[2],
@@ -412,8 +385,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
       for (k in 1:(max_lag_prior + 1)) {
         lag[k] <- k - 1
-        theta_lag[k] <- theta_max *
-          (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+        theta_lag[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
         p_tau[k] <- surv[k] * theta_lag[k]
         surv[k + 1] <- surv[k] * (1 - theta_lag[k])
       }
@@ -429,122 +401,41 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
         (max_lag_prior + 1 + tau_tail)
       tau_E0 <- t_m + tau_L
 
-      # Ensure selected covariates are compatible with observed sightings
-      for (t in 1:bigT) {
-        selected_effort_v[t] <- inprod(
-          included_v[1:p],
-          effort_positive[t, 1:p]
-        )
-
-        selected_effort_i[t] <- inprod(
-          included_i[1:p],
-          effort_positive[t, 1:p]
-        )
-
-        effort_v_covered[t] <- step(selected_effort_v[t] - 0.5)
-        effort_i_covered[t] <- step(selected_effort_i[t] - 0.5)
-
-        effort_any_covered[t] <- step(
-          selected_effort_v[t] + selected_effort_i[t] - 0.5
-        )
-
-        # Extinction at tau_E0 means periods through tau_E0 are extant
-        post_extinction[t] <- step(t - tau_E0 - 0.5)
-
-        # Certain sightings require valid-sighting effort
-        valid_certain[t] <- 1 - certain_positive[t] *
-          (1 - effort_v_covered[t])
-
-        # Before extinction, uncertain sightings may be valid or invalid.
-        # After extinction, uncertain sightings must be invalid.
-        valid_uncertain_pre[t] <- 1 - uncertain_positive[t] *
-          (1 - effort_any_covered[t])
-
-        valid_uncertain_post[t] <- 1 - uncertain_positive[t] *
-          (1 - effort_i_covered[t])
-
-        valid_uncertain[t] <- (1 - post_extinction[t]) *
-          valid_uncertain_pre[t] +
-          post_extinction[t] * valid_uncertain_post[t]
-
-        valid_period[t] <- valid_certain[t] * valid_uncertain[t]
-      }
-
-      all_periods_valid <- prod(valid_period[1:bigT])
-      valid_model ~ dbern(all_periods_valid)
-
       # 2. Likelihood
       for (t in 1:bigT) {
         lambda_v[t] <- inprod(beta[1:p], x[t, 1:p])
         lambda_i[t] <- inprod(gamma[1:p], x[t, 1:p])
 
-        mu_c_ext[t] <- lambda_v[t] * pi_e
-        mu_u_ext[t] <- lambda_v[t] * (1 - pi_e) + lambda_i[t]
+        extant[t] <- step(tau_E0 - t + 0.5)
 
-        mu_c_safe[t] <- mu_c_ext[t] + equals(mu_c_ext[t], 0)
-        mu_u_safe[t] <- mu_u_ext[t] + equals(mu_u_ext[t], 0)
-        lambda_i_safe[t] <- lambda_i[t] + equals(lambda_i[t], 0)
+        mu_c[t] <- extant[t] * lambda_v[t] * pi_e
+        mu_u[t] <- extant[t] * lambda_v[t] * (1 - pi_e) + lambda_i[t]
 
-        loglik_c_ext[t] <- -mu_c_ext[t] +
-          y_c[t] * log(mu_c_safe[t]) -
-          y_c_logfact[t]
-
-        loglik_u_ext[t] <- -mu_u_ext[t] +
-          y_u[t] * log(mu_u_safe[t]) -
-          y_u_logfact[t]
-
-        loglik_ext[t] <- loglik_c_ext[t] + loglik_u_ext[t]
-
-        loglik_u_post[t] <- -lambda_i[t] +
-          y_u[t] * log(lambda_i_safe[t]) -
-          y_u_logfact[t]
+        y_c[t] ~ dpois(mu_c[t])
+        y_u[t] ~ dpois(mu_u[t])
       }
-
-      cum_ext[1] <- loglik_ext[1]
-      cum_u_post[1] <- loglik_u_post[1]
-
-      for (t in 2:bigT) {
-        cum_ext[t] <- cum_ext[t - 1] + loglik_ext[t]
-        cum_u_post[t] <- cum_u_post[t - 1] + loglik_u_post[t]
-      }
-
-      for (t in 1:bigT) {
-        post_u_after[t] <- cum_u_post[bigT] - cum_u_post[t]
-        loglik[t] <- cum_ext[t] + post_u_after[t]
-      }
-
-      loglik[bigT + 1] <- cum_ext[bigT]
-
-      idx <- step(bigT - tau_E0) * tau_E0 +
-        step(tau_E0 - bigT - 1) * (bigT + 1)
-
-      selected_loglik <- loglik[idx]
-
-      phi <- -selected_loglik
-      zeros ~ dpois(phi)
 
       tau_E <- init_time + tau_E0 - 1
     }
   "
 
-  inits_list <- function() {
+  # Set up random seeds for JAGS that respect set.seed() etc.
+  jags_seeds <- sample.int(.Machine$integer.max, n.chains, replace = FALSE)
+
+  inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
       theta_max = runif(1, 0.01, 0.99),
-      tau_cat = sample(1:n_cat, 1),
-      tau_tail = sample(0:(2 * bigT), 1),
+      tau_cat = sample.int(n_cat, 1L),
+      tau_tail = sample.int(2L * bigT + 1L, 1L) - 1L,
       pi_e = runif(1, 0.01, 0.99),
       included_v = rep(1L, ncol(effort)),
       included_i = rep(1L, ncol(effort)),
-      beta_raw = pmax(
-        rexp(ncol(effort), rate = rate_v),
-        1e-6
-      ),
-      gamma_raw = pmax(
-        rexp(ncol(effort), rate = rate_i),
-        1e-6
-      )
+      beta_raw = pmax(rexp(ncol(effort), rate = rate_v), 1e-6),
+      gamma_raw = pmax(rexp(ncol(effort), rate = rate_i), 1e-6),
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = jags_seeds[chain]
     )
-  }
+  })
 
   model_file <- tempfile(fileext = ".txt")
   writeLines(model_string, con = model_file)
@@ -553,28 +444,16 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   # Run MCMC sampling
   invisible(capture.output({
     jags_model <- rjags::jags.model(
-      file = model_file,
-      data = data_list,
-      inits = inits_list,
-      n.chains = n.chains,
-      n.adapt = n.burnin
+      file = model_file, data = data_list, inits = inits_list,
+      n.chains = n.chains, n.adapt = n.burnin
     )
-
     update(jags_model, n.iter = n.burnin)
+    variables <- c("tau_E", "pi_e", "theta_max", "beta", "gamma")
 
-    variables <- c(
-      "tau_E", "pi_e", "theta_max",
-      "beta", "gamma"
-    )
-
-    if (variable.selection) {
+    if (variable.selection == TRUE) {
       variables <- c(
-        variables,
-        "beta_raw", "gamma_raw",
-        "included_v",
-        "included_i",
-        "n_included_v",
-        "n_included_i"
+        variables, "beta_raw", "gamma_raw",
+        "included_v", "included_i", "n_included_v", "n_included_i"
       )
     }
 
@@ -589,8 +468,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
 
-  # Identify posterior inclusion samples
-  if (variable.selection) {
+  # Calculate posterior inclusion probabilities
+  if (variable.selection == TRUE) {
     included_columns_v <- grep(
       "^included_v($|\\[)",
       colnames(posterior),
@@ -604,14 +483,13 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     )
 
     if (length(included_columns_v) != ncol(effort)) {
-      stop("could not identify all valid-sighting inclusion samples")
+      stop("could not identify all valid sighting inclusion samples")
     }
 
     if (length(included_columns_i) != ncol(effort)) {
-      stop("could not identify all invalid-sighting inclusion samples")
+      stop("could not identify all invalid sighting inclusion samples")
     }
 
-    # Calculate posterior inclusion probabilities
     posterior_inclusion_v <- colMeans(
       posterior[, included_columns_v, drop = FALSE]
     )
@@ -624,36 +502,15 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
     names(posterior_inclusion_i) <- colnames(effort_original)
 
     # Calculate posterior model probabilities
-    included_samples_v <- posterior[
-      ,
-      included_columns_v,
-      drop = FALSE
-    ]
+    included_samples_v <- posterior[, included_columns_v, drop = FALSE]
 
-    included_samples_i <- posterior[
-      ,
-      included_columns_i,
-      drop = FALSE
-    ]
+    included_samples_i <- posterior[, included_columns_i, drop = FALSE]
 
-    model_id_v <- apply(
-      included_samples_v,
-      MARGIN = 1,
-      FUN = paste0,
-      collapse = ""
-    )
+    model_id_v <- apply(included_samples_v, 1, FUN = paste0, collapse = "")
 
-    model_id_i <- apply(
-      included_samples_i,
-      MARGIN = 1,
-      FUN = paste0,
-      collapse = ""
-    )
+    model_id_i <- apply(included_samples_i, 1, FUN = paste0, collapse = "")
 
-    model_id <- paste0(
-      "valid:", model_id_v,
-      "|invalid:", model_id_i
-    )
+    model_id <- paste0("valid:", model_id_v, "|invalid:", model_id_i)
 
     posterior_models <- sort(
       prop.table(table(model_id)),

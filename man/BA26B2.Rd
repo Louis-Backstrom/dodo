@@ -55,9 +55,9 @@ shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters, posterior samples, and
-the p(extant), point estimate, and credible interval included as elements.
-The credible interval is a two-element numeric vector called \code{cred.int}.
+a \code{dodo_fit} object with the original data, parameters, posterior
+samples, and the p(extant), point estimate, and credible interval included as
+elements.
 }
 \description{
 Model 2 from Backstrom et al. 2026. Estimates a posterior probability that

@@ -83,10 +83,9 @@ submodels and inclusion priors are ignored.}
 \item{n.thin}{thinning rate. Defaults to 10.}
 }
 \value{
-a \code{dodo_fit} object containing the original sighting and effort
-data, the scaled effort matrix used for fitting, effort scaling factors,
-posterior samples, posterior inclusion and model probabilities for both
-sighting submodels, p(extant), the point estimate, and the credible interval.
+a \code{dodo_fit} object with the original data, parameters, posterior
+samples, and the p(extant), point estimate, and credible interval included as
+elements.
 }
 \description{
 Model 4 from Backstrom et al. 2026. Estimates a posterior probability that

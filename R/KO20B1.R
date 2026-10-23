@@ -173,11 +173,21 @@ posterior_cer_mcmc <- function(y_c, n.chains = 4,
     "
   )
 
+  # Set up random seeds for JAGS that respect set.seed() etc.
+  jags_seeds <- sample.int(.Machine$integer.max, n.chains, replace = FALSE)
+
+  inits_list <- lapply(seq_len(n.chains), function(chain) {
+    list(
+      .RNG.name = "base::Mersenne-Twister",
+      .RNG.seed = jags_seeds[chain]
+    )
+  })
+
   model_file <- tempfile(fileext = ".txt")
   writeLines(modelStringm1, con = model_file)
 
   jagsModelm1 <- rjags::jags.model(
-    file = model_file, data = dataList,
+    file = model_file, data = dataList, inits = inits_list,
     n.chains = n.chains, n.adapt = n.burnin
   )
   update(jagsModelm1, n.iter = n.burnin)

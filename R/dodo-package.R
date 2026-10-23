@@ -28,6 +28,7 @@
 #' @importFrom stats rnorm
 #' @importFrom stats runif
 #' @importFrom stats sd
+#' @importFrom stats setNames
 #' @importFrom stats uniroot
 #' @importFrom stats update
 #' @importFrom stats weighted.mean
