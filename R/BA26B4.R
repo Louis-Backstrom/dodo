@@ -302,7 +302,8 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   # Check compatibility with the zero-effort model assumption
   zero_effort <- rowSums(effort) == 0
-  positive_sightings <- records$certain > 0 | records$uncertain > 0
+  positive_sightings <- records$certain > 0 |
+    records$uncertain > 0
 
   if (any(zero_effort & positive_sightings)) {
     bad_rows <- which(zero_effort & positive_sightings)
@@ -321,13 +322,51 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- nrow(records)
   t_m <- max(which(y_c > 0))
+  positive_c <- which(y_c > 0)
+  n_positive_c <- length(positive_c)
+  y_positive_c <- y_c[positive_c]
+  x_positive_c <- effort[positive_c, , drop = FALSE]
+  positive_u <- which(y_u > 0)
+  n_positive_u <- length(positive_u)
+  n_positive_u_model <- max(1L, n_positive_u)
+  if (n_positive_u > 0L) {
+    y_positive_u <- y_u[positive_u]
+    x_positive_u <- effort[positive_u, , drop = FALSE]
+    t_positive_u <- positive_u
+    active_u <- rep(1L, n_positive_u)
+  } else {
+    y_positive_u <- 0L
+    x_positive_u <- matrix(0,
+      nrow = 1L, ncol = ncol(effort),
+      dimnames = list(NULL, colnames(effort))
+    )
+    t_positive_u <- 1L
+    active_u <- 0L
+  }
+  x_zero_c <- effort
+  x_zero_c[positive_c, ] <- 0
+  x_zero_c_cum <- apply(x_zero_c, MARGIN = 2, FUN = cumsum)
+  x_zero_c_cum <- matrix(x_zero_c_cum,
+    nrow = bigT, ncol = ncol(effort),
+    dimnames = list(NULL, colnames(effort))
+  )
+  x_zero_u <- effort
+  if (n_positive_u > 0L) {
+    x_zero_u[positive_u, ] <- 0
+  }
+  x_zero_u_cum <- apply(x_zero_u, MARGIN = 2, FUN = cumsum)
+
+  x_zero_u_cum <- matrix(x_zero_u_cum,
+    nrow = bigT, ncol = ncol(effort),
+    dimnames = list(NULL, colnames(effort))
+  )
+  x_zero_u_total <- colSums(x_zero_u)
   max_lag_obs <- bigT - t_m
 
   if (priors$g == 0) {
     max_lag_prior <- max_lag_obs
   } else {
     lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
-
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
   n_cat <- max_lag_prior + 2
@@ -341,10 +380,20 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   # Specify model and parameters
   data_list <- list(
+    zeros_c = 0L,
+    zeros_u = 0L,
     init_time = init.time,
-    y_c = y_c,
-    y_u = y_u,
-    x = effort,
+    y_positive_c = y_positive_c,
+    x_positive_c = x_positive_c,
+    n_positive_c = n_positive_c,
+    y_positive_u = y_positive_u,
+    x_positive_u = x_positive_u,
+    t_positive_u = t_positive_u,
+    active_u = active_u,
+    n_positive_u_model = n_positive_u_model,
+    x_zero_c_cum = x_zero_c_cum,
+    x_zero_u_cum = x_zero_u_cum,
+    x_zero_u_total = x_zero_u_total,
     p = ncol(effort),
     bigT = bigT,
     t_m = t_m,
@@ -402,18 +451,31 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
-      for (t in 1:bigT) {
-        lambda_v[t] <- inprod(beta[1:p], x[t, 1:p])
-        lambda_i[t] <- inprod(gamma[1:p], x[t, 1:p])
-
-        extant[t] <- step(tau_E0 - t + 0.5)
-
-        mu_c[t] <- extant[t] * lambda_v[t] * pi_e
-        mu_u[t] <- extant[t] * lambda_v[t] * (1 - pi_e) + lambda_i[t]
-
-        y_c[t] ~ dpois(mu_c[t])
-        y_u[t] ~ dpois(mu_u[t])
+      for (r in 1:n_positive_c) {
+        lambda_positive_c[r] <- inprod(beta[1:p], x_positive_c[r, 1:p])
+        mu_positive_c[r] <- lambda_positive_c[r] * pi_e
+        y_positive_c[r] ~ dpois(mu_positive_c[r])
       }
+
+      for (r in 1:n_positive_u_model) {
+        extant_positive_u[r] <- step(tau_E0 - t_positive_u[r] + 0.5)
+        lambda_positive_v_u[r] <- inprod(beta[1:p], x_positive_u[r, 1:p])
+        lambda_positive_i_u[r] <- inprod(gamma[1:p], x_positive_u[r, 1:p])
+        mu_positive_u[r] <- active_u[r] * (extant_positive_u[r] *
+          lambda_positive_v_u[r] * (1 - pi_e) + lambda_positive_i_u[r])
+        y_positive_u[r] ~ dpois(mu_positive_u[r])
+      }
+
+      in_window <- step(bigT - tau_E0)
+      n_extant <- in_window * tau_E0 + (1 - in_window) * bigT
+
+      mu_zero_c <- pi_e * inprod(beta[1:p], x_zero_c_cum[n_extant, 1:p])
+      mu_zero_u_v <- (1 - pi_e) * inprod(beta[1:p], x_zero_u_cum[n_extant, 1:p])
+      mu_zero_u_i <- inprod(gamma[1:p], x_zero_u_total[1:p])
+      mu_zero_u <- mu_zero_u_v + mu_zero_u_i
+
+      zeros_c ~ dpois(mu_zero_c)
+      zeros_u ~ dpois(mu_zero_u)
 
       tau_E <- init_time + tau_E0 - 1
     }
@@ -503,11 +565,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
     # Calculate posterior model probabilities
     included_samples_v <- posterior[, included_columns_v, drop = FALSE]
-
     included_samples_i <- posterior[, included_columns_i, drop = FALSE]
 
     model_id_v <- apply(included_samples_v, 1, FUN = paste0, collapse = "")
-
     model_id_i <- apply(included_samples_i, 1, FUN = paste0, collapse = "")
 
     model_id <- paste0("valid:", model_id_v, "|invalid:", model_id_i)
@@ -542,10 +602,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
           collapse = " + "
         )
 
-        paste0(
-          "valid: ", valid_names,
-          " | invalid: ", invalid_names
-        )
+        paste0("valid: ", valid_names, " | invalid: ", invalid_names)
       },
       character(1)
     )
@@ -581,10 +638,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(quantile(posterior$tau_E, 0))
-  cred.int.upper <- as.numeric(quantile(
-    posterior$tau_E,
-    1 - alpha
-  ))
+  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha))
 
   # Output
   output <- list(

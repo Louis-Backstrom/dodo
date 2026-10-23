@@ -112,6 +112,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
+  total_records <- sum(records)
   max_lag_obs <- bigT - t_m
 
   if (priors$g == 0) {
@@ -131,10 +132,11 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
 
   # Specify model and parameters
   data_list <- list(
+    zeros = 0L,
     init_time = init.time,
-    y = records,
     bigT = bigT,
     t_m = t_m,
+    total_records = total_records,
     max_lag_prior = max_lag_prior,
     n_cat = n_cat,
     g = priors$g,
@@ -148,7 +150,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     model {
       # 1. Priors
       theta_max ~ dbeta(theta_max_a, theta_max_b)
-      lambda ~ dgamma(lambda_a, lambda_b)
 
       ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
       surv[1] <- 1
@@ -172,13 +173,11 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
-      for (t in 1:bigT) {
-        extant[t] <- step(tau_E0 - t + 0.5)
+      in_window <- step(bigT - tau_E0)
+      n_extant <- in_window * tau_E0 + (1 - in_window) * bigT
 
-        mu[t] <- extant[t] * lambda
-
-        y[t] ~ dpois(mu[t])
-      }
+      nll <- (lambda_a + total_records) * log(lambda_b + n_extant)
+      zeros ~ dpois(nll)
 
       tau_E <- init_time + tau_E0 - 1
     }
@@ -192,7 +191,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       theta_max = runif(1, 0.01, 0.99),
       tau_cat = sample.int(n_cat, 1L),
       tau_tail = sample.int(2L * bigT + 1L, 1L) - 1L,
-      lambda = rgamma(1, priors$lambda[1], priors$lambda[2]),
       .RNG.name = "base::Mersenne-Twister",
       .RNG.seed = jags_seeds[chain]
     )
@@ -210,9 +208,37 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     )
     update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
-      "tau_E", "lambda", "theta_max"
+      "tau_E", "tau_E0", "theta_max"
     ), n.iter = n.iter, thin = n.thin)
   }))
+
+  # Reconstruct lambda from its exact conditional posterior
+  samples <- coda::mcmc.list(
+    lapply(samples, function(chain) {
+      chain_matrix <- as.matrix(chain)
+
+      n_extant <- pmin(chain_matrix[, "tau_E0"], bigT)
+
+      lambda <- rgamma(
+        n = nrow(chain_matrix),
+        shape = priors$lambda[1] + total_records,
+        rate = priors$lambda[2] + n_extant
+      )
+
+      output_matrix <- cbind(
+        tau_E = chain_matrix[, "tau_E"],
+        lambda = lambda,
+        theta_max = chain_matrix[, "theta_max"]
+      )
+
+      chain_parameters <- coda::mcpar(chain)
+
+      coda::mcmc(output_matrix,
+        start = chain_parameters[1],
+        end = chain_parameters[2], thin = chain_parameters[3]
+      )
+    })
+  )
 
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))

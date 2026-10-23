@@ -137,6 +137,11 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(y_c)
   t_m <- max(which(y_c > 0))
+  total_c <- sum(y_c)
+  total_u <- sum(y_u)
+  cumsum_u <- cumsum(y_u)
+  logfact_c <- sum(lfactorial(y_c))
+  logfact_u <- sum(lfactorial(y_u))
   max_lag_obs <- bigT - t_m
 
   if (priors$g == 0) {
@@ -156,11 +161,15 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
   # Specify model and parameters
   data_list <- list(
+    zeros = 0L,
     init_time = init.time,
-    y_c = y_c,
-    y_u = y_u,
     bigT = bigT,
     t_m = t_m,
+    total_c = total_c,
+    total_u = total_u,
+    cumsum_u = cumsum_u,
+    logfact_c = logfact_c,
+    logfact_u = logfact_u,
     max_lag_prior = max_lag_prior,
     n_cat = n_cat,
     g = priors$g,
@@ -204,16 +213,25 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
-      for (t in 1:bigT) {
-        extant[t] <- step(tau_E0 - t + 0.5)
+      in_window <- step(bigT - tau_E0)
+      n_extant <- in_window * tau_E0 + (1 - in_window) * bigT
 
-        mu_c[t] <- extant[t] * lambda_v * pi_e
-        mu_u[t] <- extant[t] * lambda_v * (1 - pi_e) +
-          lambda_i
+      total_u_e <- cumsum_u[n_extant]
+      total_u_x <- total_u - total_u_e
 
-        y_c[t] ~ dpois(mu_c[t])
-        y_u[t] ~ dpois(mu_u[t])
-      }
+      n_extinct <- bigT - n_extant
+
+      mu_c <- lambda_v * pi_e
+      mu_u_e <- lambda_v * (1 - pi_e) + lambda_i
+      mu_u_x <- lambda_i
+
+      loglik_c <- total_c * log(mu_c) - n_extant * mu_c - logfact_c
+      loglik_u_e <- total_u_e * log(mu_u_e) - n_extant * mu_u_e
+      loglik_u_x <- total_u_x * log(mu_u_x) - n_extinct * mu_u_x
+      loglik <- loglik_c + loglik_u_e + loglik_u_x -logfact_u
+
+      nll <- -loglik
+      zeros ~ dpois(nll)
 
       tau_E <- init_time + tau_E0 - 1
     }

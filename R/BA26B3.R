@@ -261,6 +261,17 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   # Calculate key values
   bigT <- length(records)
   t_m <- max(which(records > 0))
+  positive <- which(records > 0)
+  n_positive <- length(positive)
+  y_positive <- records[positive]
+  x_positive <- effort[positive, , drop = FALSE]
+  x_zero <- effort
+  x_zero[positive, ] <- 0
+  x_zero_cum <- apply(x_zero, MARGIN = 2, FUN = cumsum)
+  x_zero_cum <- matrix(x_zero_cum,
+    nrow = bigT, ncol = ncol(effort),
+    dimnames = list(NULL, colnames(effort))
+  )
   max_lag_obs <- bigT - t_m
 
   if (priors$g == 0) {
@@ -280,9 +291,12 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
   # Specify model and parameters
   data_list <- list(
+    zeros = 0L,
     init_time = init.time,
-    y = records,
-    x = effort,
+    y_positive = y_positive,
+    x_positive = x_positive,
+    x_zero_cum = x_zero_cum,
+    n_positive = n_positive,
     p = ncol(effort),
     bigT = bigT,
     t_m = t_m,
@@ -330,15 +344,17 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
-      for (t in 1:bigT) {
-        lambda[t] <- inprod(beta[1:p], x[t, 1:p])
-
-        extant[t] <- step(tau_E0 - t + 0.5)
-
-        mu[t] <- extant[t] * lambda[t]
-
-        y[t] ~ dpois(mu[t])
+      for (r in 1:n_positive) {
+        lambda_positive[r] <- inprod(beta[1:p], x_positive[r, 1:p])
+        y_positive[r] ~ dpois(lambda_positive[r])
       }
+
+      in_window <- step(bigT - tau_E0)
+      n_extant <- in_window * tau_E0 + (1 - in_window) * bigT
+
+      mu_zero <- inprod(beta[1:p], x_zero_cum[n_extant, 1:p])
+
+      zeros ~ dpois(mu_zero)
 
       tau_E <- init_time + tau_E0 - 1
     }
