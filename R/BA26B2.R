@@ -12,6 +12,12 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
+#' @param truncation.point non-negative integer giving the maximum number of
+#' sampling intervals after `test.time` at which extinction can occur. Prior
+#' mass beyond `test.time + truncation.point` is redistributed proportionally
+#' across extinction times from `test.time` through the truncation time.
+#' Probabilities before `test.time` and the overall prior probability of being
+#' extant at `test.time` are unchanged.
 #' @param tol tolerance for the lagged extinction hazard tail approximation. The
 #' lagged hazard is exactly evaluated until it reaches `tol` of `theta_max`,
 #' after which point the remaining tail is approximated using a constant hazard
@@ -39,6 +45,12 @@
 #' @note
 #' Sampling effort is assumed to be constant.
 #'
+#' The extinction-time prior is truncated at `test.time + truncation.point`.
+#' Removed prior mass is redistributed proportionally across all retained states
+#' corresponding to being extant at `test.time` (i.e. extinction at or after
+#' `test.time`). Consequently, the prior probability of being extant at
+#' `test.time` is the same as under the untruncated prior.
+#'
 #' @references
 #' **Key Reference**
 #'
@@ -54,7 +66,8 @@
 #' @export
 
 BA26B2 <- function(records, alpha = 0.05, init.time,
-                   test.time = init.time + nrow(records) - 1, tol = 0.999,
+                   test.time = init.time + nrow(records) - 1,
+                   truncation.point = 100, tol = 0.999,
                    priors = list(
                      theta_max = c(1, 10), g = 0,
                      lambda_v = c(1, 1), lambda_i = c(1, 1)
@@ -70,6 +83,14 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("alpha must be a single number in (0, 1)")
   }
+
+  if (!is.numeric(truncation.point) || length(truncation.point) != 1L ||
+    !is.finite(truncation.point) || truncation.point < 0 ||
+    truncation.point != floor(truncation.point)) {
+    stop("truncation.point must be a single non-negative integer")
+  }
+
+  truncation.point <- as.integer(truncation.point)
 
   if (is.null(tol) || !is.numeric(tol) || length(tol) != 1L ||
     !is.finite(tol) || tol <= 0 || tol >= 1) {
@@ -150,12 +171,41 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
     max_lag_prior <- max(max_lag_obs, lag_req)
   }
-  n_cat <- max_lag_prior + 2
 
-  # Check if the maximum lag before swapping to tail approximation is large
+  test_lag <- test.time - init.time - t_m + 1
+
+  if (!is.finite(test_lag) || test_lag != floor(test_lag)) {
+    stop(
+      paste(
+        "test.time and init.time must define an integer number",
+        "of sampling intervals"
+      )
+    )
+  }
+
+  if (test_lag < 0) {
+    stop("test.time must not precede the earliest possible extinction time")
+  }
+
+  test_lag <- as.integer(test_lag)
+  max_lag <- test_lag + truncation.point
+  n_cat <- max_lag + 1L
+
+  # Check if the exact hazard section is large
   if (max_lag_prior > 1000) {
     warning(paste0(
-      "maximum lag is very large (", max_lag_prior, "); JAGS may be slow"
+      "maximum lag before the tail approximation is very large (",
+      max_lag_prior,
+      "); JAGS may be slow"
+    ))
+  }
+
+  # Check if the complete truncated prior is large
+  if (max_lag > 5000) {
+    warning(paste0(
+      "truncated extinction-time prior contains ",
+      n_cat,
+      " categories; JAGS may be slow"
     ))
   }
 
@@ -171,6 +221,8 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     logfact_c = logfact_c,
     logfact_u = logfact_u,
     max_lag_prior = max_lag_prior,
+    test_lag = test_lag,
+    max_lag = max_lag,
     n_cat = n_cat,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
@@ -191,25 +243,34 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
       pi_e ~ dunif(0, 1)
 
-      ## 1.1. Time-varying hazard prior for tau_L up to max_lag_prior
+      ## 1.1. Original extinction time prior through max_lag
       surv[1] <- 1
 
-      for (k in 1:(max_lag_prior + 1)) {
+      for (k in 1:n_cat) {
         lag[k] <- k - 1
-        theta_lag[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+        theta_lag_exact[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+        in_exact[k] <- step(max_lag_prior - lag[k] + 0.5)
+        theta_lag[k] <- in_exact[k] * theta_lag_exact[k] +
+          (1 - in_exact[k]) * theta_max
         p_tau[k] <- surv[k] * theta_lag[k]
         surv[k + 1] <- surv[k] * (1 - theta_lag[k])
       }
 
-      ## 1.2. Approximate tail probability after max_lag_prior
-      p_tau[n_cat] <- surv[max_lag_prior + 2]
-      tau_cat ~ dcat(p_tau[1:n_cat])
-      is_tail <- equals(tau_cat, n_cat)
+      ## 1.2. Preserve prior mass below and above test.time
+      p_extant <- surv[test_lag + 1]
 
-      tau_tail ~ dnegbin(theta_max, 1)
+      p_extant_kept <- surv[test_lag + 1] - surv[max_lag + 2]
+      extant_scale <- p_extant / p_extant_kept
 
-      tau_L <- (1 - is_tail) * (tau_cat - 1) + is_tail *
-        (max_lag_prior + 1 + tau_tail)
+      for (k in 1:n_cat) {
+        is_extant[k] <- step(lag[k] - test_lag + 0.5)
+        p_tau_adjusted[k] <- p_tau[k] *
+          ((1 - is_extant[k]) + is_extant[k] * extant_scale)
+      }
+
+      tau_cat ~ dcat(p_tau_adjusted[1:n_cat])
+
+      tau_L <- tau_cat - 1
       tau_E0 <- t_m + tau_L
 
       # 2. Likelihood
@@ -244,7 +305,6 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     list(
       theta_max = runif(1, 0.01, 0.99),
       tau_cat = sample.int(n_cat, 1L),
-      tau_tail = sample.int(2L * bigT + 1L, 1L) - 1L,
       lambda_v = rgamma(1, priors$lambda_v[1], priors$lambda_v[2]),
       lambda_i = rgamma(1, priors$lambda_i[1], priors$lambda_i[2]),
       pi_e = runif(1, 0.01, 0.99),
@@ -288,6 +348,8 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
+    truncation.point = truncation.point,
+    max.time = test.time + truncation.point,
     tol = tol,
     priors = priors,
     samples = samples,

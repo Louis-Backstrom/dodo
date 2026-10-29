@@ -10,6 +10,7 @@ BA26B3(
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
+  truncation.point = 100,
   tol = 0.999,
   scale.effort = TRUE,
   variable.selection = TRUE,
@@ -34,6 +35,13 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
+
+\item{truncation.point}{non-negative integer giving the maximum number of
+sampling intervals after \code{test.time} at which extinction can occur. Prior
+mass beyond \code{test.time + truncation.point} is redistributed proportionally
+across extinction times from \code{test.time} through the truncation time.
+Probabilities before \code{test.time} and the overall prior probability of being
+extant at \code{test.time} are unchanged.}
 
 \item{tol}{tolerance for the lagged extinction hazard tail approximation. The
 lagged hazard is exactly evaluated until it reaches \code{tol} of \code{theta_max},
@@ -98,6 +106,12 @@ All sighting records are assumed to be certain. The expected sighting rate
 is a non-negative additive function of the effort covariates, with no
 intercept. Consequently, intervals in which every effort covariate is zero
 must also have zero sighting counts.
+
+The extinction-time prior is truncated at \code{test.time + truncation.point}.
+Removed prior mass is redistributed proportionally across all retained states
+corresponding to being extant at \code{test.time} (i.e. extinction at or after
+\code{test.time}). Consequently, the prior probability of being extant at
+\code{test.time} is the same as under the untruncated prior.
 
 If variable.selection = TRUE, uncertainty in the effort covariates included
 in the model is represented using binary inclusion indicators. The extinction
