@@ -9,8 +9,6 @@ BA26B1(
   alpha = 0.05,
   init.time,
   test.time = init.time + length(records) - 1,
-  truncation.point = 100,
-  tol = 0.999,
   priors = list(theta_max = c(1, 10), g = 0, lambda = c(1, 1)),
   n.chains = 4,
   n.iter = 110000,
@@ -29,19 +27,6 @@ the \eqn{1 - \alpha} credible interval.}
 
 \item{test.time}{time point to retrospectively calculate extinction
 probability at. Defaults to the end of the observation period.}
-
-\item{truncation.point}{non-negative integer giving the maximum number of
-sampling intervals after \code{test.time} at which extinction can occur. Prior
-mass beyond \code{test.time + truncation.point} is redistributed proportionally
-across extinction times from \code{test.time} through the truncation time.
-Probabilities before \code{test.time} and the overall prior probability of being
-extant at \code{test.time} are unchanged.}
-
-\item{tol}{tolerance for the lagged extinction hazard tail approximation. The
-lagged hazard is exactly evaluated until it reaches \code{tol} of \code{theta_max},
-after which point the remaining tail is approximated using a constant hazard
-of \code{theta_max}. Defaults to 0.999; if this yields slow evaluation (in
-conjunction with a large value of \code{g}), consider a lower tolerance e.g. 0.99.}
 
 \item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{lambda}.
 Both \code{theta_max} and \code{lambda} are \code{numeric} vectors of length two, \code{g} is a
@@ -75,11 +60,14 @@ the species is extant at the test time, and a point estimate and one-sided
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 
-The extinction-time prior is truncated at \code{test.time + truncation.point}.
-Removed prior mass is redistributed proportionally across all retained states
-corresponding to being extant at \code{test.time} (i.e. extinction at or after
-\code{test.time}). Consequently, the prior probability of being extant at
-\code{test.time} is the same as under the untruncated prior.
+Extinction times before \code{test.time} are represented explicitly. All prior
+probability corresponding to survival until \code{test.time} is assigned to a
+single terminal state represented numerically by \code{test.time}. Consequently,
+probabilities of extinction before \code{test.time} and the overall prior
+probability of being extant at \code{test.time} are unchanged from the
+unbounded extinction time prior. Posterior extinction times equal to
+\code{test.time} therefore represent survival until \code{test.time}, rather than
+extinction occurring at exactly that time.
 }
 \examples{
 \dontrun{

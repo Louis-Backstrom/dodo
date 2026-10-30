@@ -15,8 +15,8 @@ dodo_fit <- function(x, model = NULL) {
 
 #' @export
 print.dodo_fit <- function(x, ...) {
-  cat("Extinction model fit\n")
-  cat("--------------------\n")
+  cat("   Extinction model fit   \n")
+  cat("--------------------------\n")
 
   # Print model name
   if (!is.null(x$model)) {
@@ -64,6 +64,13 @@ print.dodo_fit <- function(x, ...) {
 
       cat(sprintf("%-13s %s\n", paste0(label, ":"), val))
     }
+  }
+
+  # Explain NA upper CI bound in BA26 models
+  if (!is.null(x$model) && x$model %in% paste0("BA26B", 1:4) &&
+    !is.null(x$cred.int) && length(x$cred.int) >= 2L && is.na(x$cred.int[2])) {
+    cat("--------------------------\n")
+    cat("Extinction is not inferred\nUpper credible limit is NA\n")
   }
 
   invisible(x)

@@ -12,17 +12,6 @@
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
 #' probability at. Defaults to the end of the observation period.
-#' @param truncation.point non-negative integer giving the maximum number of
-#' sampling intervals after `test.time` at which extinction can occur. Prior
-#' mass beyond `test.time + truncation.point` is redistributed proportionally
-#' across extinction times from `test.time` through the truncation time.
-#' Probabilities before `test.time` and the overall prior probability of being
-#' extant at `test.time` are unchanged.
-#' @param tol tolerance for the lagged extinction hazard tail approximation. The
-#' lagged hazard is exactly evaluated until it reaches `tol` of `theta_max`,
-#' after which point the remaining tail is approximated using a constant hazard
-#' of `theta_max`. Defaults to 0.999; if this yields slow evaluation (in
-#' conjunction with a large value of `g`), consider a lower tolerance e.g. 0.99.
 #' @param priors `list` with three elements: `theta_max`, `g`, and `lambda`.
 #' Both `theta_max` and `lambda` are `numeric` vectors of length two, `g` is a
 #' single `numeric`. The two elements in `theta_max` are the shape parameters
@@ -45,11 +34,14 @@
 #' All sighting records are assumed to be certain and sampling effort is assumed
 #' to be constant.
 #'
-#' The extinction-time prior is truncated at `test.time + truncation.point`.
-#' Removed prior mass is redistributed proportionally across all retained states
-#' corresponding to being extant at `test.time` (i.e. extinction at or after
-#' `test.time`). Consequently, the prior probability of being extant at
-#' `test.time` is the same as under the untruncated prior.
+#' Extinction times before `test.time` are represented explicitly. All prior
+#' probability corresponding to survival until `test.time` is assigned to a
+#' single terminal state represented numerically by `test.time`. Consequently,
+#' probabilities of extinction before `test.time` and the overall prior
+#' probability of being extant at `test.time` are unchanged from the
+#' unbounded extinction time prior. Posterior extinction times equal to
+#' `test.time` therefore represent survival until `test.time`, rather than
+#' extinction occurring at exactly that time.
 #'
 #' @references
 #' **Key Reference**
@@ -67,7 +59,6 @@
 
 BA26B1 <- function(records, alpha = 0.05, init.time,
                    test.time = init.time + length(records) - 1,
-                   truncation.point = 100, tol = 0.999,
                    priors = list(theta_max = c(1, 10), g = 0, lambda = c(1, 1)),
                    n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
   # Check if rjags is installed
@@ -79,19 +70,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   if (!is.numeric(alpha) || length(alpha) != 1L ||
     !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("alpha must be a single number in (0, 1)")
-  }
-
-  if (!is.numeric(truncation.point) || length(truncation.point) != 1L ||
-    !is.finite(truncation.point) || truncation.point < 0 ||
-    truncation.point != floor(truncation.point)) {
-    stop("truncation.point must be a single non-negative integer")
-  }
-
-  truncation.point <- as.integer(truncation.point)
-
-  if (is.null(tol) || !is.numeric(tol) || length(tol) != 1L ||
-    !is.finite(tol) || tol <= 0 || tol >= 1) {
-    stop("tol must be a single number in (0, 1)")
   }
 
   # Check that records are in a valid format
@@ -134,14 +112,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   bigT <- length(records)
   t_m <- max(which(records > 0))
   total_records <- sum(records)
-  max_lag_obs <- bigT - t_m
-
-  if (priors$g == 0) {
-    max_lag_prior <- max_lag_obs
-  } else {
-    lag_req <- ceiling(log(1 - tol) / log(priors$g / (priors$g + 1)) - 1)
-    max_lag_prior <- max(max_lag_obs, lag_req)
-  }
 
   test_lag <- test.time - init.time - t_m + 1
 
@@ -159,26 +129,7 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   }
 
   test_lag <- as.integer(test_lag)
-  max_lag <- test_lag + truncation.point
-  n_cat <- max_lag + 1L
-
-  # Check if the exact hazard section is large
-  if (max_lag_prior > 1000) {
-    warning(paste0(
-      "maximum lag before the tail approximation is very large (",
-      max_lag_prior,
-      "); JAGS may be slow"
-    ))
-  }
-
-  # Check if the complete truncated prior is large
-  if (max_lag > 5000) {
-    warning(paste0(
-      "truncated extinction-time prior contains ",
-      n_cat,
-      " categories; JAGS may be slow"
-    ))
-  }
+  n_cat <- test_lag + 1L
 
   # Specify model and parameters
   data_list <- list(
@@ -187,9 +138,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     bigT = bigT,
     t_m = t_m,
     total_records = total_records,
-    max_lag_prior = max_lag_prior,
-    test_lag = test_lag,
-    max_lag = max_lag,
     n_cat = n_cat,
     g = priors$g,
     theta_max_a = priors$theta_max[1],
@@ -203,32 +151,23 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
       # 1. Priors
       theta_max ~ dbeta(theta_max_a, theta_max_b)
 
-      ## 1.1. Original extinction time prior through max_lag
+      ## 1.1. Extinction time prior
       surv[1] <- 1
 
       for (k in 1:n_cat) {
         lag[k] <- k - 1
-        theta_lag_exact[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
-        in_exact[k] <- step(max_lag_prior - lag[k] + 0.5)
-        theta_lag[k] <- in_exact[k] * theta_lag_exact[k] +
-          (1 - in_exact[k]) * theta_max
+
+        theta_lag[k] <- theta_max * (1 - pow(1 - 1 / (g + 1), lag[k] + 1))
+
         p_tau[k] <- surv[k] * theta_lag[k]
         surv[k + 1] <- surv[k] * (1 - theta_lag[k])
+
+        is_end[k] <- equals(k, n_cat)
+
+        p_tau_final[k] <- (1 - is_end[k]) * p_tau[k] + is_end[k] * surv[k]
       }
 
-      ## 1.2. Preserve prior mass below and above test.time
-      p_extant <- surv[test_lag + 1]
-
-      p_extant_kept <- surv[test_lag + 1] - surv[max_lag + 2]
-      extant_scale <- p_extant / p_extant_kept
-
-      for (k in 1:n_cat) {
-        is_extant[k] <- step(lag[k] - test_lag + 0.5)
-        p_tau_adjusted[k] <- p_tau[k] *
-          ((1 - is_extant[k]) + is_extant[k] * extant_scale)
-      }
-
-      tau_cat ~ dcat(p_tau_adjusted[1:n_cat])
+      tau_cat ~ dcat(p_tau_final[1:n_cat])
 
       tau_L <- tau_cat - 1
       tau_E0 <- t_m + tau_L
@@ -304,14 +243,22 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
   posterior <- as.data.frame(as.matrix(samples))
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$tau_E >= test.time)
+  p.extant <- mean(posterior$tau_E == test.time)
 
   # Calculate point estimate
   estimate <- median(posterior$tau_E)
 
+  if (estimate == test.time) {
+    estimate <- NA
+  }
+
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(quantile(posterior$tau_E, 0))
   cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha))
+
+  if (cred.int.upper == test.time) {
+    cred.int.upper <- NA
+  }
 
   # Output
   output <- list(
@@ -319,9 +266,6 @@ BA26B1 <- function(records, alpha = 0.05, init.time,
     alpha = alpha,
     init.time = init.time,
     test.time = test.time,
-    truncation.point = truncation.point,
-    max.time = test.time + truncation.point,
-    tol = tol,
     priors = priors,
     samples = samples,
     p.extant = p.extant,
