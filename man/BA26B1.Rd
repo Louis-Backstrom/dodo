@@ -26,7 +26,9 @@ the \eqn{1 - \alpha} credible interval.}
 \item{init.time}{start of the observation period.}
 
 \item{test.time}{time point to retrospectively calculate extinction
-probability at. Defaults to the end of the observation period.}
+probability at. Defaults to the end of the observation period, \eqn{T}. If
+\code{test.time} is after \eqn{T}, the posterior allocation of extinction
+probability between \eqn{T} and \code{test.time} is entirely prior-driven.}
 
 \item{priors}{\code{list} with three elements: \code{theta_max}, \code{g}, and \code{lambda}.
 Both \code{theta_max} and \code{lambda} are \code{numeric} vectors of length two, \code{g} is a
@@ -48,8 +50,8 @@ prior on \eqn{\lambda}. They default to (1, 1).}
 }
 \value{
 a \code{dodo_fit} object with the original data, parameters, posterior
-samples, and the p(extant), point estimate, and credible interval included as
-elements.
+samples, final sampled time, prior truncation time, and the p(extant), point
+estimate, and credible interval included as elements.
 }
 \description{
 Model 1 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -60,18 +62,26 @@ the species is extant at the test time, and a point estimate and one-sided
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 
-Extinction times before \code{test.time} are represented explicitly. All prior
-probability corresponding to survival until \code{test.time} is assigned to a
-single terminal state represented numerically by \code{test.time}. Consequently,
-probabilities of extinction before \code{test.time} and the overall prior
-probability of being extant at \code{test.time} are unchanged from the
-unbounded extinction time prior. Posterior extinction times equal to
-\code{test.time} therefore represent survival until \code{test.time}, rather than
-extinction occurring at exactly that time.
+Extinction times before \code{trun.time = max(last.time, test.time)} are
+represented explicitly, where \code{last.time} is the final sampled time, i.e.
+\eqn{T}. All prior probability corresponding to survival through \code{trun.time}
+is assigned to a single terminal state represented numerically by
+\code{trun.time}. Consequently, probabilities of extinction before \code{trun.time} and
+the overall prior probability of being extant at \code{trun.time} are unchanged
+from the unbounded extinction time prior. Posterior extinction times equal to
+\code{trun.time} therefore represent survival through \code{trun.time}, rather than
+extinction occurring exactly at that time.
+
+The posterior probability of being extant at \code{test.time} is calculated from
+all posterior extinction time states greater than or equal to \code{test.time}.
+If \code{test.time} is after \code{last.time}, the likelihood is constant between
+\code{last.time} and \code{test.time}, so the posterior allocation of extinction
+probability over this period is entirely prior-driven.
 }
 \examples{
 \dontrun{
-# ADD
+# Run an example analysis using the Slender-billed Curlew data
+BA26B1(curlew$cdis, init.time = 1817, test.time = 2022)
 }
 
 }

@@ -32,7 +32,9 @@ the \eqn{1 - \alpha} credible interval.}
 \item{init.time}{start of the observation period.}
 
 \item{test.time}{time point to retrospectively calculate extinction
-probability at. Defaults to the end of the observation period.}
+probability at. Defaults to the end of the observation period, \eqn{T}. If
+\code{test.time} is after \eqn{T}, the posterior allocation of extinction
+probability between \eqn{T} and \code{test.time} is entirely prior-driven.}
 
 \item{scale.effort}{whether or not to scale, but not centre, each effort
 covariate before model fitting. Defaults to \code{TRUE}, in which case each
@@ -78,8 +80,8 @@ and inclusion priors are ignored.}
 }
 \value{
 a \code{dodo_fit} object with the original data, parameters, posterior
-samples, and the p(extant), point estimate, and credible interval included as
-elements.
+samples, final sampled time, prior truncation time, and the p(extant), point
+estimate, and credible interval included as elements.
 }
 \description{
 Model 3 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -93,14 +95,21 @@ all-one column may be supplied to represent an intercept. If no intercept is
 supplied, intervals in which every effort covariate is zero must also have
 zero sighting counts.
 
-Extinction times before \code{test.time} are represented explicitly. All prior
-probability corresponding to survival until \code{test.time} is assigned to a
-single terminal state represented numerically by \code{test.time}. Consequently,
-probabilities of extinction before \code{test.time} and the overall prior
-probability of being extant at \code{test.time} are unchanged from the
-unbounded extinction time prior. Posterior extinction times equal to
-\code{test.time} therefore represent survival until \code{test.time}, rather than
-extinction occurring at exactly that time.
+Extinction times before \code{trun.time = max(last.time, test.time)} are
+represented explicitly, where \code{last.time} is the final sampled time, i.e.
+\eqn{T}. All prior probability corresponding to survival through \code{trun.time}
+is assigned to a single terminal state represented numerically by
+\code{trun.time}. Consequently, probabilities of extinction before \code{trun.time} and
+the overall prior probability of being extant at \code{trun.time} are unchanged
+from the unbounded extinction time prior. Posterior extinction times equal to
+\code{trun.time} therefore represent survival through \code{trun.time}, rather than
+extinction occurring exactly at that time.
+
+The posterior probability of being extant at \code{test.time} is calculated from
+all posterior extinction time states greater than or equal to \code{test.time}.
+If \code{test.time} is after \code{last.time}, the likelihood is constant between
+\code{last.time} and \code{test.time}, so the posterior allocation of extinction
+probability over this period is entirely prior-driven.
 
 If variable.selection = TRUE, uncertainty in the effort covariates included
 in the model is represented using binary inclusion indicators. The extinction
@@ -109,7 +118,12 @@ sampler.
 }
 \examples{
 \dontrun{
-# ADD
+# Run an example analysis using the Slender-billed Curlew data
+BA26B3(
+  curlew$cdis,
+  effort = curlew_effort, init.time = 1817,
+  test.time = 2022, variable.selection = FALSE
+)
 }
 
 }

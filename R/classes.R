@@ -66,11 +66,18 @@ print.dodo_fit <- function(x, ...) {
     }
   }
 
-  # Explain NA upper CI bound in BA26 models
-  if (!is.null(x$model) && x$model %in% paste0("BA26B", 1:4) &&
-    !is.null(x$cred.int) && length(x$cred.int) >= 2L && is.na(x$cred.int[2])) {
-    cat("--------------------------\n")
-    cat("Extinction is not inferred\nUpper credible limit is NA\n")
+  # Explain terminal-state summaries in BA26 models
+  if (!is.null(x$model) && x$model %in% paste0("BA26B", 1:4)) {
+    if (is.na(x$estimate) || is.na(x$cred.int[2])) {
+      cat("--------------------------\n")
+
+      if (is.na(x$estimate)) {
+        cat("Median extinction interval\n")
+      } else if (is.na(x$cred.int[2])) {
+        cat("CI has an upper bound that\n")
+      }
+      cat("lies at or beyond terminal\nperiod (truncation point)!\n")
+    }
   }
 
   invisible(x)

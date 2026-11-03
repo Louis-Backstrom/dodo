@@ -13,7 +13,9 @@
 #' the \eqn{1 - \alpha} credible interval.
 #' @param init.time start of the observation period.
 #' @param test.time time point to retrospectively calculate extinction
-#' probability at. Defaults to the end of the observation period.
+#' probability at. Defaults to the end of the observation period, \eqn{T}. If
+#' `test.time` is after \eqn{T}, the posterior allocation of extinction
+#' probability between \eqn{T} and `test.time` is entirely prior-driven.
 #' @param scale.effort whether or not to scale, but not centre, each effort
 #' covariate before model fitting. Defaults to `TRUE`, in which case each
 #' covariate is divided by its standard deviation. Scaling can improve MCMC
@@ -51,8 +53,8 @@
 #' @param n.thin thinning rate. Defaults to 10.
 #'
 #' @returns a `dodo_fit` object with the original data, parameters, posterior
-#' samples, and the p(extant), point estimate, and credible interval included as
-#' elements.
+#' samples, final sampled time, prior truncation time, and the p(extant), point
+#' estimate, and credible interval included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain. The expected sighting rate
@@ -61,14 +63,21 @@
 #' supplied, intervals in which every effort covariate is zero must also have
 #' zero sighting counts.
 #'
-#' Extinction times before `test.time` are represented explicitly. All prior
-#' probability corresponding to survival until `test.time` is assigned to a
-#' single terminal state represented numerically by `test.time`. Consequently,
-#' probabilities of extinction before `test.time` and the overall prior
-#' probability of being extant at `test.time` are unchanged from the
-#' unbounded extinction time prior. Posterior extinction times equal to
-#' `test.time` therefore represent survival until `test.time`, rather than
-#' extinction occurring at exactly that time.
+#' Extinction times before `trun.time = max(last.time, test.time)` are
+#' represented explicitly, where `last.time` is the final sampled time, i.e.
+#' \eqn{T}. All prior probability corresponding to survival through `trun.time`
+#' is assigned to a single terminal state represented numerically by
+#' `trun.time`. Consequently, probabilities of extinction before `trun.time` and
+#' the overall prior probability of being extant at `trun.time` are unchanged
+#' from the unbounded extinction time prior. Posterior extinction times equal to
+#' `trun.time` therefore represent survival through `trun.time`, rather than
+#' extinction occurring exactly at that time.
+#'
+#' The posterior probability of being extant at `test.time` is calculated from
+#' all posterior extinction time states greater than or equal to `test.time`.
+#' If `test.time` is after `last.time`, the likelihood is constant between
+#' `last.time` and `test.time`, so the posterior allocation of extinction
+#' probability over this period is entirely prior-driven.
 #'
 #' If variable.selection = TRUE, uncertainty in the effort covariates included
 #' in the model is represented using binary inclusion indicators. The extinction
@@ -84,7 +93,12 @@
 #'
 #' @examples
 #' \dontrun{
-#' # ADD
+#' # Run an example analysis using the Slender-billed Curlew data
+#' BA26B3(
+#'   curlew$cdis,
+#'   effort = curlew_effort, init.time = 1817,
+#'   test.time = 2022, variable.selection = FALSE
+#' )
 #' }
 #'
 #' @export
@@ -105,6 +119,22 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   if (!is.numeric(alpha) || length(alpha) != 1L ||
     !is.finite(alpha) || alpha <= 0 || alpha >= 1) {
     stop("alpha must be a single number in (0, 1)")
+  }
+
+  if (!is.numeric(init.time) || length(init.time) != 1L ||
+    !is.finite(init.time)) {
+    stop("init.time must be a single finite number")
+  }
+
+  if (!is.numeric(test.time) || length(test.time) != 1L ||
+    !is.finite(test.time)) {
+    stop("test.time must be a single finite number")
+  }
+
+  if (test.time - init.time != floor(test.time - init.time)) {
+    stop(
+      "test.time and init.time must define an integer number of intervals"
+    )
   }
 
   if (!is.logical(scale.effort) || length(scale.effort) != 1L ||
@@ -305,23 +335,36 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     dimnames = list(NULL, colnames(effort))
   )
 
-  test_lag <- test.time - init.time - t_m + 1
+  last.time <- init.time + bigT - 1
+  trun.time <- max(last.time, test.time)
+  trun.lag <- trun.time - init.time - t_m + 1
 
-  if (!is.finite(test_lag) || test_lag != floor(test_lag)) {
-    stop(
-      paste(
-        "test.time and init.time must define an integer number",
-        "of sampling intervals"
-      )
+  if (test.time > last.time) {
+    warning(
+      paste0(
+        "test.time (", test.time, ") is after the final sampled time T (",
+        last.time, "). The likelihood is constant for extinction times after",
+        " T, so the posterior allocation of extinction probability between T ",
+        "and test.time is entirely prior-driven."
+      ),
+      call. = FALSE
     )
   }
 
-  if (test_lag < 0) {
-    stop("test.time must not precede the earliest possible extinction time")
+  if (!is.finite(trun.lag) || trun.lag != floor(trun.lag)) {
+    stop(
+      "the truncation endpoint must align with the sampling intervals"
+    )
   }
 
-  test_lag <- as.integer(test_lag)
-  n_cat <- test_lag + 1L
+  if (trun.lag < 0) {
+    stop(
+      "the truncation endpoint precedes the earliest possible extinction time"
+    )
+  }
+
+  trun.lag <- as.integer(trun.lag)
+  n_cat <- trun.lag + 1L
 
   # Specify model and parameters
   data_list <- list(
@@ -481,21 +524,21 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   }
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$tau_E == test.time)
+  p.extant <- mean(posterior$tau_E >= test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$tau_E)
+  estimate <- as.numeric(quantile(posterior$tau_E, 0.5, type = 1))
 
-  if (estimate == test.time) {
-    estimate <- NA
+  if (estimate == trun.time) {
+    estimate <- NA_real_
   }
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$tau_E, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha))
+  cred.int.lower <- min(posterior$tau_E)
+  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha, type = 1))
 
-  if (cred.int.upper == test.time) {
-    cred.int.upper <- NA
+  if (cred.int.upper == trun.time) {
+    cred.int.upper <- NA_real_
   }
 
   # Output
@@ -507,7 +550,9 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     inclusion.prob = inclusion_prob,
     alpha = alpha,
     init.time = init.time,
+    last.time = last.time,
     test.time = test.time,
+    trun.time = trun.time,
     scale.effort = scale.effort,
     priors = priors,
     samples = samples,
