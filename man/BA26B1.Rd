@@ -62,21 +62,22 @@ the species is extant at the test time, and a point estimate and one-sided
 All sighting records are assumed to be certain and sampling effort is assumed
 to be constant.
 
-Extinction times before \code{trun.time = max(last.time, test.time)} are
-represented explicitly, where \code{last.time} is the final sampled time, i.e.
-\eqn{T}. All prior probability corresponding to survival through \code{trun.time}
-is assigned to a single terminal state represented numerically by
-\code{trun.time}. Consequently, probabilities of extinction before \code{trun.time} and
-the overall prior probability of being extant at \code{trun.time} are unchanged
-from the unbounded extinction time prior. Posterior extinction times equal to
-\code{trun.time} therefore represent survival through \code{trun.time}, rather than
-extinction occurring exactly at that time.
+Extinction times up to \code{max(last.time, test.time)} are represented
+explicitly, where \code{last.time} is the final sampled time, i.e. \eqn{T}. All
+prior probability associated with extinction during or after
+\code{trun.time = max(last.time, test.time) + 1} is assigned to a single terminal
+state represented numerically by \code{trun.time}. This category therefore
+represents persistence through \code{trun.time - 1}, rather than extinction
+occurring exactly during \code{trun.time}. Consequently, the prior probabilities
+of extinction on or before \code{trun.time - 1} and persistence beyond
+\code{trun.time - 1} are unchanged from the unbounded extinction time prior.
 
-The posterior probability of being extant at \code{test.time} is calculated from
-all posterior extinction time states greater than or equal to \code{test.time}.
-If \code{test.time} is after \code{last.time}, the likelihood is constant between
-\code{last.time} and \code{test.time}, so the posterior allocation of extinction
-probability over this period is entirely prior-driven.
+The posterior probability of being extant through \code{test.time} is calculated
+from all posterior extinction time states greater than \code{test.time}. If
+\code{test.time} is after \code{last.time}, the likelihood is constant from
+\code{last.time} onward, so the posterior allocation of extinction probability
+after \code{last.time}, conditional on persistence through \code{last.time}, is
+determined entirely by the extinction time prior.
 }
 \examples{
 \dontrun{

@@ -63,21 +63,22 @@
 #' supplied, intervals in which every effort covariate is zero must also have
 #' zero sighting counts.
 #'
-#' Extinction times before `trun.time = max(last.time, test.time)` are
-#' represented explicitly, where `last.time` is the final sampled time, i.e.
-#' \eqn{T}. All prior probability corresponding to survival through `trun.time`
-#' is assigned to a single terminal state represented numerically by
-#' `trun.time`. Consequently, probabilities of extinction before `trun.time` and
-#' the overall prior probability of being extant at `trun.time` are unchanged
-#' from the unbounded extinction time prior. Posterior extinction times equal to
-#' `trun.time` therefore represent survival through `trun.time`, rather than
-#' extinction occurring exactly at that time.
+#' Extinction times up to `max(last.time, test.time)` are represented
+#' explicitly, where `last.time` is the final sampled time, i.e. \eqn{T}. All
+#' prior probability associated with extinction during or after
+#' `trun.time = max(last.time, test.time) + 1` is assigned to a single terminal
+#' state represented numerically by `trun.time`. This category therefore
+#' represents persistence through `trun.time - 1`, rather than extinction
+#' occurring exactly during `trun.time`. Consequently, the prior probabilities
+#' of extinction on or before `trun.time - 1` and persistence beyond
+#' `trun.time - 1` are unchanged from the unbounded extinction time prior.
 #'
-#' The posterior probability of being extant at `test.time` is calculated from
-#' all posterior extinction time states greater than or equal to `test.time`.
-#' If `test.time` is after `last.time`, the likelihood is constant between
-#' `last.time` and `test.time`, so the posterior allocation of extinction
-#' probability over this period is entirely prior-driven.
+#' The posterior probability of being extant through `test.time` is calculated
+#' from all posterior extinction time states greater than `test.time`. If
+#' `test.time` is after `last.time`, the likelihood is constant from
+#' `last.time` onward, so the posterior allocation of extinction probability
+#' after `last.time`, conditional on persistence through `last.time`, is
+#' determined entirely by the extinction time prior.
 #'
 #' If variable.selection = TRUE, uncertainty in the effort covariates included
 #' in the model is represented using binary inclusion indicators. The extinction
@@ -336,7 +337,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   )
 
   last.time <- init.time + bigT - 1
-  trun.time <- max(last.time, test.time)
+  trun.time <- max(last.time, test.time) + 1
   trun.lag <- trun.time - init.time - t_m + 1
 
   if (test.time > last.time) {
@@ -524,7 +525,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   }
 
   # Calculate p(extant)
-  p.extant <- mean(posterior$tau_E >= test.time)
+  p.extant <- mean(posterior$tau_E > test.time)
 
   # Calculate point estimate
   estimate <- as.numeric(quantile(posterior$tau_E, 0.5, type = 1))
