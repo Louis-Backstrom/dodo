@@ -6,6 +6,8 @@
 #'
 #' @param records sighting records in `cdis` format (see
 #' \code{\link{convert_dodo}} for details).
+#' @param precBits number of bits of precision to use in `Rmpfr` arithmetic.
+#' Defaults to 1024, which should be sufficient for most datasets.
 #'
 #' @returns a `list` object with the original parameters and the p-value
 #' included as elements.
@@ -47,7 +49,7 @@
 #'
 #' @export
 
-BU95F3 <- function(records) {
+BU95F3 <- function(records, precBits = 1024) {
   # Heavily adapted from sExtinct (by Christopher Clements) package code!
 
   # Determine number of records
@@ -68,8 +70,8 @@ BU95F3 <- function(records) {
     warning("longest run of empty cells does not occur at the end")
   }
 
-  mp1 <- Rmpfr::mpfr(1, precBits = 64)
-  mp0 <- Rmpfr::mpfr(0, precBits = 64)
+  mp1 <- Rmpfr::mpfr(1, precBits = precBits)
+  mp0 <- Rmpfr::mpfr(0, precBits = precBits)
 
   # Calculate sum in for loop (from sExtinct code)
   full_sum <- mp0
@@ -82,9 +84,9 @@ BU95F3 <- function(records) {
     for (indexi in 1:length(KK)) {
       i <- indexi - 1
       dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
-        ((j - Rmpfr::mpfr(i, precBits = 64))^N))
+        ((j - Rmpfr::mpfr(i, precBits = precBits))^N))
     }
-    Sn <- dummy / factorial(j)
+    Sn <- dummy / Rmpfr::factorialMpfr(j)
 
     for (k in 1:(j + 1)) {
       if (k <= (CT / r)) {
@@ -97,7 +99,7 @@ BU95F3 <- function(records) {
           }
           ff <- ff * term
         }
-        calc <- ((-1)^(k + 1)) * choose(j + 1, k) * ff * Sn
+        calc <- ((-1)^(k + 1)) * Rmpfr::chooseMpfr(j + 1, k) * ff * Sn
       } else {
         calc <- mp0
       }
@@ -106,7 +108,7 @@ BU95F3 <- function(records) {
   }
 
   # Calculate p-value
-  p.value <- as.numeric(Rmpfr::mpfr(CT, precBits = 64)^-N * full_sum)
+  p.value <- as.numeric(Rmpfr::mpfr(CT, precBits = precBits)^-N * full_sum)
 
   # Output
   output <- list(
