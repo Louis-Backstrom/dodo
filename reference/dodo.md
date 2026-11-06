@@ -159,3 +159,7 @@ Useful links:
 ## Author
 
 **Maintainer**: Louis Backstrom <ljb38@st-andrews.ac.uk>
+
+Authors:
+
+- Louis Backstrom <ljb38@st-andrews.ac.uk>
