@@ -4,11 +4,14 @@
 \alias{BU95F3}
 \title{Burgman et al.'s (1995) "Empty Cells" model}
 \usage{
-BU95F3(records)
+BU95F3(records, precBits = 1024)
 }
 \arguments{
 \item{records}{sighting records in \code{cdis} format (see
 \code{\link{convert_dodo}} for details).}
+
+\item{precBits}{number of bits of precision to use in \code{Rmpfr} arithmetic.
+Defaults to 1024, which should be sufficient for most datasets.}
 }
 \value{
 a \code{list} object with the original parameters and the p-value
