@@ -178,8 +178,8 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.3.0.9000",
-      "Source": "GitHub",
+      "Version": "1.3.1",
+      "Source": "Repository",
       "Type": "Package",
       "Title": "Project Environments",
       "Authors@R": "c( person(\"Kevin\", \"Ushey\", role = c(\"aut\", \"cre\"), email = \"kevin@rstudio.com\", comment = c(ORCID = \"0000-0003-2880-7407\")), person(\"Hadley\", \"Wickham\", role = c(\"aut\"), email = \"hadley@rstudio.com\", comment = c(ORCID = \"0000-0003-4757-117X\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")) )",
@@ -221,21 +221,16 @@
         "webfakes"
       ],
       "Encoding": "UTF-8",
-      "Roxygen": "list(markdown = TRUE)",
       "VignetteBuilder": "knitr",
       "Config/Needs/website": "tidyverse/tidytemplate",
       "Config/testthat/edition": "3",
       "Config/testthat/parallel": "true",
       "Config/testthat/start-first": "bioconductor,python,install,restore,snapshot,retrieve,remotes",
       "Config/roxygen2/version": "8.0.0",
+      "NeedsCompilation": "no",
       "Author": "Kevin Ushey [aut, cre] (ORCID: <https://orcid.org/0000-0003-2880-7407>), Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
-      "RemoteType": "github",
-      "RemoteUsername": "rstudio",
-      "RemoteRepo": "renv",
-      "RemoteRef": "main",
-      "RemoteSha": "bde1035a41f0f275d2cf58d255603f8d466879f0",
-      "RemoteHost": "api.github.com"
+      "Repository": "CRAN"
     }
   }
 }
