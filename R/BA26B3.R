@@ -51,6 +51,11 @@
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
+#' @param do.diagnostics diagnostics from `coda` to calculate and assess
+#' automatically. Defaults to
+#' `c("gelman.diag", "effectiveSize", "geweke.diag")`. Additional available
+#' diagnostics are `"heidel.diag"` and `"raftery.diag"`. Set to `FALSE` or
+#' `NULL` to disable diagnostics.
 #'
 #' @returns a `dodo_fit` object with the original data, parameters, posterior
 #' samples, final sampled time, prior truncation time, and the p(extant), point
@@ -110,7 +115,8 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
                    priors = list(
                      theta_max = c(1, 10), g = 0, rate = 10, inclusion = NULL
                    ),
-                   n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
+                   n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10,
+                   do.diagnostics = .default_diagnostics) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("package 'rjags' is required but could not be found")
@@ -197,6 +203,10 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
   if (is.null(colnames(effort))) {
     colnames(effort) <- paste0("effort", seq_len(ncol(effort)))
+  }
+
+  if (anyDuplicated(colnames(effort))) {
+    stop("effort variable names must be unique")
   }
 
   effort_original <- effort
@@ -476,6 +486,31 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     )
   }))
 
+  # Replace parameter indices with effort variable names
+  parameter_names <- "beta"
+
+  if (variable.selection == TRUE) {
+    parameter_names <- c(parameter_names, "beta_raw", "included")
+  }
+
+  samples <- coda::mcmc.list(lapply(samples, function(chain) {
+    for (parameter in parameter_names) {
+      old_names <- paste0(
+        parameter, "[", seq_len(ncol(effort_original)), "]"
+      )
+      new_names <- paste0(
+        parameter, "[", colnames(effort_original), "]"
+      )
+
+      matched <- match(old_names, colnames(chain), nomatch = 0L)
+      found <- matched > 0L
+
+      colnames(chain)[matched[found]] <- new_names[found]
+    }
+
+    return(chain)
+  }))
+
   # Extract posteriors
   posterior <- as.data.frame(as.matrix(samples))
 
@@ -496,6 +531,27 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     )
 
     names(posterior_inclusion) <- colnames(effort_original)
+
+    low_inclusion <- posterior_inclusion < 0.5 * inclusion_prob
+
+    if (any(low_inclusion)) {
+      warning(
+        paste0(
+          "Posterior inclusion probability is less than half its prior ",
+          "probability for: ",
+          paste(
+            sprintf(
+              "%s (prior = %.3f, posterior = %.3f)",
+              names(posterior_inclusion)[low_inclusion],
+              inclusion_prob[low_inclusion],
+              posterior_inclusion[low_inclusion]
+            ),
+            collapse = ", "
+          )
+        ),
+        call. = FALSE
+      )
+    }
 
     included_samples <- posterior[, included_columns, drop = FALSE]
 
@@ -542,6 +598,12 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     cred.int.upper <- NA_real_
   }
 
+  # Run diagnostics
+  diagnostics <- .run_diagnostics(
+    samples = samples,
+    do.diagnostics = do.diagnostics
+  )
+
   # Output
   output <- list(
     records = records,
@@ -561,7 +623,8 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
     posterior.models = posterior_models,
     p.extant = p.extant,
     estimate = estimate,
-    cred.int = c(cred.int.lower, cred.int.upper)
+    cred.int = c(cred.int.lower, cred.int.upper),
+    diagnostics = diagnostics
   )
 
   return(dodo_fit(output, model = "BA26B3"))

@@ -66,7 +66,7 @@ print.dodo_fit <- function(x, ...) {
     }
   }
 
-  # Explain terminal-state summaries in BA26 models
+  # Explain terminal state summaries in BA26 models
   if (!is.null(x$model) && x$model %in% paste0("BA26B", 1:4)) {
     if (is.na(x$estimate) || is.na(x$cred.int[2])) {
       cat("--------------------------\n")
@@ -80,5 +80,24 @@ print.dodo_fit <- function(x, ...) {
     }
   }
 
-  invisible(x)
+  return(invisible(x))
+}
+
+#' @export
+summary.dodo_fit <- function(object, ...) {
+  if (is.null(object$model) || !object$model %in% paste0("BA26B", 1:4)) {
+    stop("summary() is only available for BA26 models")
+  }
+
+  statistics <- summary(object$samples, ...)$statistics
+  class(statistics) <- c("dodo_summary", class(statistics))
+
+  return(statistics)
+}
+
+#' @export
+print.dodo_summary <- function(x, ...) {
+  print(format(unclass(x), digits = 1, scientific = FALSE), quote = FALSE, ...)
+
+  return(invisible(x))
 }

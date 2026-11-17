@@ -13,7 +13,8 @@ BA26B2(
   n.chains = 4,
   n.iter = 110000,
   n.burnin = 10000,
-  n.thin = 10
+  n.thin = 10,
+  do.diagnostics = .default_diagnostics
 )
 }
 \arguments{
@@ -48,6 +49,12 @@ shape and rate parameters for the Gamma priors on \eqn{\lambda_v} and
 10,000.}
 
 \item{n.thin}{thinning rate. Defaults to 10.}
+
+\item{do.diagnostics}{diagnostics from \code{coda} to calculate and assess
+automatically. Defaults to
+\code{c("gelman.diag", "effectiveSize", "geweke.diag")}. Additional available
+diagnostics are \code{"heidel.diag"} and \code{"raftery.diag"}. Set to \code{FALSE} or
+\code{NULL} to disable diagnostics.}
 }
 \value{
 a \code{dodo_fit} object with the original data, parameters, posterior

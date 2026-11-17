@@ -17,6 +17,7 @@
 #' @importFrom stats median
 #' @importFrom stats na.omit
 #' @importFrom stats plogis
+#' @importFrom stats qnorm
 #' @importFrom stats quantile
 #' @importFrom stats rbeta
 #' @importFrom stats rbinom

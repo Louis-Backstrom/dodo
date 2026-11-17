@@ -28,6 +28,11 @@
 #' @param n.burnin number of iterations to discard as burn-in. Defaults to
 #' 10,000.
 #' @param n.thin thinning rate. Defaults to 10.
+#' @param do.diagnostics diagnostics from `coda` to calculate and assess
+#' automatically. Defaults to
+#' `c("gelman.diag", "effectiveSize", "geweke.diag")`. Additional available
+#' diagnostics are `"heidel.diag"` and `"raftery.diag"`. Set to `FALSE` or
+#' `NULL` to disable diagnostics.
 #'
 #' @returns a `dodo_fit` object with the original data, parameters, posterior
 #' samples, final sampled time, prior truncation time, and the p(extant), point
@@ -74,7 +79,8 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
                      theta_max = c(1, 10), g = 0,
                      lambda_v = c(1, 1), lambda_i = c(1, 1)
                    ),
-                   n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10) {
+                   n.chains = 4, n.iter = 11e4, n.burnin = 1e4, n.thin = 10,
+                   do.diagnostics = .default_diagnostics) {
   # Check if rjags is installed
   if (!requireNamespace("rjags", quietly = TRUE)) {
     stop("package 'rjags' is required but could not be found")
@@ -329,6 +335,12 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     cred.int.upper <- NA_real_
   }
 
+  # Run diagnostics
+  diagnostics <- .run_diagnostics(
+    samples = samples,
+    do.diagnostics = do.diagnostics
+  )
+
   # Output
   output <- list(
     records = records,
@@ -341,7 +353,8 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
     samples = samples,
     p.extant = p.extant,
     estimate = estimate,
-    cred.int = c(cred.int.lower, cred.int.upper)
+    cred.int = c(cred.int.lower, cred.int.upper),
+    diagnostics = diagnostics
   )
 
   return(dodo_fit(output, model = "BA26B2"))
