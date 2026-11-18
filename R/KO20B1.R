@@ -54,7 +54,7 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
   }
 
   # Run MCMC function from Kodikara et al. 2020
-  invisible(capture.output({
+  invisible(utils::capture.output({
     posterior <- coda::mcmc.list(coda::mcmc.list(
       posterior_cer_mcmc(records,
         n.chains = n.chains, n.iter = n.iter,
@@ -71,11 +71,11 @@ KO20B1 <- function(records, alpha = 0.05, init.time,
   p.extant <- mean(posterior$time > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$time)
+  estimate <- stats::median(posterior$time)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$time, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$time, 1 - alpha))
+  cred.int.lower <- as.numeric(stats::quantile(posterior$time, 0))
+  cred.int.upper <- as.numeric(stats::quantile(posterior$time, 1 - alpha))
 
   # Output
   output <- list(
@@ -166,8 +166,8 @@ posterior_cer_mcmc <- function(y_c, n.chains = 4,
 
       tau_0 ~ dnegbin(theta, 1)
       tau <- tau_0 + 1
-      theta ~ dunif(0, 1)
-      p ~ dunif(0, 1)
+      theta ~ stats::dunif(0, 1)
+      p ~ stats::dunif(0, 1)
 
     }
     "
@@ -190,7 +190,7 @@ posterior_cer_mcmc <- function(y_c, n.chains = 4,
     file = model_file, data = dataList, inits = inits_list,
     n.chains = n.chains, n.adapt = n.burnin
   )
-  update(jagsModelm1, n.iter = n.burnin)
+  stats::update(jagsModelm1, n.iter = n.burnin)
   codaSamplesm1 <- rjags::coda.samples(jagsModelm1, variable.names = c(
     "tau", "p", "theta"
   ), n.iter = n.iter, thin = n.thin)

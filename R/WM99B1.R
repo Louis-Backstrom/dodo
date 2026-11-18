@@ -143,7 +143,7 @@ WM99B1 <- function(records, surveys, alpha = 0.05, test.time = max(surveys),
     p.extinct <- 0
   } else {
     # In meaningful [0, 1] range
-    p.extinct <- uniroot(
+    p.extinct <- stats::uniroot(
       f = pqe, interval = c(0, 1 - 1e-9), t = t, q = q,
       lambda = priors$lambda
     )$root

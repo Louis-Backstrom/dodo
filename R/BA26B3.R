@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Certain-only Effort" model
+#' @title Backstrom et al.'s (2026) "Certain-only Variable-effort" model
 #'
 #' @description
 #' Model 3 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -294,7 +294,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
       )
     }
 
-    effort_scale <- apply(effort, MARGIN = 2, FUN = sd)
+    effort_scale <- apply(effort, MARGIN = 2, FUN = stats::sd)
 
     if (length(intercept_cols) == 1L) {
       effort_scale[intercept_cols] <- 1
@@ -399,7 +399,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ dbeta(theta_max_a, theta_max_b)
+      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
 
       for (m in 1:p) {
         included[m] ~ dbern(inclusion_prob[m])
@@ -452,10 +452,10 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
   inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
-      theta_max = runif(1, 0.01, 0.99),
+      theta_max = stats::runif(1, 0.01, 0.99),
       tau_cat = sample.int(n_cat, 1L),
       included = rep(1L, ncol(effort)),
-      beta_raw = pmax(rexp(ncol(effort), rate = rate), 1e-6),
+      beta_raw = pmax(stats::rexp(ncol(effort), rate = rate), 1e-6),
       .RNG.name = "base::Mersenne-Twister",
       .RNG.seed = jags_seeds[chain]
     )
@@ -466,12 +466,12 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   on.exit(unlink(model_file), add = TRUE)
 
   # Run MCMC sampling
-  invisible(capture.output({
+  invisible(utils::capture.output({
     jags_model <- rjags::jags.model(
       file = model_file, data = data_list, inits = inits_list,
       n.chains = n.chains, n.adapt = n.burnin
     )
-    update(jags_model, n.iter = n.burnin)
+    stats::update(jags_model, n.iter = n.burnin)
     variables <- c("tau_E", "theta_max", "beta")
 
     if (variable.selection == TRUE) {
@@ -570,7 +570,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
     names(posterior_models) <- model_variables
   } else {
-    posterior_inclusion <- setNames(
+    posterior_inclusion <- stats::setNames(
       rep(1, ncol(effort_original)), colnames(effort_original)
     )
 
@@ -584,7 +584,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   p.extant <- mean(posterior$tau_E > test.time)
 
   # Calculate point estimate
-  estimate <- as.numeric(quantile(posterior$tau_E, 0.5, type = 1))
+  estimate <- as.numeric(stats::quantile(posterior$tau_E, 0.5, type = 1))
 
   if (estimate == trun.time) {
     estimate <- NA_real_
@@ -592,7 +592,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- min(posterior$tau_E)
-  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha, type = 1))
+  cred.int.upper <- as.numeric(stats::quantile(posterior$tau_E, 1 - alpha, type = 1))
 
   if (cred.int.upper == trun.time) {
     cred.int.upper <- NA_real_

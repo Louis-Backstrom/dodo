@@ -83,7 +83,7 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
   # Back-transform estimates
   estimate <- (mean(posterior) - scale) * ((max(records) - min(records)) /
     scale) + min(records)
-  cred.int.upper <- (as.numeric(quantile(posterior, 1 - alpha)) - scale) *
+  cred.int.upper <- (as.numeric(stats::quantile(posterior, 1 - alpha)) - scale) *
     ((max(records) - min(records)) / scale) + min(records)
 
   # Output

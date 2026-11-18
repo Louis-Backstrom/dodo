@@ -13,7 +13,7 @@ log_integrate_stable <- function(logf, lower, upper, ..., grid.n = 100,
 
   c <- max(lg[is.finite(lg)])
 
-  val <- integrate(
+  val <- stats::integrate(
     f = function(z) exp(logf(z, ...) - c),
     lower = lower, upper = upper,
     rel.tol = rel.tol, subdivisions = subdivisions
@@ -27,7 +27,7 @@ log_integrate_stable <- function(logf, lower, upper, ..., grid.n = 100,
 }
 
 log_integrand_neglambdas <- function(L, th, x, prmean, prSD) {
-  log_prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
+  log_prior <- stats::dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   s_log1m <- sum(log1p(-x / th))
   n <- length(x)
@@ -43,7 +43,7 @@ log_integrand_neglambdas <- function(L, th, x, prmean, prSD) {
 }
 
 log_integrand_poslambdas <- function(L, th, x, prmean, prSD) {
-  log_prior <- dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
+  log_prior <- stats::dnorm(L, prmean, prSD, log = TRUE) + log(1 / th)
 
   s_logx <- sum(log(x / th))
   n <- length(x)

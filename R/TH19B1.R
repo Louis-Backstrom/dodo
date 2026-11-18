@@ -92,8 +92,8 @@ TH19B1 <- function(records, surveys, init.time, test.time, pi = 0.5) {
     init.time = init.time,
     test.time = test.time,
     pi = pi,
-    Bayes.factor = tail(data$CBF, 1),
-    p.extant = tail(data$PXt, 1)
+    Bayes.factor = utils::tail(data$CBF, 1),
+    p.extant = utils::tail(data$PXt, 1)
   )
 
   return(dodo_fit(output, model = "TH19B1"))

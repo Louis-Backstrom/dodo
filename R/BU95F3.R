@@ -64,7 +64,7 @@ BU95F3 <- function(records, precBits = 1024) {
   # Check if longest run of empty cells occurs at the end, and warn if not
   z <- rle(records == 0)
 
-  z_check <- tail(z$values, 1) && tail(z$lengths, 1) == r
+  z_check <- utils::tail(z$values, 1) && utils::tail(z$lengths, 1) == r
 
   if (z_check == FALSE) {
     warning("longest run of empty cells does not occur at the end")

@@ -16,15 +16,15 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
     extra.y <- NA
 
     if (index > periods) {
-      extra.z <- rgeom(1, curr.phi) + 1
+      extra.z <- stats::rgeom(1, curr.phi) + 1
       curr.z <- obs + extra.z
-      extra.y <- rbinom(extra.z - 1, 1, curr.lambda)
+      extra.y <- stats::rbinom(extra.z - 1, 1, curr.lambda)
     } else {
       curr.z <- final + index
     }
 
-    curr.phi <- rbeta(1, phi1 + 1, phi2 + curr.z - 1)
-    curr.lambda <- rbeta(
+    curr.phi <- stats::rbeta(1, phi1 + 1, phi2 + curr.z - 1)
+    curr.lambda <- stats::rbeta(
       1, lambda1 + sum(c(y, extra.y), na.rm = TRUE),
       lambda2 + curr.z - sum(c(y, extra.y), na.rm = TRUE)
     )
@@ -38,7 +38,7 @@ impute <- function(phi, lambda, periods) {
   probs <- phi * ((1 - phi) * (1 - lambda))^(0:(periods - 1))
   probs <- c(probs, ((1 - phi) * (1 - lambda))^periods)
   probs <- probs / sum(probs)
-  return(as.vector(rmultinom(1, 1, probs)))
+  return(as.vector(stats::rmultinom(1, 1, probs)))
 }
 
 sim.N <- function(pgr, time, N0) {
@@ -55,12 +55,12 @@ correct.negative <- function(x) {
 
 impute.TE <- function(p.cease) {
   p.cease <- correct.negative(p.cease)
-  p.cens <- tail(p.cease, 1)
+  p.cens <- utils::tail(p.cease, 1)
   if (sign(p.cens < 0)) {
     p.cens <- 0
   }
 
-  TE.draw <- rmultinom(1, 1, p.cease)
+  TE.draw <- stats::rmultinom(1, 1, p.cease)
 
   result <- (1:length(p.cease))[TE.draw == 1]
   if (result <= (length(p.cease) - 1)) {
@@ -79,12 +79,12 @@ calc.pars <- function(p, y) {
   obs <- length(y)
 
   pos <- (1:length(y))[y == 1]
-  final <- tail(pos, 1)
+  final <- utils::tail(pos, 1)
   zero.count <- obs - final
   N.traj <- sim.N(N0 = N0, pgr = pgr, time = obs)
   lambdas <- 1 - exp(-delta * N.traj)
   lp <- eps0 - eps1 * log(N.traj)
-  phis <- ifelse(lp > 50, 1, plogis(lp))
+  phis <- ifelse(lp > 50, 1, stats::plogis(lp))
 
   p.cease <- numeric(obs + 1)
   p.cease[1:final] <- 0
@@ -115,15 +115,15 @@ calc.pars <- function(p, y) {
   }
   p.cease <- p.cease[(final + 1):(final + zero.count + 1)]
   p.cease <- p.cease / sum(p.cease)
-  p.cens <- tail(p.cease, 1)
+  p.cens <- utils::tail(p.cease, 1)
 
   TE <- final + impute.TE(p.cease)
 
   if (!is.na(TE)) {
-    phis <- head(phis, TE)
-    lambdas <- head(lambdas, TE)
-    y.obs <- head(y, TE)
-    N.traj <- head(N.traj, TE)
+    phis <- utils::head(phis, TE)
+    lambdas <- utils::head(lambdas, TE)
+    y.obs <- utils::head(y, TE)
+    N.traj <- utils::head(N.traj, TE)
   } else {
     y.obs <- y
   }
@@ -155,7 +155,7 @@ calc.pars.given.TE <- function(p, TE, y) {
   }
   lambdas <- 1 - exp(-delta * N.traj)
   lp <- eps0 - eps1 * log(N.traj)
-  phis <- ifelse(lp > 50, 1, plogis(lp))
+  phis <- ifelse(lp > 50, 1, stats::plogis(lp))
 
   return(
     list(
@@ -173,7 +173,7 @@ lnL.lam <- function(lams, ys) {
 
 lnL.phi <- function(phis, TE) {
   if (!is.na(TE)) {
-    ans <- sum(log(1 - phis[-length(phis)])) + log(tail(phis, 1))
+    ans <- sum(log(1 - phis[-length(phis)])) + log(utils::tail(phis, 1))
   } else {
     ans <- sum(log(1 - phis))
   }
@@ -182,43 +182,43 @@ lnL.phi <- function(phis, TE) {
 }
 
 N0.prior <- function(x) {
-  return(dunif(x, 5, 50, log = FALSE))
+  return(stats::dunif(x, 5, 50, log = FALSE))
 }
 
 lnL.N0.prior <- function(x) {
-  return(dunif(x, 5, 50, log = TRUE))
+  return(stats::dunif(x, 5, 50, log = TRUE))
 }
 
 pgr.prior <- function(x) {
-  return(dunif(x, min = -2.3, max = 0.69, log = F))
+  return(stats::dunif(x, min = -2.3, max = 0.69, log = F))
 }
 
 lnL.pgr.prior <- function(x) {
-  return(dunif(x, min = -2.3, max = 0.69, log = TRUE))
+  return(stats::dunif(x, min = -2.3, max = 0.69, log = TRUE))
 }
 
 delta.prior <- function(x) {
-  return(dunif(x, 0.01, 4.6, log = FALSE))
+  return(stats::dunif(x, 0.01, 4.6, log = FALSE))
 }
 
 lnL.delta.prior <- function(x) {
-  return(dunif(x, 0.01, 4.6, log = TRUE))
+  return(stats::dunif(x, 0.01, 4.6, log = TRUE))
 }
 
 eps0.prior <- function(x) {
-  return(dunif(x, -20, 20, log = FALSE))
+  return(stats::dunif(x, -20, 20, log = FALSE))
 }
 
 lnL.eps0.prior <- function(x) {
-  return(dunif(x, -20, 20, log = TRUE))
+  return(stats::dunif(x, -20, 20, log = TRUE))
 }
 
 eps1.prior <- function(x) {
-  return(dunif(x, 0, 20, log = FALSE))
+  return(stats::dunif(x, 0, 20, log = FALSE))
 }
 
 lnL.eps1.prior <- function(x) {
-  return(dunif(x, 0, 20, log = TRUE))
+  return(stats::dunif(x, 0, 20, log = TRUE))
 }
 
 propose.N0 <- function(x) {
@@ -226,27 +226,27 @@ propose.N0 <- function(x) {
 }
 
 propose.pgr <- function(x, sd = 0.05) {
-  return(rnorm(1, x, sd = sd))
+  return(stats::rnorm(1, x, sd = sd))
 }
 
 propose.delta <- function(x, sd = 0.5) {
-  return(rlnorm(1, log(x), sd))
+  return(stats::rlnorm(1, log(x), sd))
 }
 
 q.delta <- function(x1, x2) {
-  return(dlnorm(x1, log(x2), sdlog = 0.5, log = TRUE))
+  return(stats::dlnorm(x1, log(x2), sdlog = 0.5, log = TRUE))
 }
 
 propose.eps0 <- function(x, sd = 1.5) {
-  return(rnorm(1, x, sd = sd))
+  return(stats::rnorm(1, x, sd = sd))
 }
 
 propose.eps1 <- function(x, sd = 0.15) {
-  return(rlnorm(1, log(x), sdlog = sd))
+  return(stats::rlnorm(1, log(x), sdlog = sd))
 }
 
 q.eps1 <- function(x1, x2) {
-  return(dlnorm(x1, log(x2), sdlog = 0.15, log = TRUE))
+  return(stats::dlnorm(x1, log(x2), sdlog = 0.15, log = TRUE))
 }
 
 fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
@@ -275,7 +275,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
     LR <- exp(prop.lnLik.delta - curr.lnLik.delta +
       q.delta(curr.p[2], prop.p[2]) - q.delta(prop.p[2], curr.p[2]))
 
-    if (runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 8] <- 1
@@ -295,7 +295,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
     LR <- exp(prop.lnLik.eps - curr.lnLik.eps + q.eps1(curr.p[4], prop.p[4]) -
       q.eps1(prop.p[4], curr.p[4]))
 
-    if (runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 9] <- 1
@@ -313,7 +313,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
       lnL.phi(phis = prop.vals$phis, TE = TE.imp) + lnL.pgr.prior(prop.p[1])
     LR <- exp(prop.lnLik.pgr - curr.lnLik.pgr)
 
-    if (runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 7] <- 1
@@ -333,7 +333,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
 
     LR <- exp(prop.lnLik.N0 - curr.lnLik.N0)
 
-    if (runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR & !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 10] <- 1

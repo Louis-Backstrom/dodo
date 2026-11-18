@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Uncertain Effort" model
+#' @title Backstrom et al.'s (2026) "Uncertain Variable-effort" model
 #'
 #' @description
 #' Model 4 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -350,7 +350,7 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
       )
     }
 
-    effort_scale <- apply(effort, MARGIN = 2, FUN = sd)
+    effort_scale <- apply(effort, MARGIN = 2, FUN = stats::sd)
 
     if (length(intercept_cols) == 1L) {
       effort_scale[intercept_cols] <- 1
@@ -498,9 +498,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ dbeta(theta_max_a, theta_max_b)
+      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
 
-      pi_e ~ dunif(0, 1)
+      pi_e ~ stats::dunif(0, 1)
 
       for (m in 1:p) {
         included_v[m] ~ dbern(inclusion_prob_v[m])
@@ -573,13 +573,13 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
   inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
-      theta_max = runif(1, 0.01, 0.99),
+      theta_max = stats::runif(1, 0.01, 0.99),
       tau_cat = sample.int(n_cat, 1L),
-      pi_e = runif(1, 0.01, 0.99),
+      pi_e = stats::runif(1, 0.01, 0.99),
       included_v = rep(1L, ncol(effort)),
       included_i = rep(1L, ncol(effort)),
-      beta_raw = pmax(rexp(ncol(effort), rate = rate_v), 1e-6),
-      gamma_raw = pmax(rexp(ncol(effort), rate = rate_i), 1e-6),
+      beta_raw = pmax(stats::rexp(ncol(effort), rate = rate_v), 1e-6),
+      gamma_raw = pmax(stats::rexp(ncol(effort), rate = rate_i), 1e-6),
       .RNG.name = "base::Mersenne-Twister",
       .RNG.seed = jags_seeds[chain]
     )
@@ -590,12 +590,12 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   on.exit(unlink(model_file), add = TRUE)
 
   # Run MCMC sampling
-  invisible(capture.output({
+  invisible(utils::capture.output({
     jags_model <- rjags::jags.model(
       file = model_file, data = data_list, inits = inits_list,
       n.chains = n.chains, n.adapt = n.burnin
     )
-    update(jags_model, n.iter = n.burnin)
+    stats::update(jags_model, n.iter = n.burnin)
     variables <- c("tau_E", "pi_e", "theta_max", "beta", "gamma")
 
     if (variable.selection == TRUE) {
@@ -684,11 +684,11 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
     if (any(low_inclusion)) {
       posterior_inclusion <- c(
-        setNames(
+        stats::setNames(
           posterior_inclusion_v,
           paste0(names(posterior_inclusion_v), " [v]")
         ),
-        setNames(
+        stats::setNames(
           posterior_inclusion_i,
           paste0(names(posterior_inclusion_i), " [i]")
         )
@@ -761,12 +761,12 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
 
     names(posterior_models) <- model_variables
   } else {
-    posterior_inclusion_v <- setNames(
+    posterior_inclusion_v <- stats::setNames(
       rep(1, ncol(effort_original)),
       colnames(effort_original)
     )
 
-    posterior_inclusion_i <- setNames(
+    posterior_inclusion_i <- stats::setNames(
       rep(1, ncol(effort_original)),
       colnames(effort_original)
     )
@@ -786,14 +786,14 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   p.extant <- mean(posterior$tau_E > test.time)
 
   # Calculate point estimate
-  estimate <- as.numeric(quantile(posterior$tau_E, 0.5, type = 1))
+  estimate <- as.numeric(stats::quantile(posterior$tau_E, 0.5, type = 1))
 
   if (estimate == trun.time) {
     estimate <- NA_real_
   }
   # Calculate credible interval bounds
   cred.int.lower <- min(posterior$tau_E)
-  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha, type = 1))
+  cred.int.upper <- as.numeric(stats::quantile(posterior$tau_E, 1 - alpha, type = 1))
 
   if (cred.int.upper == trun.time) {
     cred.int.upper <- NA_real_

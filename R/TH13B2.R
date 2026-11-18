@@ -122,7 +122,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
   values <- numeric(n.iter)
 
   if (pb == TRUE) {
-    pbar <- txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
+    pbar <- utils::txtProgressBar(min = 0, max = n.iter, style = 3, width = 50)
   }
 
   for (run in seq_len(n.iter)) {
@@ -134,7 +134,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
       col_vals <- records_matrix[, a]
 
       # Create p vector
-      u <- runif(bigT)
+      u <- stats::runif(bigT)
       vals <- p_lower[a] + p_range[a] * u
 
       idx <- (col_vals == 1)
@@ -145,7 +145,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
       log_p_vector <- log_p_vector + log(vals)
 
       # Create q vector
-      u <- runif(bigT)
+      u <- stats::runif(bigT)
       vals <- q_lower[a] + q_range[a] * u
 
       if (any(idx)) {
@@ -180,7 +180,7 @@ TH13B2 <- function(records, priors, certain = 1, PXT = NULL, PE = NULL,
     values[run] <- exp(log_numerator - log_denominator)
 
     if (pb == TRUE) {
-      setTxtProgressBar(pbar, run)
+      utils::setTxtProgressBar(pbar, run)
     }
   }
 

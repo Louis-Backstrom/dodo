@@ -58,10 +58,10 @@ CB14B2 <- function(records, alpha = 0.05, init.time = min(records),
   p.extant <- mean(is.na(res[, 6]))
 
   # Calculate estimate
-  estimate <- median(replace(res[, 6], is.na(res[, 6]), Inf)) + init.time - 1
+  estimate <- stats::median(replace(res[, 6], is.na(res[, 6]), Inf)) + init.time - 1
 
   # Calculate credible interval bounds
-  cred.int <- as.numeric(quantile(
+  cred.int <- as.numeric(stats::quantile(
     replace(res[, 6], is.na(res[, 6]), Inf),
     c(0, 1 - alpha)
   )) + init.time - 1

@@ -50,10 +50,10 @@
 #' * [KO20B1()] Kodikara et al.'s (2020) "Certain-only" model.
 #' * [KO20B2()] Kodikara et al.'s (2020) "Uncertain" model.
 #' * [KO21B1()] Kodikara et al.'s (2021) "Change-point" model.
-#' * [BA26B1()] Backstrom et al.'s (2026) "Certain-only No-effort" model.
-#' * [BA26B2()] Backstrom et al.'s (2026) "Uncertain No-effort" model.
-#' * [BA26B3()] Backstrom et al.'s (2026) "Certain-only Effort" model.
-#' * [BA26B4()] Backstrom et al.'s (2026) "Uncertain Effort" model.
+#' * [BA26B1()] Backstrom et al.'s (2026) "Certain-only Constant-effort" model.
+#' * [BA26B2()] Backstrom et al.'s (2026) "Uncertain Constant-effort" model.
+#' * [BA26B3()] Backstrom et al.'s (2026) "Certain-only Variable-effort" model.
+#' * [BA26B4()] Backstrom et al.'s (2026) "Uncertain Variable-effort" model.
 #'
 #' @section Other Functions:
 #' * [convert_dodo()] Convert basic sightings spreadsheet into all `dodo`

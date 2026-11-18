@@ -153,19 +153,19 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
   for (k in 1:n.iter) {
     # Random samples
-    pie <- runif(1, pieL, pieU)
-    PEE <- runif(1, min(c(PEEL, PEEU)), max(c(PEEL, PEEU)))
-    pWk <- runif(1, pWL, pWU)
+    pie <- stats::runif(1, pieL, pieU)
+    PEE <- stats::runif(1, min(c(PEEL, PEEU)), max(c(PEEL, PEEU)))
+    pWk <- stats::runif(1, pWL, pWU)
     pW <- ifelse(W == 0, 1 - pWk, pWk)
     qW <- ifelse(W == 0, 1, 0)
 
     if (nrow(SQ_unique) > 0) {
       for (i in 1:nrow(SQ_unique)) {
-        SS[[pS_k_names[i]]] <- runif(
+        SS[[pS_k_names[i]]] <- stats::runif(
           1, SS[[pS_L_names[i]]],
           SS[[pS_U_names[i]]]
         )
-        SS[[qS_k_names[i]]] <- runif(
+        SS[[qS_k_names[i]]] <- stats::runif(
           1, SS[[qS_L_names[i]]],
           SS[[qS_U_names[i]]]
         )
@@ -186,11 +186,11 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
     if (nrow(UQ_unique) > 0) {
       for (h in 1:nrow(UQ_unique)) {
-        US[[pU_k_names[h]]] <- runif(
+        US[[pU_k_names[h]]] <- stats::runif(
           1, US[[pU_L_names[h]]],
           US[[pU_U_names[h]]]
         )
-        US[[qU_k_names[h]]] <- runif(
+        US[[qU_k_names[h]]] <- stats::runif(
           1, US[[qU_L_names[h]]],
           US[[qU_U_names[h]]]
         )

@@ -98,7 +98,7 @@ convert_dodo <- function(x, init.time,
 
   # Remove duplicates
   if (unique == TRUE) {
-    x <- aggregate(x[[time]], by = x[setdiff(names(x), time)], FUN = max)
+    x <- stats::aggregate(x[[time]], by = x[setdiff(names(x), time)], FUN = max)
     names(x)[names(x) == "x"] <- time
     x <- x[c(time, setdiff(names(x), time))]
     x <- x[order(x[, time]), ]
@@ -156,7 +156,7 @@ convert_dodo <- function(x, init.time,
   # IUCN format records from init.time to test.time
   x_iucn <- data.frame(time = init.time:test.time)
   x_iucn$record <- x_iucn$time %in% x[[time]]
-  x_iucn <- merge(x_iucn, aggregate(
+  x_iucn <- merge(x_iucn, stats::aggregate(
     x[, c(certainty, certainty_lower, certainty_upper)],
     by = x[time], FUN = aggregate
   ),

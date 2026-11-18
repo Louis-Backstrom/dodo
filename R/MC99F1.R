@@ -44,7 +44,7 @@ MC99F1 <- function(records, alpha = 0.05,
   records <- sort(records)
 
   # Calculate median gap length
-  i <- median(diff(records))
+  i <- stats::median(diff(records))
 
   # Calculate critical value
   crit <- log(alpha, base = 0.5)

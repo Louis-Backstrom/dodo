@@ -110,12 +110,12 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
                         }
 
                         tau ~ dexp(0.005)
-                        sigma~dunif(0,1000)
-                        a~dunif(0,1000)
-                        sigma_U1~dunif(0,1000)
-                        a_U1~dunif(0,1000)
-                        sigma_U2~dunif(0,1000)
-                        a_U2~dunif(0,1000)
+                        sigma~stats::dunif(0,1000)
+                        a~stats::dunif(0,1000)
+                        sigma_U1~stats::dunif(0,1000)
+                        a_U1~stats::dunif(0,1000)
+                        sigma_U2~stats::dunif(0,1000)
+                        a_U2~stats::dunif(0,1000)
                         }
 
                         ")
@@ -134,7 +134,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
   writeLines(modelpois, con = model_file)
 
   # Run the chains
-  invisible(capture.output({
+  invisible(utils::capture.output({
     jagsmodelpois <- rjags::jags.model(
       file = model_file,
       data = dataList,
@@ -144,7 +144,7 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
       quiet = TRUE
     )
 
-    update(jagsmodelpois, n.iter = n.burnin)
+    stats::update(jagsmodelpois, n.iter = n.burnin)
 
     codaSamplespois <- rjags::coda.samples(
       model = jagsmodelpois,
@@ -165,11 +165,11 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
   p.extant <- mean(posterior$tau + init.time > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$tau) + init.time
+  estimate <- stats::median(posterior$tau) + init.time
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$tau, 0)) + init.time
-  cred.int.upper <- as.numeric(quantile(posterior$tau, 1 - alpha)) + init.time
+  cred.int.lower <- as.numeric(stats::quantile(posterior$tau, 0)) + init.time
+  cred.int.upper <- as.numeric(stats::quantile(posterior$tau, 1 - alpha)) + init.time
 
   # Output
   output <- list(

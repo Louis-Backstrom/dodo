@@ -17,3 +17,5 @@
 ^\.github$
 ^_pkgdown\.yml$
 ^pkgdown$
+^dev$
+^\.posit/assistant$

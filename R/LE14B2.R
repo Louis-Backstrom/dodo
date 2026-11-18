@@ -59,11 +59,11 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   # JAGS model
   model <- "
   model {
-    te ~ dunif(0, T)
-    m[1] ~ dunif(0, 100)
+    te ~ stats::dunif(0, T)
+    m[1] ~ stats::dunif(0, 100)
     f[1] <- 0
-    m[2] ~ dunif(0, 100)
-    f[2] ~ dunif(0, 100)
+    m[2] ~ stats::dunif(0, 100)
+    f[2] ~ stats::dunif(0, 100)
     Extant ~ dbern(0.5)
 
     for (i in 1:T) {
@@ -89,7 +89,7 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   })
 
   # Initialize and compile model
-  invisible(capture.output({
+  invisible(utils::capture.output({
     jags_model <- rjags::jags.model(
       textConnection(model),
       data = data,
@@ -99,7 +99,7 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
     )
 
     # Burn-in
-    update(jags_model, n.iter = n.burnin)
+    stats::update(jags_model, n.iter = n.burnin)
 
     # Specify parameters
     parameters <- c("te", "m", "f", "Extant")
@@ -120,7 +120,7 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   p.extant <- mean(sims[, "Extant"])
   te <- sims[sims[, "Extant"] == 0, "te"]
   estimate <- mean(te) + init.time - 1
-  cred.int <- as.numeric(quantile(te, c(0, 1 - alpha)) + init.time - 1)
+  cred.int <- as.numeric(stats::quantile(te, c(0, 1 - alpha)) + init.time - 1)
 
   # Output
   output <- list(

@@ -56,3 +56,7 @@ data-raw/*.xlsx
 
 # pkgdown
 docs
+
+# attachment::
+dev/
+.posit/assistant

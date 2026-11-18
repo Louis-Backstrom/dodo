@@ -57,7 +57,7 @@ JE10F1 <- function(records, alpha = 0.05, init.time = min(records),
 
   # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {
-    records <- tail(records, -1)
+    records <- utils::tail(records, -1)
     n <- n - 1
   }
 

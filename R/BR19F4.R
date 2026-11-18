@@ -64,7 +64,7 @@ BR19F4 <- function(records, alpha = 0.05, init.time = min(records$time),
   samples <- replicate(
     n = n.iter,
     expr = records[
-      runif(nrow(records)) <= records$certainty,
+      stats::runif(nrow(records)) <= records$certainty,
       "time"
     ],
     simplify = FALSE
@@ -85,8 +85,8 @@ BR19F4 <- function(records, alpha = 0.05, init.time = min(records$time),
     test.time = test.time,
     n.iter = n.iter,
     p.extant = mean(estimates > test.time),
-    estimate = median(estimates),
-    conf.int = as.numeric(quantile(estimates, c(0, 1 - alpha)))
+    estimate = stats::median(estimates),
+    conf.int = as.numeric(stats::quantile(estimates, c(0, 1 - alpha)))
   )
 
   return(dodo_fit(output, model = "BR19F4"))

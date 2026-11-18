@@ -57,7 +57,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # If using first record as init.time, remove this from the record sequence
   if (init.time == min(records)) {
-    records <- tail(records, -1)
+    records <- utils::tail(records, -1)
     n <- n - 1
   }
 
@@ -109,7 +109,7 @@ SO93F2 <- function(records, alpha = 0.05, init.time = min(records),
 
   # Numerically find the confidence interval
   conf.int <- tryCatch(
-    uniroot(
+    stats::uniroot(
       f = Fopt,
       interval = c(as.integer(tn), as.integer(s))
     )$root,

@@ -66,8 +66,8 @@ CB14B1 <- function(records, alpha = 0.05, init.time,
     test.time = test.time,
     n.iter = n.iter,
     p.extant = mean(posterior > test.time),
-    estimate = median(posterior),
-    cred.int = as.numeric(quantile(posterior, c(0, 1 - alpha)))
+    estimate = stats::median(posterior),
+    cred.int = as.numeric(stats::quantile(posterior, c(0, 1 - alpha)))
   )
 
   return(dodo_fit(output, model = "CB14B1"))

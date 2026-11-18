@@ -2,7 +2,7 @@
 % Please edit documentation in R/BA26B3.R
 \name{BA26B3}
 \alias{BA26B3}
-\title{Backstrom et al.'s (2026) "Certain-only Effort" model}
+\title{Backstrom et al.'s (2026) "Certain-only Variable-effort" model}
 \usage{
 BA26B3(
   records,

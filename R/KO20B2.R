@@ -88,7 +88,7 @@ KO20B2 <- function(records, alpha = 0.05, init.time,
   }
 
   # Run MCMC function from Kodikara et al. 2020
-  invisible(capture.output({
+  invisible(utils::capture.output({
     posterior <- coda::mcmc.list(coda::mcmc.list(
       posterior_cer_uncer_mcmc(records[, 1], records[, 2],
         n.chains = n.chains,
@@ -106,11 +106,11 @@ KO20B2 <- function(records, alpha = 0.05, init.time,
   p.extant <- mean(posterior$time > test.time)
 
   # Calculate point estimate
-  estimate <- median(posterior$time)
+  estimate <- stats::median(posterior$time)
 
   # Calculate credible interval bounds
-  cred.int.lower <- as.numeric(quantile(posterior$time, 0))
-  cred.int.upper <- as.numeric(quantile(posterior$time, 1 - alpha))
+  cred.int.lower <- as.numeric(stats::quantile(posterior$time, 0))
+  cred.int.upper <- as.numeric(stats::quantile(posterior$time, 1 - alpha))
 
   # Output
   output <- list(
@@ -199,12 +199,12 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
 
       tau_0 ~ dnegbin(theta, 1)
       tau <- tau_0 + 1
-      theta ~ dunif(0, 1)
+      theta ~ stats::dunif(0, 1)
 
       pu <- puv * (1 - pui) + pui * (1 - puv) + puv * pui
-      pui ~ dunif(0, 1)
-      puv ~ dunif(0, 1)
-      pc ~ dunif(0, 1)
+      pui ~ stats::dunif(0, 1)
+      puv ~ stats::dunif(0, 1)
+      pc ~ stats::dunif(0, 1)
 
       # 2. Likelihood
       for (t in 1:t_n) {
@@ -249,7 +249,7 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
     file = model_file, data = dataList, inits = inits_list,
     n.chains = n.chains, n.adapt = n.burnin
   )
-  update(jagsModelm2, n.iter = n.burnin)
+  stats::update(jagsModelm2, n.iter = n.burnin)
   codaSamplesm2 <- rjags::coda.samples(jagsModelm2, variable.names = c(
     "tau", "pc", "pui", "puv", "theta"
   ), n.iter = n.iter, thin = n.thin)

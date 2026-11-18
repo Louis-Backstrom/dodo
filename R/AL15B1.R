@@ -48,7 +48,7 @@ AL15B1 <- function(records) {
   # Output
   output <- list(
     records = records,
-    p.extant = 1 - tail(model_output, 1)
+    p.extant = 1 - utils::tail(model_output, 1)
   )
 
   return(dodo_fit(output, model = "AL15B1"))

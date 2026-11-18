@@ -1,4 +1,4 @@
-#' @title Backstrom et al.'s (2026) "Uncertain No-effort" model
+#' @title Backstrom et al.'s (2026) "Uncertain Constant-effort" model
 #'
 #' @description
 #' Model 2 from Backstrom et al. 2026. Estimates a posterior probability that
@@ -230,12 +230,12 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ dbeta(theta_max_a, theta_max_b)
+      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
 
       lambda_v ~ dgamma(lambda_v_a, lambda_v_b)
       lambda_i ~ dgamma(lambda_i_a, lambda_i_b)
 
-      pi_e ~ dunif(0, 1)
+      pi_e ~ stats::dunif(0, 1)
 
       ## 1.1. Extinction time prior
       surv[1] <- 1
@@ -288,11 +288,11 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
   inits_list <- lapply(seq_len(n.chains), function(chain) {
     list(
-      theta_max = runif(1, 0.01, 0.99),
+      theta_max = stats::runif(1, 0.01, 0.99),
       tau_cat = sample.int(n_cat, 1L),
-      lambda_v = rgamma(1, priors$lambda_v[1], priors$lambda_v[2]),
-      lambda_i = rgamma(1, priors$lambda_i[1], priors$lambda_i[2]),
-      pi_e = runif(1, 0.01, 0.99),
+      lambda_v = stats::rgamma(1, priors$lambda_v[1], priors$lambda_v[2]),
+      lambda_i = stats::rgamma(1, priors$lambda_i[1], priors$lambda_i[2]),
+      pi_e = stats::runif(1, 0.01, 0.99),
       .RNG.name = "base::Mersenne-Twister",
       .RNG.seed = jags_seeds[chain]
     )
@@ -303,12 +303,12 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   on.exit(unlink(model_file), add = TRUE)
 
   # Run MCMC sampling
-  invisible(capture.output({
+  invisible(utils::capture.output({
     jags_model <- rjags::jags.model(
       file = model_file, data = data_list, inits = inits_list,
       n.chains = n.chains, n.adapt = n.burnin
     )
-    update(jags_model, n.iter = n.burnin)
+    stats::update(jags_model, n.iter = n.burnin)
     samples <- rjags::coda.samples(jags_model, variable.names = c(
       "tau_E", "lambda_v", "lambda_i", "pi_e", "theta_max"
     ), n.iter = n.iter, thin = n.thin)
@@ -321,7 +321,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   p.extant <- mean(posterior$tau_E > test.time)
 
   # Calculate point estimate
-  estimate <- as.numeric(quantile(posterior$tau_E, 0.5, type = 1))
+  estimate <- as.numeric(stats::quantile(posterior$tau_E, 0.5, type = 1))
 
   if (estimate == trun.time) {
     estimate <- NA_real_
@@ -329,7 +329,7 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- min(posterior$tau_E)
-  cred.int.upper <- as.numeric(quantile(posterior$tau_E, 1 - alpha, type = 1))
+  cred.int.upper <- as.numeric(stats::quantile(posterior$tau_E, 1 - alpha, type = 1))
 
   if (cred.int.upper == trun.time) {
     cred.int.upper <- NA_real_

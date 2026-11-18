@@ -2,7 +2,7 @@
 % Please edit documentation in R/BA26B4.R
 \name{BA26B4}
 \alias{BA26B4}
-\title{Backstrom et al.'s (2026) "Uncertain Effort" model}
+\title{Backstrom et al.'s (2026) "Uncertain Variable-effort" model}
 \usage{
 BA26B4(
   records,
