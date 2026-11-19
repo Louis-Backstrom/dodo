@@ -59,11 +59,11 @@ LE14B2 <- function(records, alpha = 0.05, init.time, n.chains = 4,
   # JAGS model
   model <- "
   model {
-    te ~ stats::dunif(0, T)
-    m[1] ~ stats::dunif(0, 100)
+    te ~ dunif(0, T)
+    m[1] ~ dunif(0, 100)
     f[1] <- 0
-    m[2] ~ stats::dunif(0, 100)
-    f[2] ~ stats::dunif(0, 100)
+    m[2] ~ dunif(0, 100)
+    f[2] ~ dunif(0, 100)
     Extant ~ dbern(0.5)
 
     for (i in 1:T) {

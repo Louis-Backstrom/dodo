@@ -230,12 +230,12 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
+      theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       lambda_v ~ dgamma(lambda_v_a, lambda_v_b)
       lambda_i ~ dgamma(lambda_i_a, lambda_i_b)
 
-      pi_e ~ stats::dunif(0, 1)
+      pi_e ~ dunif(0, 1)
 
       ## 1.1. Extinction time prior
       surv[1] <- 1

@@ -166,8 +166,8 @@ posterior_cer_mcmc <- function(y_c, n.chains = 4,
 
       tau_0 ~ dnegbin(theta, 1)
       tau <- tau_0 + 1
-      theta ~ stats::dunif(0, 1)
-      p ~ stats::dunif(0, 1)
+      theta ~ dunif(0, 1)
+      p ~ dunif(0, 1)
 
     }
     "

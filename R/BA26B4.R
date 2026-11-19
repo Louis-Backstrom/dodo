@@ -498,9 +498,9 @@ BA26B4 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
+      theta_max ~ dbeta(theta_max_a, theta_max_b)
 
-      pi_e ~ stats::dunif(0, 1)
+      pi_e ~ dunif(0, 1)
 
       for (m in 1:p) {
         included_v[m] ~ dbern(inclusion_prob_v[m])

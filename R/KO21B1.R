@@ -110,12 +110,12 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
                         }
 
                         tau ~ dexp(0.005)
-                        sigma~stats::dunif(0,1000)
-                        a~stats::dunif(0,1000)
-                        sigma_U1~stats::dunif(0,1000)
-                        a_U1~stats::dunif(0,1000)
-                        sigma_U2~stats::dunif(0,1000)
-                        a_U2~stats::dunif(0,1000)
+                        sigma ~ dunif(0, 1000)
+                        a ~ dunif(0,1000)
+                        sigma_U1 ~ dunif(0, 1000)
+                        a_U1 ~ dunif(0, 1000)
+                        sigma_U2 ~ dunif(0, 1000)
+                        a_U2 ~ dunif(0, 1000)
                         }
 
                         ")

@@ -399,7 +399,7 @@ BA26B3 <- function(records, effort, alpha = 0.05, init.time,
   model_string <- "
     model {
       # 1. Priors
-      theta_max ~ stats::dbeta(theta_max_a, theta_max_b)
+      theta_max ~ dbeta(theta_max_a, theta_max_b)
 
       for (m in 1:p) {
         included[m] ~ dbern(inclusion_prob[m])

@@ -61,13 +61,13 @@ RO09B1 <- function(records, pi = 0.5, n.chains = 4, n.iter = 11e4,
 
   model_string <- "
     model {
-      a ~ stats::dunif(0, 1)
-      m ~ stats::dnorm(0, 1.0E-6)
+      a ~ dunif(0, 1)
+      m ~ dnorm(0, 1.0E-6)
       prec ~ dgamma(0.001, 0.001)
 
       for (i in 1:N) {
         meanlam[i] <- m * pow(i, -a)
-        records[i] ~ stats::dnorm(meanlam[i], prec)
+        records[i] ~ dnorm(meanlam[i], prec)
       }
     }
     "

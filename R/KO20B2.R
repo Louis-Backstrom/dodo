@@ -199,12 +199,12 @@ posterior_cer_uncer_mcmc <- function(y_c, y_u, n.chains = 4, n.iter = 11e4,
 
       tau_0 ~ dnegbin(theta, 1)
       tau <- tau_0 + 1
-      theta ~ stats::dunif(0, 1)
+      theta ~ dunif(0, 1)
 
       pu <- puv * (1 - pui) + pui * (1 - puv) + puv * pui
-      pui ~ stats::dunif(0, 1)
-      puv ~ stats::dunif(0, 1)
-      pc ~ stats::dunif(0, 1)
+      pui ~ dunif(0, 1)
+      puv ~ dunif(0, 1)
+      pc ~ dunif(0, 1)
 
       # 2. Likelihood
       for (t in 1:t_n) {
