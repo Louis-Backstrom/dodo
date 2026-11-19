@@ -24,8 +24,8 @@ of the observation period. If specified, \code{curr.time} - \code{init.time} mus
 \code{length(records)}.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and p(extant) included
-as elements.
+a \code{dodo_fit} object with the original parameters and p(extant)
+included as elements.
 }
 \description{
 Equation 9 from Solow 2016. Estimates a posterior probability that the

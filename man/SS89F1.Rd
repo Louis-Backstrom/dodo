@@ -14,9 +14,9 @@ SS89F1(records, alpha = 0.05)
 the \eqn{1 - \alpha} confidence interval.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the point estimate
-and confidence interval included as elements. The confidence interval is a
-two-element numeric vector called \code{conf.int}.
+a \code{dodo_fit} object with the original parameters and the point
+estimate and confidence interval included as elements. The confidence
+interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{
 Equations 8 and 20 from Strauss & Sadler 1989. Estimates a one-sided

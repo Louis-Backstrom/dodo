@@ -18,8 +18,8 @@
 #' @param PE estimate of \eqn{P_E}. Defaults to `NULL`, in which case
 #' \eqn{P_E = 1 / T}.
 #'
-#' @returns a `dodo_fit` object with the original parameters and p(extant) included
-#' as elements.
+#' @returns a `dodo_fit` object with the original parameters and p(extant)
+#' included as elements.
 #'
 #' @note
 #' Sampling effort is assumed to be constant.
@@ -91,8 +91,8 @@ TH13B1 <- function(records, priors, certain = c(1), PXT = NULL, PE = NULL) {
   # Create p matrix and vector
   p_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
 
-  for (i in 1:nrow(p_matrix)) {
-    for (a in 1:ncol(p_matrix)) {
+  for (i in seq_len(nrow(p_matrix))) {
+    for (a in seq_len(ncol(p_matrix))) {
       if (records_matrix[i, a] == 1) {
         p_matrix[i, a] <- 1 - priors$p[[a]]
       } else {
@@ -106,8 +106,8 @@ TH13B1 <- function(records, priors, certain = c(1), PXT = NULL, PE = NULL) {
   # Create q matrix and vector
   q_matrix <- matrix(nrow = nrow(records_matrix), ncol = ncol(records_matrix))
 
-  for (i in 1:nrow(q_matrix)) {
-    for (a in 1:ncol(q_matrix)) {
+  for (i in seq_len(nrow(q_matrix))) {
+    for (a in seq_len(ncol(q_matrix))) {
       if (records_matrix[i, a] == 1) {
         q_matrix[i, a] <- 1 - priors$q[[a]]
       } else {

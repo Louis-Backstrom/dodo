@@ -10,9 +10,9 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) of
 #' the \eqn{1 - \alpha} confidence interval.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the point estimate
-#' and confidence interval included as elements. The confidence interval is a
-#' two-element numeric vector called `conf.int`.
+#' @returns a `dodo_fit` object with the original parameters and the point
+#' estimate and confidence interval included as elements. The confidence
+#' interval is a two-element numeric vector called `conf.int`.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed

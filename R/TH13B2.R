@@ -22,8 +22,8 @@
 #' 100,000, which is usually sufficient to ensure accurate estimates.
 #' @param pb whether to show a progress bar. Defaults to `FALSE`.
 #'
-#' @returns a `dodo_fit` object with the original parameters and p(extant) included
-#' as elements.
+#' @returns a `dodo_fit` object with the original parameters and p(extant)
+#' included as elements.
 #'
 #' @note
 #' Sampling effort is assumed to be constant.

@@ -20,9 +20,9 @@ thousand).}
 if warned.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the point estimate
-and credible interval included as elements. The credible interval is a
-two-element numeric vector called \code{cred.int}.
+a \code{dodo_fit} object with the original parameters and the point
+estimate and credible interval included as elements. The credible interval is
+a two-element numeric vector called \code{cred.int}.
 }
 \description{
 Equation 26 from Strauss & Sadler 1989, assuming the prior distribution

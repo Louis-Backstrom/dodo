@@ -1,6 +1,6 @@
 fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
                       initphi = 0.5, initlambda = 0.5) {
-  pos <- (1:length(y))[y == 1]
+  pos <- (seq_along(y))[y == 1]
   final <- pos[length(pos)]
   obs <- length(y)
 
@@ -12,7 +12,7 @@ fit.func1 <- function(y, phi1, phi2, lambda1, lambda2, iter = 1E5,
 
   for (i in 1:iter) {
     newz <- impute(curr.phi, curr.lambda, periods)
-    index <- (1:length(newz))[newz == 1]
+    index <- (seq_along(newz))[newz == 1]
     extra.y <- NA
 
     if (index > periods) {
@@ -62,7 +62,7 @@ impute.TE <- function(p.cease) {
 
   TE.draw <- stats::rmultinom(1, 1, p.cease)
 
-  result <- (1:length(p.cease))[TE.draw == 1]
+  result <- (seq_along(p.cease))[TE.draw == 1]
   if (result <= (length(p.cease) - 1)) {
     return(result)
   } else {
@@ -78,7 +78,7 @@ calc.pars <- function(p, y) {
   N0 <- p[5]
   obs <- length(y)
 
-  pos <- (1:length(y))[y == 1]
+  pos <- (seq_along(y))[y == 1]
   final <- utils::tail(pos, 1)
   zero.count <- obs - final
   N.traj <- sim.N(N0 = N0, pgr = pgr, time = obs)
@@ -96,7 +96,8 @@ calc.pars <- function(p, y) {
     if (zero.count == 1) {
       p_cease_vec <- phis_sub
     } else {
-      cp <- cumprod((1 - phis_sub[-zero.count]) * (1 - lambdas_sub[-zero.count]))
+      cp <- cumprod((1 - phis_sub[-zero.count]) *
+        (1 - lambdas_sub[-zero.count]))
       p_cease_vec <- numeric(zero.count)
       p_cease_vec[1] <- phis_sub[1]
       p_cease_vec[2:zero.count] <- phis_sub[2:zero.count] * cp
@@ -190,7 +191,7 @@ lnL.N0.prior <- function(x) {
 }
 
 pgr.prior <- function(x) {
-  return(stats::dunif(x, min = -2.3, max = 0.69, log = F))
+  return(stats::dunif(x, min = -2.3, max = 0.69, log = FALSE))
 }
 
 lnL.pgr.prior <- function(x) {
@@ -275,7 +276,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
     LR <- exp(prop.lnLik.delta - curr.lnLik.delta +
       q.delta(curr.p[2], prop.p[2]) - q.delta(prop.p[2], curr.p[2]))
 
-    if (stats::runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR && !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 8] <- 1
@@ -295,7 +296,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
     LR <- exp(prop.lnLik.eps - curr.lnLik.eps + q.eps1(curr.p[4], prop.p[4]) -
       q.eps1(prop.p[4], curr.p[4]))
 
-    if (stats::runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR && !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 9] <- 1
@@ -313,7 +314,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
       lnL.phi(phis = prop.vals$phis, TE = TE.imp) + lnL.pgr.prior(prop.p[1])
     LR <- exp(prop.lnLik.pgr - curr.lnLik.pgr)
 
-    if (stats::runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR && !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 7] <- 1
@@ -333,7 +334,7 @@ fit.func2 <- function(N0.init = 1, y, iter = 100, pgr.init = 0.0,
 
     LR <- exp(prop.lnLik.N0 - curr.lnLik.N0)
 
-    if (stats::runif(1) < LR & !is.na(LR)) {
+    if (stats::runif(1) < LR && !is.na(LR)) {
       curr.p <- prop.p
       curr.vals <- prop.vals
       result[i, 10] <- 1

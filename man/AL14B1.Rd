@@ -11,8 +11,8 @@ AL14B1(records)
 \code{\link{convert_dodo}} for details).}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and p(extant) included
-as elements.
+a \code{dodo_fit} object with the original parameters and p(extant)
+included as elements.
 }
 \description{
 The model from Alroy 2014. Estimates a posterior probability that the

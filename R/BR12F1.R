@@ -9,8 +9,8 @@
 #' @param alpha desired significance level (defaults to \eqn{\alpha = 0.05}) to
 #' use in the underlying McInerny et al. 2006 model.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the point estimate
-#' included as elements.
+#' @returns a `dodo_fit` object with the original parameters and the point
+#' estimate included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -50,7 +50,7 @@ BR12F1 <- function(records, alpha = 0.05) {
   n <- length(records)
 
   # Calculate thetas
-  theta_k <- c()
+  theta_k <- numeric()
   for (i in 2:n) {
     theta_k[i - 1] <- suppressWarnings(
       log(alpha) / log(1 - (i / (max(records[1:i]) - min(records[1:i]))))

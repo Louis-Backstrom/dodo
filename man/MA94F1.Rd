@@ -17,8 +17,8 @@ the \eqn{1 - \alpha} confidence interval.}
 interval.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the p-value, point
-estimate, and confidence interval included as elements. The confidence
+a \code{dodo_fit} object with the original parameters and the p-value,
+point estimate, and confidence interval included as elements. The confidence
 interval is a three-element numeric vector called \code{conf.int}; the first
 element is the lower bound of the confidence interval (the time of the last
 record), the second element is the lower bound of the upper bound of the

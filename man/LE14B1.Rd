@@ -24,8 +24,8 @@ of the (uniform) prior for extant (P(X_T)). Defaults to \code{c(0, 1)}.}
 \item{n.iter}{number of iterations to run (defaults to 10,000).}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and p(extant) included
-as elements.
+a \code{dodo_fit} object with the original parameters and p(extant)
+included as elements.
 }
 \description{
 The simple numerical tool presented in Lee 2014, including both uncertain

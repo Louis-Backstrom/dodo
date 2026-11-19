@@ -81,7 +81,7 @@ BU95F3 <- function(records, precBits = 1024) {
     KK <- 0:j
 
     dummy <- mp0
-    for (indexi in 1:length(KK)) {
+    for (indexi in seq_along(KK)) {
       i <- indexi - 1
       dummy <- dummy + (((-1)^i) * Rmpfr::chooseMpfr(j, i) *
         ((j - Rmpfr::mpfr(i, precBits = precBits))^N))

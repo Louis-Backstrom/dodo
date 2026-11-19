@@ -174,7 +174,9 @@ thompson_table1 <- data.frame(
 )
 usethis::use_data(thompson_table1, overwrite = TRUE)
 
-curlew_raw <- readxl::read_xlsx("data-raw/ibi13368-sup-0001-tables1.xlsx")
+curlew_raw <- readxl::read_xlsx(file.path(
+  "data-raw/ibi13368-sup-0001-tables1.xlsx"
+))
 curlew_raw <- as.data.frame(curlew_raw)
 usethis::use_data(curlew_raw, overwrite = TRUE)
 
@@ -184,14 +186,14 @@ curlew <- convert_dodo(
   certainty_lower = "p_ci_min", certainty_upper = "p_ci_max"
 )
 
-curlew$buchanan <- readxl::read_xlsx("data-raw/Numenius tenuirostris.xlsx",
-  sheet = 2, range = "A9:D125"
-)
+curlew$buchanan <- readxl::read_xlsx(file.path(
+  "data-raw/Numenius tenuirostris.xlsx"
+), sheet = 2, range = "A9:D125")
 names(curlew$buchanan) <- c(
   "time", "certainty_lower", "certainty",
   "certainty_upper"
 )
-curlew$buchanan <- merge(curlew$buchanan, data.frame("time" = 1892:2022),
+curlew$buchanan <- merge(curlew$buchanan, data.frame(time = 1892:2022),
   all = TRUE
 )
 curlew$buchanan$record <- !is.na(curlew$buchanan$certainty)
@@ -446,7 +448,7 @@ bitterweed <- c(
 )
 usethis::use_data(bitterweed, overwrite = TRUE)
 
-laughing_owl_raw <- read.csv("data-raw/Ninox albifacies.csv")
+laughing_owl_raw <- read.csv(file.path("data-raw/Ninox albifacies.csv"))
 laughing_owl_raw <- as.data.frame(laughing_owl_raw)
 
 laughing_owl <- convert_dodo(

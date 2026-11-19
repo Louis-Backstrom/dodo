@@ -17,8 +17,8 @@
 #' of the observation period. If specified, `curr.time` - `init.time` must equal
 #' `length(records)`.
 #'
-#' @returns a `dodo_fit` object with the original parameters and p(extant) included
-#' as elements.
+#' @returns a `dodo_fit` object with the original parameters and p(extant)
+#' included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -66,7 +66,7 @@ SO16B1 <- function(records, init.time = NULL, test.time = NULL,
   m <- max(which(records != 0))
 
   # If init.time, test.time, and curr.time are specified, check they are valid
-  if (!is.null(init.time) | !is.null(test.time) | !is.null(curr.time)) {
+  if (!is.null(init.time) || !is.null(test.time) || !is.null(curr.time)) {
     if (curr.time - init.time != length(records)) {
       stop("`curr.time` - `init.time` != length(`records`)")
     }
@@ -91,7 +91,7 @@ SO16B1 <- function(records, init.time = NULL, test.time = NULL,
   # Determine sighting rate
   p <- (n - 1) / (m - 1) # this is rounded to 2 d.p. in the original paper
 
-  if (j > bigT | j < 0) {
+  if (j > bigT || j < 0) {
     stop("invalid `test.time`")
   }
 

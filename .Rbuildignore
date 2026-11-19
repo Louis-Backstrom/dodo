@@ -19,3 +19,4 @@
 ^pkgdown$
 ^dev$
 ^\.posit/assistant$
+^\.lintr$

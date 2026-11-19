@@ -10,8 +10,8 @@
 #' @param increment step size used for integration. Defaults to 0.01, following
 #' the original code from Solow & Beet 2014.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the Bayes factor
-#' included as elements.
+#' @returns a `dodo_fit` object with the original parameters and the Bayes
+#' factor included as elements.
 #'
 #' @note
 #' Sampling effort is assumed to be constant. Uses a uniform prior.

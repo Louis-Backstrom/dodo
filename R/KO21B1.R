@@ -169,7 +169,8 @@ KO21B1 <- function(records, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- as.numeric(stats::quantile(posterior$tau, 0)) + init.time
-  cred.int.upper <- as.numeric(stats::quantile(posterior$tau, 1 - alpha)) + init.time
+  cred.int.upper <- as.numeric(stats::quantile(posterior$tau, 1 - alpha)) +
+    init.time
 
   # Output
   output <- list(

@@ -38,7 +38,7 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   tLV <- seq(from = (tL + increment), to = 1 - (increment / 2), by = increment2)
   dVec <- (data[, 1] - tMin) / (inputs$T - tMin)
 
-  if ((modelnumber != 1) & (modelnumber != 2)) {
+  if ((modelnumber != 1) && (modelnumber != 2)) {
     stop("`modelnumber` not defined")
   } else {
     p_t_tau_E <- likelihood.all(
@@ -58,12 +58,10 @@ sb14.extended.model <- function(DATA, inputs, modelnumber, gamma,
   prior$Tri <- (-2 * tLV) + 2
 
   k <- match(inputs$posteriorPrior, names(prior))
-  {
-    if (is.na(k)) {
-      stop("no such prior")
-    } else {
-      p_tau_E <- prior[[k]]
-    }
+  if (is.na(k)) {
+    stop("no such prior")
+  } else {
+    p_tau_E <- prior[[k]]
   }
 
   f <- p_t_tau_E * p_tau_E
@@ -87,7 +85,7 @@ sub.estimate.rate <- function(DATA, increment, inputs) {
   rateV <- (DATA$tMin):(inputs$T)
   rate <- array(dim = c(length(rateV), 3))
 
-  for (icc in 1:length(rateV)) {
+  for (icc in seq_along(rateV)) {
     TE <- rateV[icc]
     indm <- (DATA$data[, 1] <= TE)
     m <- sum(indm)

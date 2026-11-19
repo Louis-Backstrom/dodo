@@ -15,8 +15,8 @@
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #'
-#' @returns a `dodo_fit` object with the original parameters and the p-value, point
-#' estimate, and confidence interval included as elements. The confidence
+#' @returns a `dodo_fit` object with the original parameters and the p-value,
+#' point estimate, and confidence interval included as elements. The confidence
 #' interval is a two-element numeric vector called `conf.int`.
 #'
 #' @note
@@ -63,10 +63,12 @@ JR14F1 <- function(records, alpha = 0.05, init.time = min(records$time),
 
   # Calculate tr
   sum_vector <- c()
-  for (i in 1:nrow(records)) {
+  for (i in seq_len(nrow(records))) {
     sum_vector[i] <- records$rtime[i] *
       records$certainty[i] *
-      ifelse(i == nrow(records), 1, prod(1 - records[(i + 1):nrow(records), ]$certainty))
+      ifelse(i == nrow(records), 1,
+        prod(1 - records[(i + 1):nrow(records), ]$certainty)
+      )
   }
   tr <- sum(sum_vector)
 

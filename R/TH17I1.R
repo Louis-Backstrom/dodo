@@ -11,8 +11,8 @@
 #' `epsilon_lower`, `epsilon_upper`, `p_i`, `p_i_lower`, `p_i_upper`, `p_r`,
 #' `p_r_lower`, and `p_r_upper`. The number of rows must match `records`.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the iterative and
-#'  final estimates of p(extant) (\eqn{P(X_t)}) included as elements.
+#' @returns a `dodo_fit` object with the original parameters and the iterative
+#' and final estimates of p(extant) (\eqn{P(X_t)}) included as elements.
 #'
 #' @note
 #' This model incorporates both sighting uncertainty and variable survey effort.
@@ -47,7 +47,7 @@ TH17I1 <- function(records, surveys) {
   PXt_upper <- 1
 
   # Iteratively calculate PXt values
-  for (i in 1:nrow(data)) {
+  for (i in seq_len(nrow(data))) {
     if (data[i, ]$record == TRUE) {
       PXt1 <- PXt + data[i, ]$record *
         data[i, ]$certainty * (1 - PXt)

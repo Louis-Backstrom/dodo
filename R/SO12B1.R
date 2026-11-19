@@ -18,8 +18,8 @@
 #' `remove` (problematic sightings are removed from the data), and `coerce`
 #' (problematic sightings are treated as certain sightings).
 #'
-#' @returns a `dodo_fit` object with the original parameters and the Bayes factor
-#' included as elements.
+#' @returns a `dodo_fit` object with the original parameters and the Bayes
+#' factor included as elements.
 #'
 #' @note
 #' Sampling effort is assumed to be constant. Uses an exponential prior.

@@ -329,7 +329,10 @@ BA26B2 <- function(records, alpha = 0.05, init.time,
 
   # Calculate credible interval bounds
   cred.int.lower <- min(posterior$tau_E)
-  cred.int.upper <- as.numeric(stats::quantile(posterior$tau_E, 1 - alpha, type = 1))
+  cred.int.upper <- as.numeric(stats::quantile(
+    posterior$tau_E, 1 - alpha,
+    type = 1
+  ))
 
   if (cred.int.upper == trun.time) {
     cred.int.upper <- NA_real_

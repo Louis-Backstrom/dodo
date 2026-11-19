@@ -12,9 +12,9 @@
 #' @param init.time start of the observation period. Defaults to the time of
 #' the first sighting, in which case this sighting is removed from the record.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the point estimate
-#' and credible interval included as elements. The credible interval is a
-#' two-element numeric vector called `cred.int`.
+#' @returns a `dodo_fit` object with the original parameters and the point
+#' estimate and credible interval included as elements. The credible interval is
+#' a two-element numeric vector called `cred.int`.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed

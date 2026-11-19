@@ -77,7 +77,7 @@ TH19B1 <- function(records, surveys, init.time, test.time, pi = 0.5) {
   data$CBF <- cumprod(data$BF)
 
   # Calculate yearly p(extant)
-  for (i in 1:nrow(data)) {
+  for (i in seq_len(nrow(data))) {
     if (i == 1) {
       data$PXt[i] <- pi
     } else {

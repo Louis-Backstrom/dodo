@@ -21,8 +21,8 @@ the \eqn{1 - \alpha} confidence interval.}
 (defaults to the current year).}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the p-value, point
-estimate, and confidence interval included as elements. The confidence
+a \code{dodo_fit} object with the original parameters and the p-value,
+point estimate, and confidence interval included as elements. The confidence
 interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{

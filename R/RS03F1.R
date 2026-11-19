@@ -17,8 +17,8 @@
 #' @param test.time end of the observation period, typically the present day
 #' (defaults to the current year).
 #'
-#' @returns a `dodo_fit` object with the original parameters and the p-value, point
-#' estimate, and confidence interval included as elements. The confidence
+#' @returns a `dodo_fit` object with the original parameters and the p-value,
+#' point estimate, and confidence interval included as elements. The confidence
 #' interval is a two-element numeric vector called `conf.int`.
 #'
 #' @note
@@ -92,7 +92,7 @@ RS03F1 <- function(records, alpha = 0.05, conf.int = "two-sided",
     (1 / v))
 
   if (conf.int.lower >= conf.int.upper) {
-    if (conf.int.lower == conf.int.upper & is.na(estimate)) {
+    if (conf.int.lower == conf.int.upper && is.na(estimate)) {
       estimate <- conf.int.lower
       warning("point estimate was NA and CI width is 0: replacing with CI")
     }

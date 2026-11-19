@@ -29,8 +29,8 @@ the first sighting, in which case  this sighting is removed from the record.}
 Defaults to 1024, which should be sufficient for most datasets.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the p-value, point
-estimate, and confidence interval included as elements. The confidence
+a \code{dodo_fit} object with the original parameters and the p-value,
+point estimate, and confidence interval included as elements. The confidence
 interval is a two-element numeric vector called \code{conf.int}.
 }
 \description{

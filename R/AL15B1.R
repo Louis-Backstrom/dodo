@@ -7,8 +7,8 @@
 #' @param records sighting records in `cbin` format (see
 #' \code{\link{convert_dodo}} for details).
 #'
-#' @returns a `dodo_fit` object with the original parameters and p(extant) included
-#' as elements.
+#' @returns a `dodo_fit` object with the original parameters and p(extant)
+#' included as elements.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -95,7 +95,7 @@ agnostic <- function(onoff, total, prior, uniform) {
   if (missing(prior) || prior == "") {
     prior <- 0.5
   }
-  if (missing(uniform) || uniform != T) {
+  if (missing(uniform) || uniform != TRUE) {
     uniform <- FALSE
   }
 

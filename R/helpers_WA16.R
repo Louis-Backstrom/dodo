@@ -64,16 +64,16 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
 
   # If a base is specified, check that it is valid
   if (!is.null(base)) {
-    if ((distance & ext) & (base > min(x)) |
-      (distance & !ext) & (base < max(x)) |
-      (!distance & ext) & (base < max(x)) |
-      (!distance & !ext) & (base > min(x))) {
+    if ((distance && ext) && (base > min(x)) ||
+      (distance && !ext) && (base < max(x)) ||
+      (!distance && ext) && (base < max(x)) ||
+      (!distance && !ext) && (base > min(x))) {
       stop("invalid value for base")
     }
   }
 
   # Convert units relative to base of section or other zero point
-  if ((distance & ext) | (!distance & !ext)) {
+  if ((distance && ext) || (!distance && !ext)) {
     if (!is.null(base)) {
       x <- x - base
     }
@@ -83,7 +83,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
       x <- sort(x, decreasing = FALSE)[-1]
     }
   }
-  if ((distance & !ext) | (!distance & ext)) {
+  if ((distance && !ext) || (!distance && ext)) {
     if (!is.null(base)) {
       x <- base - x
     }
@@ -142,7 +142,7 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   # Calculate posterior quantities
   cutoff <- which.max(cumsum(thdens) >= conf)
   CIupper <- thetavals[cutoff]
-  cutoff <- which.max(cumsum(thdens) >= .5)
+  cutoff <- which.max(cumsum(thdens) >= 0.5)
   thmed <- thetavals[cutoff]
   thhat <- thmed
 
@@ -155,13 +155,13 @@ abm <- function(x, distance = FALSE, ext = FALSE, base = NULL, prmean = 0,
   thetavals <- thetavals / scalefactor
 
   # Un-convert units back to original units (from units relative to base)
-  if ((distance & ext) | (!distance & !ext)) {
+  if ((distance && ext) || (!distance && !ext)) {
     thhat <- thhat + base
     xmax <- xmax + base
     CIupper <- CIupper + base
     thetavals <- thetavals + base
   }
-  if ((distance & !ext) | (!distance & ext)) {
+  if ((distance && !ext) || (!distance && ext)) {
     thhat <- base - thhat
     xmax <- base - xmax
     CIupper <- base - CIupper

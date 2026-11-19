@@ -17,8 +17,8 @@
 #' of the (uniform) prior for extant (P(X_T)). Defaults to `c(0, 1)`.
 #' @param n.iter number of iterations to run (defaults to 10,000).
 #'
-#' @returns a `dodo_fit` object with the original parameters and p(extant) included
-#' as elements.
+#' @returns a `dodo_fit` object with the original parameters and p(extant)
+#' included as elements.
 #'
 #' @note
 #' Passive survey effort (rows where `survey == FALSE`) are ignored, unlike in
@@ -89,18 +89,18 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
   if (nrow(UQ_unique) > 0) {
     # Precompute names
-    pU_L_names <- sprintf("pU%dL", 1:nrow(UQ_unique))
-    pU_U_names <- sprintf("pU%dU", 1:nrow(UQ_unique))
-    qU_L_names <- sprintf("qU%dL", 1:nrow(UQ_unique))
-    qU_U_names <- sprintf("qU%dU", 1:nrow(UQ_unique))
-    U_names <- sprintf("U%d", 1:nrow(UQ_unique))
-    SumU_names <- sprintf("SumU%d", 1:nrow(UQ_unique))
-    pU_k_names <- sprintf("pU%dk", 1:nrow(UQ_unique))
-    qU_k_names <- sprintf("qU%dk", 1:nrow(UQ_unique))
+    pU_L_names <- sprintf("pU%dL", seq_len(nrow(UQ_unique)))
+    pU_U_names <- sprintf("pU%dU", seq_len(nrow(UQ_unique)))
+    qU_L_names <- sprintf("qU%dL", seq_len(nrow(UQ_unique)))
+    qU_U_names <- sprintf("qU%dU", seq_len(nrow(UQ_unique)))
+    U_names <- sprintf("U%d", seq_len(nrow(UQ_unique)))
+    SumU_names <- sprintf("SumU%d", seq_len(nrow(UQ_unique)))
+    pU_k_names <- sprintf("pU%dk", seq_len(nrow(UQ_unique)))
+    qU_k_names <- sprintf("qU%dk", seq_len(nrow(UQ_unique)))
 
     # Create uncertain sighting quality list; NB: pU and qU can exceed 1!
     US <- list()
-    for (h in 1:nrow(UQ_unique)) {
+    for (h in seq_len(nrow(UQ_unique))) {
       US[[U_names[h]]] <- ifelse(UQ$time %in% merge(
         UQ_unique[h, ], UQ
       )$time, 1, 0)
@@ -128,17 +128,17 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
 
   if (nrow(SQ_unique) > 0) {
     # Precompute names
-    S_names <- sprintf("S%d", 1:nrow(SQ_unique))
-    pS_L_names <- sprintf("pS%dL", 1:nrow(SQ_unique))
-    pS_U_names <- sprintf("pS%dU", 1:nrow(SQ_unique))
-    qS_L_names <- sprintf("qS%dL", 1:nrow(SQ_unique))
-    qS_U_names <- sprintf("qS%dU", 1:nrow(SQ_unique))
-    pS_k_names <- sprintf("pS%dk", 1:nrow(SQ_unique))
-    qS_k_names <- sprintf("qS%dk", 1:nrow(SQ_unique))
+    S_names <- sprintf("S%d", seq_len(nrow(SQ_unique)))
+    pS_L_names <- sprintf("pS%dL", seq_len(nrow(SQ_unique)))
+    pS_U_names <- sprintf("pS%dU", seq_len(nrow(SQ_unique)))
+    qS_L_names <- sprintf("qS%dL", seq_len(nrow(SQ_unique)))
+    qS_U_names <- sprintf("qS%dU", seq_len(nrow(SQ_unique)))
+    pS_k_names <- sprintf("pS%dk", seq_len(nrow(SQ_unique)))
+    qS_k_names <- sprintf("qS%dk", seq_len(nrow(SQ_unique)))
 
     # Create survey quality list
     SS <- list()
-    for (i in 1:nrow(SQ_unique)) {
+    for (i in seq_len(nrow(SQ_unique))) {
       SS[[S_names[i]]] <- ifelse(SQ$time %in% merge(
         SQ_unique[i, ], SQ
       )$time, 0, NA)
@@ -160,7 +160,7 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     qW <- ifelse(W == 0, 1, 0)
 
     if (nrow(SQ_unique) > 0) {
-      for (i in 1:nrow(SQ_unique)) {
+      for (i in seq_len(nrow(SQ_unique))) {
         SS[[pS_k_names[i]]] <- stats::runif(
           1, SS[[pS_L_names[i]]],
           SS[[pS_U_names[i]]]
@@ -185,7 +185,7 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     }
 
     if (nrow(UQ_unique) > 0) {
-      for (h in 1:nrow(UQ_unique)) {
+      for (h in seq_len(nrow(UQ_unique))) {
         US[[pU_k_names[h]]] <- stats::runif(
           1, US[[pU_L_names[h]]],
           US[[pU_U_names[h]]]
@@ -215,14 +215,14 @@ LE14B1 <- function(records, surveys, threshold = 0.9, prior = c(0, 1),
     qvec <- qW
 
     if (nrow(UQ_unique) > 0) {
-      for (h in 1:nrow(UQ_unique)) {
+      for (h in seq_len(nrow(UQ_unique))) {
         pvec <- pvec * US[[sprintf("pU%d", h)]]
         qvec <- qvec * US[[sprintf("qU%d", h)]]
       }
     }
 
     if (nrow(SQ_unique) > 0) {
-      for (i in 1:nrow(SQ_unique)) {
+      for (i in seq_len(nrow(SQ_unique))) {
         pvec <- pvec * SS[[sprintf("pS%d", i)]]
         qvec <- qvec * SS[[sprintf("qS%d", i)]]
       }

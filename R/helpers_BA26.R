@@ -217,7 +217,8 @@
 
 .run_diagnostics <- function(
   samples, do.diagnostics = .default_diagnostics, gelman.threshold = 1.01,
-  ess.threshold = 400, geweke.threshold = stats::qnorm(0.975), raftery.threshold = 5
+  ess.threshold = 400, geweke.threshold = stats::qnorm(0.975),
+  raftery.threshold = 5
 ) {
   if (is.null(do.diagnostics) || identical(do.diagnostics, FALSE)) {
     warning("No diagnostic tests run. Consider checking convergence manually.")

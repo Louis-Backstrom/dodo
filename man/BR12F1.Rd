@@ -14,8 +14,8 @@ BR12F1(records, alpha = 0.05)
 use in the underlying McInerny et al. 2006 model.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and the point estimate
-included as elements.
+a \code{dodo_fit} object with the original parameters and the point
+estimate included as elements.
 }
 \description{
 Equation 4 from Bradshaw et al. 2012. Estimates a point estimate on the time

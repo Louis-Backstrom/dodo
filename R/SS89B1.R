@@ -14,9 +14,9 @@
 #' @param scale factor to scale sighting records by. Defaults to 0.01; adjust
 #' if warned.
 #'
-#' @returns a `dodo_fit` object with the original parameters and the point estimate
-#' and credible interval included as elements. The credible interval is a
-#' two-element numeric vector called `cred.int`.
+#' @returns a `dodo_fit` object with the original parameters and the point
+#' estimate and credible interval included as elements. The credible interval is
+#' a two-element numeric vector called `cred.int`.
 #'
 #' @note
 #' All sighting records are assumed to be certain and sampling effort is assumed
@@ -70,7 +70,7 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
     theta^(-n + 1)) / un
 
   # Sample from posterior
-  posterior <- sample(as.numeric(theta), prob = as.numeric(pdf), replace = T)
+  posterior <- sample(as.numeric(theta), prob = as.numeric(pdf), replace = TRUE)
 
   # Check if close to scale limit
   if (max(posterior) > 0.9) {
@@ -81,10 +81,11 @@ SS89B1 <- function(records, alpha = 0.05, length.out = 1e7, scale = 0.01) {
   }
 
   # Back-transform estimates
-  estimate <- (mean(posterior) - scale) * ((max(records) - min(records)) /
-    scale) + min(records)
-  cred.int.upper <- (as.numeric(stats::quantile(posterior, 1 - alpha)) - scale) *
-    ((max(records) - min(records)) / scale) + min(records)
+  estimate <- min(records) + (mean(posterior) - scale) *
+    ((max(records) - min(records)) / scale)
+  cred.int.upper <- min(records) +
+    (as.numeric(stats::quantile(posterior, 1 - alpha)) - scale) *
+      ((max(records) - min(records)) / scale)
 
   # Output
   output <- list(

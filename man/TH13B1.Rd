@@ -25,8 +25,8 @@ this deterministic model, each element is the point prior for the rate
 \eqn{P_E = 1 / T}.}
 }
 \value{
-a \code{dodo_fit} object with the original parameters and p(extant) included
-as elements.
+a \code{dodo_fit} object with the original parameters and p(extant)
+included as elements.
 }
 \description{
 The deterministic variant (\eqn{P_D(X_T|\bm{s})}) of Equation 9 in Thompson
